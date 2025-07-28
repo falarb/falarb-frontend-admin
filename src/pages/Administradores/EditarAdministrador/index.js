@@ -11,7 +11,7 @@ import Loading from '../../../components/Loading';
 import TitleClipPages from '../../../components/TitleClipPages';
 import Modal from '../../../components/Modal';
 
-export default function EditarUsuario () {
+export default function EditarAdministrador () {
     
     const [ usuario, setUsuario ] = useState(null )
     const [ error, setError ] = useState( null )

@@ -1,0 +1,95 @@
+.card {
+    padding: 1rem;
+    background-color: #fff;
+    border: solid 2px #d9d9d975;
+    width: 23%;
+    max-width: 23%;
+    border-radius: 20px;
+  }
+  
+  .title-card-dashboard {
+    display: flex;
+    align-items: center;
+    height: 25px;
+    margin-bottom: 13px;
+  }
+  
+  .title-text {
+    font-size: 16px;
+    margin: 0;
+    width: max-content;
+  }
+ 
+  .percent {
+    margin-left: 0.5rem;
+    font-weight: 600;
+    display: flex;
+    color: #fff;
+    padding: 3px 5px;
+    border-radius: 10px;
+  }
+  
+  .data {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .data p {
+    margin: 0 0 20px 0;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .data-large p {
+    font-size: 4rem;
+    margin: 10px 0 0 0 ;
+  }
+
+  .data .range-none{
+    display: none;
+  }
+  
+  .data .range {
+    position: relative;
+    background-color: #E5E7EB;
+    width: 100%;
+    height: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.data .range .fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 0.25rem;
+
+    width: 0; /* começa em 0 */
+    transition: width 1s ease-in-out; /* anima a mudança de largura */
+}
+
+  .type-concluido{
+    background-color: #10B981;
+  }
+
+  .type-agendado{
+    background-color: #ff8e1c;
+  }
+
+  .type-em-aberto{
+    background-color: #ff4040;
+  }
+
+  .title .type-total{
+    display: none;
+  }
+
+  @media(max-width: 1000px){
+    .card{
+        width: 100%;
+        max-width: 88%;
+    }
+}

@@ -1,0 +1,53 @@
+.container-pies{
+    width: 100%;
+    max-width: calc(100% - 40px);
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin: 0;
+}
+
+
+
+
+.container-pies .pie{
+    width: calc(50% - 45px);
+    border-radius: 20px;
+    border: solid 2px #d9d9d975;
+    padding: 25px;
+}
+
+.container-pies .pie svg{
+    position: relative;
+    left: -6%;
+}
+
+.title-pies{
+    display: flex;
+    align-items: center;
+    height: 20px;
+    margin-bottom: 20px;
+    font-size: 16px ;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.title-pies span {
+    color: #344054;
+    font-weight: 500;
+}
+
+.title-pies svg{
+    fill: rgba(0, 0, 0, 0.137);
+    position: relative;
+    left: 0 !important;
+}
+
+@media(max-width: 1000px){
+    .container-pies{
+        flex-direction: column;
+    }
+
+    .container-pies .pie{
+        width: calc(100% - 18px );
+    }
+}

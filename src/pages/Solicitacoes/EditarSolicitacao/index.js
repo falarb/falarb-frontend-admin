@@ -22,7 +22,8 @@ export default function EditarSolicitacao() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null); 
     const [validationErrors, setValidationErrors] = useState({}); 
-    const [modalEditAberto, setModalEditAberto] = useState(false)
+    const [modalEditAberto, setModalEditAberto] = useState(false);
+    const [isDirty, setIsDirty] = useState(false); 
 
   
     useEffect(() => {
@@ -79,6 +80,7 @@ export default function EditarSolicitacao() {
     }, []);
 
     const handleChange = (evento) => {
+        setIsDirty(true);
         const { name, value } = evento.target;
         setSolicitacao((prev) => ({
         ...prev,
@@ -169,6 +171,12 @@ export default function EditarSolicitacao() {
             <ButtonSecundary
                 adicionalClass='btn-svg'
                 onClick={() => {
+                    if ( isDirty ) {
+                        const confirmLeave = window.confirm(
+                            "Você fez alterações que não foram salvas. Deseja sair mesmo assim?"
+                          );
+                          if (!confirmLeave) return;
+                    }
                     navigate(-1)
                 }}   
             >

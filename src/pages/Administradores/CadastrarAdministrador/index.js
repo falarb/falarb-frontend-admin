@@ -8,17 +8,13 @@ import Erro from "../../../components/Mensagem/Erro"
 import BtnPrimary  from '../../../components/Btn/BtnPrimary/';
 import BtnSecundary  from '../../../components/Btn/BtnSecundary/';
 import Loading from '../../../components/Loading';
-import TitleClipPages from '../../../components/TitleClipPages';
-import Modal from '../../../components/Modal';
 
-export default function EditarUsuario () {
+export default function CadastrarAdministrador () {
     
     const [ usuario, setUsuario ] = useState(null )
     const [ error, setError ] = useState( null )
     const [ loading, setLoading] = useState( null )
     const [ validationErrors, setValidationErrors ] = useState( null )
-    const [ modalEditAberto, setModalEditAberto ] = useState( false )
-    const [isDirty, setIsDirty] = useState(false);
     const { id } = useParams()
     const navigate = useNavigate();
 
@@ -52,8 +48,8 @@ export default function EditarUsuario () {
     }, [id])
 
     const handleChange = (evento) => {
-        setIsDirty(true);
         const { name, value } = evento.target;
+
         setUsuario( ( prev ) => ({
             ...prev,
             [name]: value,
@@ -100,44 +96,17 @@ export default function EditarUsuario () {
             setLoading(false) 
         }
     } 
-    if (!usuario) return console.log('Nenhum usuário encontrado.');
+    if (!usuario) return <p>Nenhum dado encontrado.</p>;
 
     return (
         <div>
             {loading && <Loading />}
             {error && <Erro mensagem={error + error.mensagem}/>}
-            {modalEditAberto && (
-                    <Modal 
-                        type='warning'
-                        title='Editar usuário'
-                        description={`Você solicitou editar as informações desse usuário. Essa alteração não pode ser desfeita. Você tem certeza?`}
-                        onConfirm={ (evento) => {
-                            //handleSubmit()
-                            alert('Editar')
-                            setModalEditAberto(false)
-                            navigate(-1)
-                        }}
-                        onCancel={ () => {
-                            setModalEditAberto(false)
-                        }}
-                    />
-                )}  
-
-            <TitleClipPages
-                title={`Edição de usuário com CPF ${usuario.cpf}`}
-            />
 
             <div className="nav-tools">
                 <BtnSecundary
-                    adicionalClass='btn-svg'
                     onClick={() => {
-                        if (isDirty) {
-                            const confirmLeave = window.confirm(
-                              "Você fez alterações que não foram salvas. Deseja sair mesmo assim?"
-                            );
-                            if (!confirmLeave) return;
-                          }
-                        navigate(`/usuario/${usuario.id}`)
+                        navigate('/usuarios')
                 }}>
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#344054"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>
                 </BtnSecundary>
@@ -145,10 +114,7 @@ export default function EditarUsuario () {
 
             {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
             <h2>Editar Usuário</h2>
-            <form onSubmit={ (evento) => {
-                evento.preventDefault()
-                setModalEditAberto(true)
-            }}>
+            <form onSubmit={handleSubmit}>
 
                 <div className="container-single-input">
                     <InputText 
@@ -179,20 +145,6 @@ export default function EditarUsuario () {
                     <InputCustomMask 
                         label="CPF"
                         mask='999.999.999-99'
-                        type="text"
-                        name="cpf"
-                        value={usuario.cpf}
-                        onChange={handleChange}
-                    />
-                    <div className="validation-error">
-                        {validationErrors ? `${validationErrors.nome}` : ''}
-                    </div>
-                </div>
-
-                <div className="container-single-input">
-                    <InputCustomMask 
-                        label="Celular"
-                        mask='(99) 9 9999-9999'
                         type="text"
                         name="cpf"
                         value={usuario.cpf}

@@ -14,6 +14,10 @@ import VisualizarComunidade from "./pages/Comunidades/VisualizarComunidade";
 import EditarComunidade from "./pages/Comunidades/EditarComunidade";
 import CadastrarComunidade from "./pages/Comunidades/CadastrarComunidade";
 import Administradores from "./pages/Administradores";
+import VisualizarAdministrador from "./pages/Administradores/VisualizarAdministrador";
+import EditarAdministrador from './pages/Administradores/EditarAdministrador';
+import CadastrarAdministrador from './pages/Administradores/CadastrarAdministrador';
+import Relatorios from './pages/Relatorios';
 
 function App() {
   return (
@@ -36,6 +40,11 @@ function App() {
         <Route path="comunidade/:id" element={<VisualizarComunidade />} />
         <Route path="comunidade/editar/:id" element={<EditarComunidade />} />
         <Route path="comunidade/cadastrar" element={<CadastrarComunidade />} />
+        <Route path="administradores" element={<Administradores />} />
+        <Route path="administrador/:id" element={<VisualizarAdministrador />} />
+        <Route path="administrador/editar/:id" element={<EditarAdministrador />} />
+        <Route path="administrador/cadastrar/" element={<CadastrarAdministrador />} />
+        <Route path="relatorios" element={<Relatorios />} />
       </Route>
 
       {/* 404 fora do Template */}

@@ -84,18 +84,23 @@
 }
 
 .status-ativo{
-    background-color: #beeec6;
+    background-color: #10B981;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.status-inativo{
+    background-color: #ff4040;
     padding: 5px;
     border-radius: 10px;
     
     text-transform: capitalize;
 }
 
-.status-inativo{
-    background-color: #eebebe;
-    padding: 5px;
-    border-radius: 10px;
-    
+.status-ativo span,
+.status-inativo span
+{
+    color: #fff ;
     text-transform: capitalize;
 }
 

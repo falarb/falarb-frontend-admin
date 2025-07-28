@@ -11,6 +11,10 @@
     padding: 12px 12px 24px 12px;
 }
 
+.asside-menu-bar-menu-is-close{
+    width: 36px;
+}
+
 .asside-menu-bar::after {
     content: '';
     position: absolute;
@@ -22,14 +26,28 @@
     z-index: 9999;
   }
 
-.logo{
-    width: 80%;
+  .asside-menu-bar-menu .logo{
+    width: 70%;
     background-color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     object-fit: contain;
     margin: 0 0 0 15px;
+}
+
+.asside-menu-bar-menu-is-close .logo{
+    display: none;
+}
+
+.asside-menu-bar .list-menu-itens{
+    position: absolute;
+    top: 90px;
+    width: 180px;
+}
+
+.asside-menu-bar-menu-is-close .list-menu-itens{
+    width: 37px;
 }
 
 .menu-item{
@@ -43,6 +61,10 @@
     font-size: 14px;
     padding: 8px;
     margin: 0 0 8px 0;
+}
+
+.asside-menu-bar-menu-is-close .menu-item span{
+    display: none;
 }
 
 .menu-item.active,

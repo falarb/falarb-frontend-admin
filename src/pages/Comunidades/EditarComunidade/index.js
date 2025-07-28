@@ -11,13 +11,13 @@ import Modal from '../../../components/Modal';
 import SelectStatus from '../../../components/SelectStatus'
 
 export default function EditarComunidade () {
-    
-    const [ comunidade, setComunidade ] = useState(null )
-    const [ error, setError ] = useState( null )
-    const [ loading, setLoading] = useState( null )
-    const [ validationErrors, setValidationErrors ] = useState( null )
-    const [ modalEditAberto, setModalEditAberto ] = useState( false )
-    const { id } = useParams()
+    const [ comunidade, setComunidade ] = useState(null );
+    const [ error, setError ] = useState( null );
+    const [ loading, setLoading] = useState( null );
+    const [ validationErrors, setValidationErrors ] = useState( null );
+    const [ modalEditAberto, setModalEditAberto ] = useState( false );
+    const [isDirty, setIsDirty] = useState(false);
+    const { id } = useParams();
     const navigate = useNavigate();
 
     useEffect( () => {
@@ -50,8 +50,8 @@ export default function EditarComunidade () {
     }, [id])
 
     const handleChange = (evento) => {
+        setIsDirty(true);
         const { name, value } = evento.target;
-
         setComunidade( ( prev ) => ({
             ...prev,
             [name]: value,
@@ -129,6 +129,12 @@ export default function EditarComunidade () {
                 <BtnSecundary
                     adicionalClass='btn-svg'
                     onClick={() => {
+                        if (isDirty) {
+                            const confirmLeave = window.confirm(
+                              "Você fez alterações que não foram salvas. Deseja sair mesmo assim?"
+                            );
+                            if (!confirmLeave) return;
+                        }
                         navigate(`/comunidade/${comunidade.id}`)
                 }}>
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#344054"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>

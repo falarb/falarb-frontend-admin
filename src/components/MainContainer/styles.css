@@ -8,3 +8,8 @@
     left: 210px;
     top: 80px;
 }
+
+.main-container-menu-is-close{
+    width: calc(100% - 108px);
+    left: 60px;
+}
