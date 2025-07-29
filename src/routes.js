@@ -25,7 +25,6 @@ function App() {
   <BrowserRouter>
 
     <Routes>
-      {/* Rotas com Template */}
       <Route path="/" element={<Template />}>
         <Route index element={<Dashboard />} />
         <Route path="solicitacoes" element={<Solicitacoes />} />
@@ -47,7 +46,6 @@ function App() {
         <Route path="relatorios" element={<Relatorios />} />
       </Route>
 
-      {/* 404 fora do Template */}
       <Route path="*" element={<Page404 />} />
     </Routes>
   </BrowserRouter>
