@@ -120,7 +120,7 @@ export default function Usuarios() {
                 <BtnPrimary
                     type="button"
                     onClick={ () => {
-                        navigate(`/tipo-manutencao/cadastrar/`)
+                        navigate(`/usuario/cadastrar/`)
                     }}
                 >
                     Cadastrar

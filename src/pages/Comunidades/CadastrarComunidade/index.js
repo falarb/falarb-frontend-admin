@@ -57,19 +57,19 @@ export default function CadastrarComunidade () {
         <div>
             <BtnSecundary
                 onClick={ () => {
-                    navigate('/tipos-manutencoes')
+                    navigate('/comunidades')
                 }}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#344054"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>
             </BtnSecundary>
 
             <h2>
-                Cadastrar novo tipo de manutenção
+                Cadastrar nova comunidade
             </h2>
 
             <form onSubmit={handleSubmit}>
                 <InputText
-                    label='Nome do tipo de manutenção'
+                    label='Nome da nova comunidade'
                     placeholder='Insira o nome...'
                     name='nome'
                     value={novoTipoManutencao.nome}

@@ -123,7 +123,7 @@ export default function Comunidades() {
                 <BtnPrimary
                     type="button"
                     onClick={ () => {
-                        navigate(`/tipo-manutencao/cadastrar/`)
+                        navigate(`/comunidade/cadastrar/`)
                     }}
                 >
                     Cadastrar

@@ -1,11 +1,11 @@
-.container-input-email{
+.custom-input-mask{
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin: 15px 0;
 }
 
-.container-input-email input {
+.input-mask{
     height: 52px;
     width: 500px;
     max-width: 500px;
@@ -26,11 +26,11 @@
     cursor: pointer;
 }
 
-.container-input-email .invalid{
-    border-color: #FF0000 !important;
+.input-mask.invalid {
+    border-color: red;
 }
 
-.invalid-text{
-    margin: 0;
+.error-message {
+    color: red;
     font-size: 13px;
 }

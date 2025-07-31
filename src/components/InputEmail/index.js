@@ -1,12 +1,19 @@
-import './styles.css'
+import { useState, useEffect } from 'react';
+import './styles.css';
 
 export default function InputEmail({ label, name, value, onChange, placeholder }) {
+    const [changed, setChanged] = useState(false);
 
-    const isEmailValid = (value) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(value);
-    };
-    
+    // Detecta se o valor já foi alterado pelo usuário
+    useEffect(() => {
+        if (value !== '') {
+            setChanged(true);
+        }
+    }, [value]);
+
+    const isEmailValid = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    const isValid = isEmailValid(value);
+
     return (
         <div className='container-input-email'>
             <label>{label}</label>
@@ -16,11 +23,11 @@ export default function InputEmail({ label, name, value, onChange, placeholder }
                 name={name}
                 value={value}
                 onChange={onChange}
-                style={{ borderColor: isEmailValid(value) ? "" : "red" }}
+                className={!isValid && changed ? 'invalid' : ''}
             />
-            {!isEmailValid(value) && <p className='invalid-text' style={{ color: "red" }}>E-mail inválido</p>}
+            {!isValid && changed && (
+                <p className='invalid-text' style={{ color: 'red' }}>E-mail inválido</p>
+            )}
         </div>
-
-    )
-
+    );
 }

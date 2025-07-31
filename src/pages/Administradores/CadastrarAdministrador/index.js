@@ -1,9 +1,9 @@
+import './styles.css'
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import './styles.css'
 import InputText from "../../../components/InputText"
 import InputEmail from '../../../components/InputEmail'
-import InputCustomMask from '../../../components/InputCustomMask'
+import InputCPF from '../../../components/InputCPF'
 import Erro from "../../../components/Mensagem/Erro"
 import BtnPrimary  from '../../../components/Btn/BtnPrimary/';
 import BtnSecundary  from '../../../components/Btn/BtnSecundary/';
@@ -11,7 +11,11 @@ import Loading from '../../../components/Loading';
 
 export default function CadastrarAdministrador () {
     
-    const [ usuario, setUsuario ] = useState(null )
+    const [ usuario, setUsuario ] = useState( {
+        nome: '',
+        email: '',
+        cpf: ''
+    } )
     const [ error, setError ] = useState( null )
     const [ loading, setLoading] = useState( null )
     const [ validationErrors, setValidationErrors ] = useState( null )
@@ -25,7 +29,7 @@ export default function CadastrarAdministrador () {
             setLoading( false )
     
             try {
-                const response = await fetch( `http://127.0.0.1:8000/api/usuarios/${id}` )
+                const response = await fetch( `http://127.0.0.1:8000/api/usuarios/` )
 
                 if( !response.ok ) {
                     setError( response.status )
@@ -96,7 +100,6 @@ export default function CadastrarAdministrador () {
             setLoading(false) 
         }
     } 
-    if (!usuario) return <p>Nenhum dado encontrado.</p>;
 
     return (
         <div>
@@ -113,7 +116,7 @@ export default function CadastrarAdministrador () {
             </div>
 
             {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
-            <h2>Editar Usuário</h2>
+            <h2>Cadastrar administrador</h2>
             <form onSubmit={handleSubmit}>
 
                 <div className="container-single-input">
@@ -121,6 +124,7 @@ export default function CadastrarAdministrador () {
                         label="Nome"
                         type="text"
                         name="nome"
+                        placeholder='Digite o nome do administrador'
                         value={usuario.nome}
                         onChange={handleChange}
                     />
@@ -133,6 +137,7 @@ export default function CadastrarAdministrador () {
                     <InputEmail 
                         label="Email"
                         name="email"
+                        placeholder='Digite o email do administrador'
                         value={usuario.email}
                         onChange={handleChange}
                     />
@@ -142,10 +147,11 @@ export default function CadastrarAdministrador () {
                 </div>
 
                 <div className="container-single-input">
-                    <InputCustomMask 
+                    <InputCPF
                         label="CPF"
                         mask='999.999.999-99'
-                        type="text"
+                        placeholder='123.456.789-10'
+                        type="cpf"
                         name="cpf"
                         value={usuario.cpf}
                         onChange={handleChange}
@@ -161,7 +167,7 @@ export default function CadastrarAdministrador () {
 
                 }}
             >
-                Salvar
+                Cadastrar
             </BtnPrimary>
             </form>
         </div>
