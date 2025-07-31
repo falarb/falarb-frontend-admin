@@ -1,19 +1,19 @@
 import './styles.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Table from '../../components/TableFour';
-import TableHeader from '../../components/TableFour/TableHeader';
-import TableItem from '../../components/TableFour/TableItem';
-import TableItemEmpty from '../../components/TableFour/TableItemEmpty';
-import TableFooter from '../../components/TableFour/TableFooter';
-import Erro from '../../components/Mensagem/Erro';
+import Table from '../../components/Table/TableFour';
+import TableHeader from '../../components/Table/TableFour/TableHeader';
+import TableItem from '../../components/Table/TableFour/TableItem';
+import TableItemEmpty from '../../components/Table/TableFour/TableItemEmpty';
+import TableFooter from '../../components/Table/TableFour/TableFooter';
+import Erro from '../../components/Message/Erro';
 import Modal from '../../components/Modal';
 import Loading from '../../components/Loading';
 import BtnPrimary from '../../components/Btn/BtnPrimary';
 import BtnSecundary from '../../components/Btn/BtnSecundary';
-import Filtros from '../../components/Filtros'
-import InputSearch from '../../components/InputSearch'
-import SelectCustom from '../../components/SelectCustom'
+import Filtros from '../../components/Filters'
+import InputSearch from '../../components/Input/InputSearch'
+import SelectCustom from '../../components/Select/SelectCustom'
 
 export default function Usuarios() {
 

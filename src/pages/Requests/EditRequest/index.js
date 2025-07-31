@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import InputText from '../../../components/InputText';
-import TextArea from '../../../components/TextArea';
+import InputText from '../../../components/Input/InputText';
+import TextArea from '../../../components/Input/TextArea';
 import Modal from '../../../components/Modal';
-import SelectStatus from '../../../components/SelectStatus';
-import SelectCustom from '../../../components/SelectCustom';
+import SelectStatus from '../../../components/Select/SelectStatus';
+import SelectCustom from '../../../components/Select/SelectCustom';
 import './styles.css';
-import Erro from '../../../components/Mensagem/Erro';
+import Erro from '../../../components/Message/Erro';
 import Loading from '../../../components/Loading';
 import ButtonPrimary from '../../../components/Btn/BtnPrimary';
 import ButtonSecundary from '../../../components/Btn/BtnSecundary';

@@ -1,6 +1,6 @@
-import BarCharts from '../../components/BarCharts'
-import InicialMetrics from '../../components/InicialMetrics'
-import  PieCharts from '../../components/PieCharts'
+import BarCharts from '../../components/Charts/BarCharts'
+import InicialMetrics from '../../components/Charts/InicialMetrics'
+import  PieCharts from '../../components/Charts/PieCharts'
 
 export default function Dashboard() {
     return (

@@ -3,19 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import './styles.css'
 import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
-import Table from '../../components/TableFour';
-import TableHeader from '../../components/TableFour/TableHeader';
-import TableItem from '../../components/TableFour/TableItem';
-import TableItemEmpty from '../../components/TableFour/TableItemEmpty';
-import TableFooter from '../../components/TableFour/TableFooter';
+import Table from '../../components/Table/TableFour';
+import TableHeader from '../../components/Table/TableFour/TableHeader';
+import TableItem from '../../components/Table/TableFour/TableItem';
+import TableItemEmpty from '../../components/Table/TableFour/TableItemEmpty';
+import TableFooter from '../../components/Table/TableFour/TableFooter';
 import Success from '../../components/Modal/Success';
-import Erro from '../../components/Mensagem/Erro'
+import Erro from '../../components/Message/Erro'
 import BtnPrimary from '../../components/Btn/BtnPrimary';
 import BtnSecundary from '../../components/Btn/BtnSecundary';
-import Filtros from '../../components/Filtros';
-import SelectCustom from '../../components/SelectCustom';
-import InputSearch from '../../components/InputSearch'
-import InputDate from '../../components/InputDate';
+import Filtros from '../../components/Filters';
+import SelectCustom from '../../components/Select/SelectCustom';
+import InputSearch from '../../components/Input/InputSearch'
 
 export default function Administradores () {
     

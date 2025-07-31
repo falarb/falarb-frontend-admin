@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import './styles.css'
-import InputText from "../../../components/InputText"
-import InputEmail from '../../../components/InputEmail'
-import InputCustomMask from '../../../components/InputCustomMask'
-import Erro from "../../../components/Mensagem/Erro"
-import BtnPrimary  from '../../../components/Btn/BtnPrimary/';
-import BtnSecundary  from '../../../components/Btn/BtnSecundary/';
+import InputText from "../../../components/Input/InputText"
+import InputEmail from '../../../components/Input/InputEmail'
+import InputCustomMask from '../../../components/Input/InputCustomMask'
+import Erro from "../../../components/Message/Erro"
+import BtnPrimary  from '../../../components/Btn/BtnPrimary';
+import BtnSecundary  from '../../../components/Btn/BtnSecundary';
 import Loading from '../../../components/Loading';
 import TitleClipPages from '../../../components/TitleClipPages';
 import Modal from '../../../components/Modal';
 
-export default function EditarUsuario () {
+export default function EditarAdministrador () {
     
     const [ usuario, setUsuario ] = useState(null )
     const [ error, setError ] = useState( null )

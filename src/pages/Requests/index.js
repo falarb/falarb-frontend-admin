@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import TableFiveColuns from "../../components/TableFive";
-import TableHeader from "../../components/TableFive/TableHeader";
-import TableItem from "../../components/TableFive/TableItem";
-import TableItemEmpty from "../../components/TableFive/TableItemEmpty"
-import TableFooter from "../../components/TableFive/TableFooter";
-import Erro from "../../components/Mensagem/Erro";
+import TableFiveColuns from "../../components/Table/TableFive";
+import TableHeader from "../../components/Table/TableFive/TableHeader";
+import TableItem from "../../components/Table/TableFive/TableItem";
+import TableItemEmpty from "../../components/Table/TableFive/TableItemEmpty"
+import TableFooter from "../../components/Table/TableFive/TableFooter";
+import Erro from "../../components/Message/Erro";
 import Modal from "../../components/Modal";
-import Filtros from "../../components/Filtros";
+import Filtros from "../../components/Filters";
 import Loading from "../../components/Loading"
-import SelectCustom from "../../components/SelectCustom";
-import InputSearch from "../../components/InputSearch";
+import SelectCustom from "../../components/Select/SelectCustom";
+import InputSearch from "../../components/Input/InputSearch";
 import BtnPrimary from "../../components/Btn/BtnPrimary"
 import BtnSecundary from "../../components/Btn/BtnSecundary";
 import { useNavigate } from "react-router-dom";

@@ -1,15 +1,15 @@
 import './styles.css'
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import InputText from "../../../components/InputText"
-import InputEmail from '../../../components/InputEmail'
-import InputCPF from '../../../components/InputCPF'
-import Erro from "../../../components/Mensagem/Erro"
-import BtnPrimary  from '../../../components/Btn/BtnPrimary/';
-import BtnSecundary  from '../../../components/Btn/BtnSecundary/';
+import InputText from "../../../components/Input/InputText"
+import InputEmail from '../../../components/Input/InputEmail'
+import InputCPF from '../../../components/Input/InputCPF'
+import Erro from "../../../components/Message/Erro"
+import BtnPrimary  from '../../../components/Btn/BtnPrimary';
+import BtnSecundary  from '../../../components/Btn/BtnSecundary';
 import Loading from '../../../components/Loading';
 
-export default function CadastrarUsuario () {
+export default function CadastrarAdministrador () {
     
     const [ usuario, setUsuario ] = useState( {
         nome: '',
@@ -116,7 +116,7 @@ export default function CadastrarUsuario () {
             </div>
 
             {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
-            <h2>Cadastrar Usuário</h2>
+            <h2>Cadastrar administrador</h2>
             <form onSubmit={handleSubmit}>
 
                 <div className="container-single-input">
@@ -124,7 +124,7 @@ export default function CadastrarUsuario () {
                         label="Nome"
                         type="text"
                         name="nome"
-                        placeholder='Digite o nome do usuário'
+                        placeholder='Digite o nome do administrador'
                         value={usuario.nome}
                         onChange={handleChange}
                     />
@@ -137,7 +137,7 @@ export default function CadastrarUsuario () {
                     <InputEmail 
                         label="Email"
                         name="email"
-                        placeholder='Digite o email do usuário'
+                        placeholder='Digite o email do administrador'
                         value={usuario.email}
                         onChange={handleChange}
                     />

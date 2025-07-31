@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import './styles.css'
-import InputText from "../../../components/InputText"
-import Erro from "../../../components/Mensagem/Erro"
-import BtnPrimary  from '../../../components/Btn/BtnPrimary/';
-import BtnSecundary  from '../../../components/Btn/BtnSecundary/';
+import InputText from "../../../components/Input/InputText";
+import Erro from "../../../components/Message/Erro";
+import BtnPrimary  from '../../../components/Btn/BtnPrimary';
+import BtnSecundary  from '../../../components/Btn/BtnSecundary';
 import Loading from '../../../components/Loading';
 import TitleClipPages from '../../../components/TitleClipPages';
 import Modal from '../../../components/Modal';
-import SelectStatus from '../../../components/SelectStatus'
+import SelectStatus from '../../../components/Select/SelectStatus';
 
 export default function EditarComunidade () {
     const [ comunidade, setComunidade ] = useState(null );

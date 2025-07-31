@@ -1,24 +1,24 @@
+import './styles.css'
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import './styles.css'
-import InputText from "../../../components/InputText"
-import InputEmail from '../../../components/InputEmail'
-import InputCustomMask from '../../../components/InputCustomMask'
-import Erro from "../../../components/Mensagem/Erro"
-import BtnPrimary  from '../../../components/Btn/BtnPrimary/';
-import BtnSecundary  from '../../../components/Btn/BtnSecundary/';
+import InputText from "../../../components/Input/InputText"
+import InputEmail from '../../../components/Input/InputEmail'
+import InputCPF from '../../../components/Input/InputCPF'
+import Erro from "../../../components/Message/Erro"
+import BtnPrimary  from '../../../components/Btn/BtnPrimary';
+import BtnSecundary  from '../../../components/Btn/BtnSecundary';
 import Loading from '../../../components/Loading';
-import TitleClipPages from '../../../components/TitleClipPages';
-import Modal from '../../../components/Modal';
 
-export default function EditarAdministrador () {
+export default function CadastrarUsuario () {
     
-    const [ usuario, setUsuario ] = useState(null )
+    const [ usuario, setUsuario ] = useState( {
+        nome: '',
+        email: '',
+        cpf: ''
+    } )
     const [ error, setError ] = useState( null )
     const [ loading, setLoading] = useState( null )
     const [ validationErrors, setValidationErrors ] = useState( null )
-    const [ modalEditAberto, setModalEditAberto ] = useState( false )
-    const [isDirty, setIsDirty] = useState(false);
     const { id } = useParams()
     const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ export default function EditarAdministrador () {
             setLoading( false )
     
             try {
-                const response = await fetch( `http://127.0.0.1:8000/api/usuarios/${id}` )
+                const response = await fetch( `http://127.0.0.1:8000/api/usuarios/` )
 
                 if( !response.ok ) {
                     setError( response.status )
@@ -52,8 +52,8 @@ export default function EditarAdministrador () {
     }, [id])
 
     const handleChange = (evento) => {
-        setIsDirty(true);
         const { name, value } = evento.target;
+
         setUsuario( ( prev ) => ({
             ...prev,
             [name]: value,
@@ -100,61 +100,31 @@ export default function EditarAdministrador () {
             setLoading(false) 
         }
     } 
-    if (!usuario) return console.log('Nenhum usuário encontrado.');
 
     return (
         <div>
             {loading && <Loading />}
             {error && <Erro mensagem={error + error.mensagem}/>}
-            {modalEditAberto && (
-                    <Modal 
-                        type='warning'
-                        title='Editar usuário'
-                        description={`Você solicitou editar as informações desse usuário. Essa alteração não pode ser desfeita. Você tem certeza?`}
-                        onConfirm={ (evento) => {
-                            //handleSubmit()
-                            alert('Editar')
-                            setModalEditAberto(false)
-                            navigate(-1)
-                        }}
-                        onCancel={ () => {
-                            setModalEditAberto(false)
-                        }}
-                    />
-                )}  
-
-            <TitleClipPages
-                title={`Edição de usuário com CPF ${usuario.cpf}`}
-            />
 
             <div className="nav-tools">
                 <BtnSecundary
-                    adicionalClass='btn-svg'
                     onClick={() => {
-                        if (isDirty) {
-                            const confirmLeave = window.confirm(
-                              "Você fez alterações que não foram salvas. Deseja sair mesmo assim?"
-                            );
-                            if (!confirmLeave) return;
-                          }
-                        navigate(`/usuario/${usuario.id}`)
+                        navigate('/usuarios')
                 }}>
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#344054"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>
                 </BtnSecundary>
             </div>
 
             {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
-            <h2>Editar Usuário</h2>
-            <form onSubmit={ (evento) => {
-                evento.preventDefault()
-                setModalEditAberto(true)
-            }}>
+            <h2>Cadastrar Usuário</h2>
+            <form onSubmit={handleSubmit}>
 
                 <div className="container-single-input">
                     <InputText 
                         label="Nome"
                         type="text"
                         name="nome"
+                        placeholder='Digite o nome do usuário'
                         value={usuario.nome}
                         onChange={handleChange}
                     />
@@ -167,6 +137,7 @@ export default function EditarAdministrador () {
                     <InputEmail 
                         label="Email"
                         name="email"
+                        placeholder='Digite o email do usuário'
                         value={usuario.email}
                         onChange={handleChange}
                     />
@@ -176,24 +147,11 @@ export default function EditarAdministrador () {
                 </div>
 
                 <div className="container-single-input">
-                    <InputCustomMask 
+                    <InputCPF
                         label="CPF"
                         mask='999.999.999-99'
-                        type="text"
-                        name="cpf"
-                        value={usuario.cpf}
-                        onChange={handleChange}
-                    />
-                    <div className="validation-error">
-                        {validationErrors ? `${validationErrors.nome}` : ''}
-                    </div>
-                </div>
-
-                <div className="container-single-input">
-                    <InputCustomMask 
-                        label="Celular"
-                        mask='(99) 9 9999-9999'
-                        type="text"
+                        placeholder='123.456.789-10'
+                        type="cpf"
                         name="cpf"
                         value={usuario.cpf}
                         onChange={handleChange}
@@ -209,7 +167,7 @@ export default function EditarAdministrador () {
 
                 }}
             >
-                Salvar
+                Cadastrar
             </BtnPrimary>
             </form>
         </div>

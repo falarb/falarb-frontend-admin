@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Table from '../../components/TableFive';
-import TableHeader from '../../components/TableFive/TableHeader';
-import TableItem from '../../components/TableFive/TableItem';
+import Table from '../../components/Table/TableFive';
+import TableHeader from '../../components/Table/TableFive/TableHeader';
+import TableItem from '../../components/Table/TableFive/TableItem';
 import Loading from "../../components/Loading";
-import TableItemEmpty from "../../components/TableFive/TableItemEmpty";
-import TableFooter from "../../components/TableFive/TableFooter";
+import TableItemEmpty from "../../components/Table/TableFive/TableItemEmpty";
+import TableFooter from "../../components/Table/TableFive/TableFooter";
 import BtnPrimary from "../../components/Btn/BtnPrimary"
 import BtnSecundary from "../../components/Btn/BtnSecundary"
-import Erro from "../../components/Mensagem/Erro";
-import Filtros from "../../components/Filtros";
+import Erro from "../../components/Message/Erro";
+import Filtros from "../../components/Filters";
 import Modal from '../../components/Modal'
-import InputSearch from "../../components/InputSearch";
+import InputSearch from "../../components/Input/InputSearch";
 
 export default function Comunidades() {
     const [comunidades, setComunidades] = useState([]);

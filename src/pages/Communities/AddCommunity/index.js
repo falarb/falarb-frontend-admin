@@ -1,7 +1,7 @@
 import './styles.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
-import InputText from '../../../components/InputText'
+import InputText from '../../../components/Input/InputText'
 import BtnPrimary from '../../../components/Btn/BtnPrimary'
 import BtnSecundary from '../../../components/Btn/BtnSecundary'
 

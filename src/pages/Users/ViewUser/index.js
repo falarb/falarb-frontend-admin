@@ -3,15 +3,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../../../components/Modal";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
-import Erro from '../../../components/Mensagem/Erro';
+import Erro from '../../../components/Message/Erro';
 import Loading from '../../../components/Loading';
 import TitleClipPages from '../../../components/TitleClipPages';
-import SelectStatus from '../../../components/SelectStatus'
+import SelectStatus from '../../../components/Select/SelectStatus'
 import './styles.css';
 import MiniDashboardUser from "../../../components/MiniDashboardUser";
 
 
-export default function VisualizarUsuario () {
+export default function ViewUser () {
 
     const [usuario, setUsuario] = useState(null);
     const [loading, setLoading] = useState(null);
