@@ -1,0 +1,33 @@
+.container_main_login{
+    display: flex;
+    margin: 0;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.container_form_login{
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    width: 100%;
+}
+
+.container_header_form_login{
+
+}
+
+.container_input_form_login{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.container_input_form_login input{
+    width: 100%;
+}
+
+.container_esqueci_senha{
+    
+}

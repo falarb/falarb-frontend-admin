@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './styles.css';
 
-export default function InputEmail({ label, name, value, onChange, placeholder }) {
+export default function InputEmail({ label, adicionalClass, name, value, onChange, placeholder }) {
     const [changed, setChanged] = useState(false);
 
     // Detecta se o valor já foi alterado pelo usuário
@@ -15,7 +15,7 @@ export default function InputEmail({ label, name, value, onChange, placeholder }
     const isValid = isEmailValid(value);
 
     return (
-        <div className='container-input-email'>
+        <div className={`container-input-email ${adicionalClass}`}>
             <label>{label}</label>
             <input
                 type="email"

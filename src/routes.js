@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Login from './pages/Login';
+
 import Template from './pages/Template';
 import Dashboard from './pages/Dashboard';
 import Page404 from './pages/Page404';
@@ -29,9 +32,9 @@ function App() {
       <BrowserRouter>
 
         <Routes>
-          <Route path="/" element={<Template />}>
-            <Route index element={<Dashboard />} />
+          <Route path="/administracao" element={<Template />}>
 
+            <Route index element={<Dashboard/>} />
             <Route path="solicitacoes" element={<Requests />} />
             <Route path="solicitacao/:id" element={<ViewRequest />} />
             <Route path="solicitacao/editar/:id" element={<EditRequest />} />
@@ -55,6 +58,7 @@ function App() {
           </Route>
 
           <Route path="*" element={<Page404 />} />
+          <Route path="/" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </>

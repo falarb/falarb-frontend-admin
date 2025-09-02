@@ -34,3 +34,10 @@
     margin: 0;
     font-size: 13px;
 }
+
+
+.adicional_class_login,
+.adicional_class_login input{
+    max-width: 308px !important;
+    width: 100% !important;
+}

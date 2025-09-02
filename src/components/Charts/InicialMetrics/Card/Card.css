@@ -19,7 +19,8 @@
     margin: 0;
     width: max-content;
   }
- 
+
+  .title-card-dashboard
   .percent {
     margin-left: 0.5rem;
     font-weight: 600;
@@ -27,6 +28,10 @@
     color: #fff;
     padding: 3px 5px;
     border-radius: 10px;
+  }
+
+  .title-card-dashboard .type-total {
+    display: none;
   }
   
   .data {
@@ -68,6 +73,7 @@
     border-radius: 0.25rem;
 
     width: 0; /* começa em 0 */
+    max-width: 100%;
     transition: width 1s ease-in-out; /* anima a mudança de largura */
 }
 
@@ -81,6 +87,10 @@
 
   .type-em-aberto{
     background-color: #ff4040;
+  }
+
+  .type-indeferido{
+    background-color: #858585;
   }
 
   .title .type-total{

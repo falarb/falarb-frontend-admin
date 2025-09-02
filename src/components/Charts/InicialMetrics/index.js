@@ -1,7 +1,7 @@
 import './InicialMetrics.css';
 import Card from './Card';
 
-const InicialMetrics = ( { totalSolicitacoes = 489, totalConcluidas = 342, totalAgendadas = 37, totalEmAberto = 215 } ) => {
+const InicialMetrics = ( { totalSolicitacoes, totalConcluidas, totalAgendadas, totalEmAberto, totalIndeferido } ) => {
 
     return (
         <div className="container-inicial-metrics">
@@ -27,6 +27,12 @@ const InicialMetrics = ( { totalSolicitacoes = 489, totalConcluidas = 342, total
                 titleCard="Em aberto"
                 type="em-aberto"
                 valueCard={totalEmAberto}
+                totalSolicitacoes={totalSolicitacoes}
+            />
+            <Card 
+                titleCard="Indeferido"
+                type="indeferido"
+                valueCard={totalIndeferido}
                 totalSolicitacoes={totalSolicitacoes}
             />
         </div>

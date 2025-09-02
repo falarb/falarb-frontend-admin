@@ -2,6 +2,11 @@ import { useEffect, useRef } from 'react';
 import './Card.css';
 
 const Card = ({ totalSolicitacoes, type, titleCard, valueCard }) => {
+
+    if(totalSolicitacoes === 0 || totalSolicitacoes === null) {
+        totalSolicitacoes = 1; // Evita divisão por zero
+    }
+
     const fillRef = useRef(null);
     let percentCard = (valueCard / totalSolicitacoes) * 100;
 
