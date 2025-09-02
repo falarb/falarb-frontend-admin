@@ -1,7 +1,25 @@
+.container-main-login{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #ffffff90;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
 
+.container-main-login svg{
+  position: absolute;
+  top: 40%;
+  left: calc(50% - 25px);
+}
 
 .animated {
-  stroke-dasharray: 200; /* Ajuste conforme comprimento real do path */
+  stroke-dasharray: 200; 
   stroke-dashoffset: 200;
   animation: draw 2s linear infinite;
 }

@@ -3,21 +3,20 @@ import { useEffect, useState } from "react";
 import MainContainer from "../../components/MainContainer";
 import Header from "../../components/Header";
 import Menu from "../../components/Menu";
+import Loading from "../../components/Loading";
 
 export default function Template() {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [verificado, setVerificado] = useState(false); // indica que o token já foi checado
+  const [verificado, setVerificado] = useState(false);
   const navegacao = useNavigate();
   const tokenAdminSolicitaAi = localStorage.getItem("tokenAdminSolicitaAi");
 
-  // Fecha o menu automaticamente em telas grandes
   useEffect(() => {
     if (window.innerWidth > 1000 && menuIsOpen) {
       setMenuIsOpen(false);
     }
   }, []);
 
-  // Verifica o token e redireciona se inválido
   useEffect(() => {
     if (
       !tokenAdminSolicitaAi ||
@@ -26,15 +25,14 @@ export default function Template() {
       tokenAdminSolicitaAi.trim() === ""
     ) {
       localStorage.removeItem("tokenAdminSolicitaAi");
-      navegacao("/"); // redireciona corretamente
+      navegacao("/");
     } else {
-      setVerificado(true); // token válido, podemos renderizar
+      setVerificado(true);
     }
   }, [tokenAdminSolicitaAi, navegacao]);
 
-  // Enquanto o token não for verificado, mostra nada ou loading
   if (!verificado) {
-    return null; // ou <div>Carregando...</div>
+    return <Loading />;
   }
 
   return (

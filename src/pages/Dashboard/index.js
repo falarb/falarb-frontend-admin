@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import InicialMetrics from "../../components/Charts/InicialMetrics";
 import PieCharts from "../../components/Charts/PieCharts";
 import BarCharts from "../../components/Charts/BarCharts";
-import './styles.css'
+import "./styles.css";
 import Loading from "../../components/Loading";
 
 export default function Dashboard() {
@@ -11,27 +11,32 @@ export default function Dashboard() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [dados, setDados] = useState(null);
-  const [verificado, setVerificado] = useState(false); 
+  const [verificado, setVerificado] = useState(false);
 
   const navegacao = useNavigate();
   const tokenAdminSolicitaAi = localStorage.getItem("tokenAdminSolicitaAi");
 
   // Verifica se o usuário está autenticado
   useEffect(() => {
-    if (!tokenAdminSolicitaAi || tokenAdminSolicitaAi === "undefined" || tokenAdminSolicitaAi === "null" || tokenAdminSolicitaAi.trim() === "") { 
+    if (
+      !tokenAdminSolicitaAi ||
+      tokenAdminSolicitaAi === "undefined" ||
+      tokenAdminSolicitaAi === "null" ||
+      tokenAdminSolicitaAi.trim() === ""
+    ) {
       localStorage.removeItem("tokenAdminSolicitaAi");
       setErros("Acesso negado. Por favor, faça login.");
       setMostrarModal(true);
-      console.log('Token inválido ou ausente, redirecionando para login.');
-      navegacao("/"); // redireciona imediatamente
+      console.log("Token inválido ou ausente, redirecionando para login.");
+      navegacao("/");
     } else {
-      setVerificado(true); // token existe, podemos buscar dados
+      setVerificado(true);
     }
   }, [tokenAdminSolicitaAi, navegacao]);
 
   // Busca os dados do dashboard
   useEffect(() => {
-    if (!verificado) return; // só busca se o token foi verificado
+    if (!verificado) return;
 
     async function fetchDashboard() {
       try {
@@ -71,7 +76,7 @@ export default function Dashboard() {
   }, [tokenAdminSolicitaAi, navegacao, verificado]);
 
   if (!verificado || carregando) {
-    return <Loading/>
+    return <Loading />;
   }
 
   return (

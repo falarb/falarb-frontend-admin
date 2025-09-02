@@ -32,13 +32,13 @@ export default function Login() {
       setCarregando(true);
       setErro(null);
 
-      const resposta = await fetch('http://localhost:8000/api/login', {
-        method: 'POST',
+      const resposta = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(credenciais),
-      })
+      });
 
       const dados = await resposta.json();
 

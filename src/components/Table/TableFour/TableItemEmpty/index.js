@@ -1,12 +1,5 @@
-import './styles.css';
+import "./styles.css";
 
-export default function TableItemEmpty( { children } ) {
-    
-  
-
-    return (
-        <div className="table-item">
-           { children }
-        </div>
-    );
+export default function TableItemEmpty({ children }) {
+  return <div className="table-item">{children}</div>;
 }
