@@ -62,6 +62,33 @@ export default function VisualizarSolicitacao() {
     return () => controller.abort();
   }, [id, tokenAdminSolicitaAi]);
 
+  const editarSolicitacao = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const resposta = await fetch(
+        `http://127.0.0.1:8000/api/solicitacoes/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenAdminSolicitaAi}`,
+          },
+          body: JSON.stringify({
+            status: "inativo",
+          }),
+        }
+      );
+
+      if (!resposta.ok) {
+        throw new Error(`Erro HTTP ${resposta.status}`);
+      }
+    } catch (erro) {
+      setError("Erro ao editar a solicitação.");
+      throw new Error(`Erro: ${erro}`);
+    }
+  };
+
   if (error) return console.log({ error });
   if (!solicitacao) return console.log("Nenhum dado encontrado");
 
@@ -125,7 +152,9 @@ export default function VisualizarSolicitacao() {
           </svg>
         </BtnPrimary>
 
-        <SelectStatus value="ativo"></SelectStatus>
+        <SelectStatus value="">
+          <option value="" disabled/>
+        </SelectStatus>
 
         {mostrarModalDelete && (
           <Modal

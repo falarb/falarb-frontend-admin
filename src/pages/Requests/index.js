@@ -65,7 +65,7 @@ export default function Solicitacoes() {
         const dados = await resposta.json();
         console.log(dados);
 
-        setTotalPages(dados.ultima_pagina || 1);
+        setTotalPages(dados?.ultima_pagina || 1);
 
         if (dados && Array.isArray(dados.dados)) {
           setSolicitacoes(dados.dados);
@@ -91,6 +91,33 @@ export default function Solicitacoes() {
     tipo_pedido,
     comunidade,
   ]);
+
+  const inativarSolicitacao = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const resposta = await fetch(
+        `http://127.0.0.1:8000/api/solicitacoes/${solicitacaoSelecionada.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenAdminSolicitaAi}`,
+          },
+          body: JSON.stringify({
+            status: "inativo",
+          }),
+        }
+      );
+
+      if (!resposta.ok) {
+        throw new Error(`Erro HTTP ${resposta.status}`);
+      }
+    } catch (erro) {
+      setError("Erro ao inativar a solicitação.");
+      throw new Error(`Erro: ${erro}`);
+    }
+  };
 
   return (
     <>
