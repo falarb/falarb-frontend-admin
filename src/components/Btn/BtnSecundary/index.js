@@ -5,10 +5,12 @@ export default function BtnSecundary({
   type,
   onClick,
   adicionalClass,
+  title
 }) {
   return (
     <button
       className={`btn-secundary ${adicionalClass}`}
+      title={title}
       type={type}
       onClick={onClick}
     >

@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import api from "../../utils/http";
+
 import TableFiveColuns from "../../components/Table/TableFive";
 import TableHeader from "../../components/Table/TableFive/TableHeader";
 import TableItem from "../../components/Table/TableFive/TableItem";
@@ -12,15 +16,18 @@ import SelectCustom from "../../components/Select/SelectCustom";
 import InputSearch from "../../components/Input/InputSearch";
 import BtnPrimary from "../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../components/Btn/BtnSecundary";
-import { useNavigate } from "react-router-dom";
+
 import "./styles.css";
 
 export default function Solicitacoes() {
   const [solicitacoes, setSolicitacoes] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mostrarModalDelete, setAbrirModalDelete] = useState(true);
   const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
+
+  //filtros e paginação
   const [totalPages, setTotalPages] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -30,7 +37,6 @@ export default function Solicitacoes() {
   const [comunidade, setComunidade] = useState("");
   const [sort_by, setOrderBy] = useState("");
   const [sort_order, setSortOrder] = useState();
-  const tokenAdminSolicitaAi = localStorage.getItem("tokenAdminSolicitaAi");
 
   const navigate = useNavigate();
 
@@ -50,29 +56,17 @@ export default function Solicitacoes() {
       setError(null);
 
       try {
-        const resposta = await fetch("http://127.0.0.1:8000/api/solicitacoes", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenAdminSolicitaAi}`,
-          },
-        });
+        const resposta = await api.get(`/solicitacoes`);
 
-        if (!resposta.ok) {
+        if (resposta.status !== 200) {
           throw new Error(`Erro HTTP ${resposta.status}`);
         }
+        console.log(resposta);
+        const dados = await resposta;
 
-        const dados = await resposta.json();
-        console.log(dados);
+        setTotalPages(dados?.data?.ultima_pagina || 1);
 
-        setTotalPages(dados?.ultima_pagina || 1);
-
-        if (dados && Array.isArray(dados.dados)) {
-          setSolicitacoes(dados.dados);
-        } else {
-          setSolicitacoes([]);
-          setError("Formato de resposta inesperado da API");
-        }
+        setSolicitacoes(dados?.data?.dados || []);
       } catch (err) {
         setError(err.message || "Erro desconhecido");
         setSolicitacoes([]);
@@ -96,26 +90,17 @@ export default function Solicitacoes() {
     try {
       setLoading(true);
       setError(null);
-      const resposta = await fetch(
-        `http://127.0.0.1:8000/api/solicitacoes/${solicitacaoSelecionada.id}`,
+      const resposta = await api.put(
+        `/solicitacoes/${solicitacaoSelecionada.id}`,
         {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenAdminSolicitaAi}`,
-          },
-          body: JSON.stringify({
-            status: "inativo",
-          }),
+          status: "inativo",
         }
       );
-
-      if (!resposta.ok) {
-        throw new Error(`Erro HTTP ${resposta.status}`);
-      }
     } catch (erro) {
       setError("Erro ao inativar a solicitação.");
       throw new Error(`Erro: ${erro}`);
+    } finally {
+      setLoading(false);
     }
   };
 

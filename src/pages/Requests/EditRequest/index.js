@@ -1,282 +1,234 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import InputText from "../../../components/Input/InputText";
-import TextArea from "../../../components/Input/TextArea";
-import Modal from "../../../components/Modal";
-import SelectStatus from "../../../components/Select/SelectStatus";
-import SelectCustom from "../../../components/Select/SelectCustom";
-import "./styles.css";
-import Erro from "../../../components/Message/Erro";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../../../utils/http";
+
 import Loading from "../../../components/Loading";
-import ButtonPrimary from "../../../components/Btn/BtnPrimary";
-import ButtonSecundary from "../../../components/Btn/BtnSecundary";
+import BtnPrimary from "../../../components/Btn/BtnPrimary";
+import BtnSecundary from "../../../components/Btn/BtnSecundary";
+import Modal from "../../../components/Modal";
 import TitleClipPages from "../../../components/TitleClipPages";
+import SelectStatus from "../../../components/Select/SelectStatus";
+
+import "./styles.css";
+import InputText from "../../../components/Input/InputText";
+import { status } from "../../../components/Charts/PieCharts/status";
 
 export default function EditarSolicitacao() {
+  const [solicitacao, setSolicitacao] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [mostrarModalEdit, setAbrirModalEdit] = useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [solicitacao, setSolicitacao] = useState(null);
-  const [usuarios, setUsuarios] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [validationErrors, setValidationErrors] = useState({});
-  const [modalEditAberto, setModalEditAberto] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
-
   useEffect(() => {
-    const fetchCondominios = async () => {
+    if (!id) return;
+
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/condominios/${id}`
-        );
+        const resposta = await api.get(`/solicitacoes/${id}`);
 
-        if (!response.ok) {
-          throw new Error(`Erro HTTP ${response.status}`);
+        if (resposta.status !== 200) {
+          throw new Error(`Erro HTTP ${resposta.status}`);
         }
 
-        const data = await response.json();
+        const { data } = resposta;
         setSolicitacao(data);
-      } catch (err) {
-        setError(err.message || "Erro desconhecido");
+      } catch (erro) {
+        setError(erro.message || "Erro desconhecido");
+        console.error(erro);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchCondominios();
-    }
+    fetchData();
   }, [id]);
 
-  useEffect(() => {
-    const fetchUsuarios = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/usuarios`);
-
-        if (!response.ok) {
-          throw new Error(`Erro HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-        setUsuarios(data);
-      } catch (error) {
-        setError("Erro ao atualizar o condomínio: " + error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsuarios();
-  }, []);
-
-  const handleChange = (evento) => {
-    setIsDirty(true);
+  const lidandoComAlteracoes = (evento) => {
     const { name, value } = evento.target;
-    setSolicitacao((prev) => ({
-      ...prev,
+    setSolicitacao((prevSolicitacao) => ({
+      ...prevSolicitacao,
       [name]: value,
     }));
   };
 
-  const handleSubmit = async (evento) => {
-    evento.preventDefault();
-
-    setError(null);
-    setValidationErrors({});
-
+  const salvarSolicitacao = async () => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/condominios/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(solicitacao),
-        }
-      );
-
-      console.log(`Atualizando condomínio com ID ${id} e dados:`, solicitacao);
-
-      if (!response.ok) {
-        if (response.status === 422) {
-          try {
-            const data = await response.json();
-            setValidationErrors(data.errors || {});
-          } catch (e) {
-            setError(
-              "Erro de validação, mas não foi possível interpretar a resposta."
-            );
-          }
-          return;
-        }
-
-        throw new Error(`Erro HTTP ${response.status}`);
-      }
-
-      const newSolicitacao = await response.json();
-      console.log("Resposta API após update:", newSolicitacao);
-      setSolicitacao(newSolicitacao);
-
+      setLoading(true);
       setError(null);
-      alert("Condomínio atualizado com sucesso!");
-      navigate(-1);
-    } catch (err) {
-      if (err.name === "TypeError") {
-        setError(
-          "Não foi possível conectar ao servidor. Verifique sua conexão ou tente mais tarde."
-        );
-      } else {
-        setError(err.message || "Erro desconhecido ao atualizar");
+      const resposta = await api.put(`/solicitacoes/${id}`, {
+        status: solicitacao.status,
+        anotacoes: solicitacao.anotacoes,
+      });
+
+      if (resposta.status !== 200) {
+        throw new Error(`Erro HTTP ${resposta.status}`);
       }
+    } catch (erro) {
+      setError("Erro ao inativar a solicitação.");
+      console.error(erro);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!solicitacao) return console.log("Nenhum solicitacao encontrado");
-  if (!usuarios) return console.log("Nenhum solicitacao encontrado");
+  // loading
+  if (loading) return <Loading />;
+
+  // erro
+  if (error) return <div>Erro: {error}</div>;
+
+  // nenhum dado
+  if (!solicitacao) return <div>Nenhuma solicitação encontrada.</div>;
 
   return (
     <div>
-      {!solicitacao && <p>Nenhum dado encontrado.</p>}
-      {!usuarios && <p>Nenhum dado encontrado.</p>}
-      {loading && <Loading />}
-      {error && <p style={{ color: "red" }}>Erro: {error}</p>}
-      {modalEditAberto ? (
-        <>
+      <TitleClipPages title={`Solicitação ID: ${solicitacao?.id}`} />
+
+      <div className="nav-tools">
+        <BtnSecundary
+          adicionalClass="btn-svg"
+          onClick={() => navigate(-1)}
+          title="Voltar"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#344054"
+          >
+            {" "}
+            <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />{" "}
+          </svg>
+        </BtnSecundary>
+
+        <BtnPrimary
+          title="Salvar alterações"
+          adicionalClass="success btn-svg"
+          onClick={() => alert("imprimeeeeee")}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#fff"
+          >
+            {" "}
+            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />{" "}
+          </svg>
+        </BtnPrimary>
+
+        <SelectStatus
+          name="status"
+          value={solicitacao?.status}
+          onChange={(evento) => {
+            lidandoComAlteracoes(evento);
+          }}
+        >
+          <option value="em_aberto">Em aberto</option>
+          <option value="agendada">Agendada</option>
+          <option value="concluida">Concluída</option>
+          <option value="indeferida">Infererida</option>
+        </SelectStatus>
+
+        {mostrarModalEdit && (
           <Modal
             type="warning"
             title="Editar solicitação"
-            description={`Deseja salvar suas alterações na solicitação XXX`}
-            onCancel={() => {
-              setModalEditAberto(false);
-            }}
+            description="Você solicitou editar os dados essa solicitação. Você tem certeza?"
             onConfirm={() => {
-              alert("Editado.");
+              alert("Delete");
+              setAbrirModalEdit(false);
               navigate(-1);
             }}
-          />
-        </>
-      ) : (
-        ""
-      )}
-
-      <TitleClipPages title={`Solicitação ID: ${solicitacao.id}`} />
-
-      <ButtonSecundary
-        adicionalClass="btn-svg"
-        onClick={() => {
-          if (isDirty) {
-            const confirmLeave = window.confirm(
-              "Você fez alterações que não foram salvas. Deseja sair mesmo assim?"
-            );
-            if (!confirmLeave) return;
-          }
-          navigate(-1);
-        }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#344054"
-        >
-          <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
-        </svg>
-      </ButtonSecundary>
-
-      <h2>Editar Solicitação</h2>
-
-      <form
-        onSubmit={(evento) => {
-          evento.preventDefault();
-          setModalEditAberto(true);
-        }}
-      >
-        <SelectStatus
-          label="Status do condomínio"
-          name="status"
-          value={solicitacao.status}
-          onChange={handleChange}
-        />
-
-        <SelectCustom
-          label="Tipo da solicitacao"
-          name="responsavel_id"
-          options={usuarios.data}
-          value={solicitacao.responsavel_id}
-          onChange={handleChange}
-        />
-        {validationErrors.responsavel_id && (
-          <Erro
-            mensagem={validationErrors.responsavel_id[0]}
-            onClose={() =>
-              setValidationErrors((prev) => ({ ...prev, responsavel_id: null }))
-            }
+            onCancel={() => setAbrirModalEdit(false)}
           />
         )}
+      </div>
 
+      <div>
         <InputText
-          label="Latitude"
+          label="Anotações da solicitação"
           type="text"
-          name="nome"
-          placeholder="Latitude..."
-          value={solicitacao.nome}
-          onChange={handleChange}
+          name="anotacoes"
+          value={solicitacao?.anotacoes || ""}
+          onChange={(evento) => {
+            lidandoComAlteracoes(evento);
+          }}
+          placeholder="Adicione as anotações aqui..."
+          required="true"
         />
-        {validationErrors.nome && (
-          <Erro
-            mensagem={validationErrors.nome[0]}
-            onClose={() =>
-              setValidationErrors((prev) => ({ ...prev, nome: null }))
-            }
-          />
-        )}
 
-        <InputText
-          label="Longitude"
-          type="text"
-          name="nome"
-          placeholder="Latitude..."
-          value={solicitacao.nome}
-          onChange={handleChange}
-        />
-        {validationErrors.nome && (
-          <Erro
-            mensagem={validationErrors.nome[0]}
-            onClose={() =>
-              setValidationErrors((prev) => ({ ...prev, nome: null }))
-            }
-          />
-        )}
+        <div className="box-info">
+          <span className="font-size-p">Data da solicitação</span>
+          <p className="font-size-m">
+            {solicitacao?.created_at &&
+              new Date(solicitacao.created_at).toLocaleDateString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              }) +
+                " às " +
+                new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+          </p>
+        </div>
 
-        <TextArea
-          label="Nota da solicitação"
-          type="text"
-          name="cidade"
-          placeholder="Nota da solicitação..."
-          value={solicitacao.cidade}
-          onChange={handleChange}
-        />
-        {validationErrors.cidade && (
-          <Erro
-            mensagem={validationErrors.cidade[0]}
-            onClose={() =>
-              setValidationErrors((prev) => ({ ...prev, cidade: null }))
-            }
-          />
-        )}
+        <div className="box-info">
+          <span className="font-size-p">Solicitação</span>
+          <p className="font-size-m">{solicitacao?.categoria?.nome}</p>
+        </div>
 
-        <ButtonPrimary type="submit">Salvar</ButtonPrimary>
-      </form>
+        <div className="box-info">
+          <span className="font-size-p">Solicitante</span>
+          <p className="font-size-m">{solicitacao?.cidadao?.nome}</p>
+        </div>
+
+        <div className="box-info">
+          <span className="font-size-p">CPF</span>
+          <p className="font-size-m">{solicitacao?.cidadao?.cpf}</p>
+        </div>
+
+        <div className="box-info">
+          <span className="font-size-p">Email</span>
+          <p className="font-size-m">{solicitacao?.cidadao?.email}</p>
+        </div>
+
+        <div className="box-info">
+          <span className="font-size-p">Celular</span>
+          <p className="font-size-m">{solicitacao?.cidadao?.telefone}</p>
+        </div>
+
+        <div className="box-info">
+          <span className="font-size-p">Descrição da solicitação</span>
+          <p className="font-size-m">{solicitacao?.descricao}</p>
+        </div>
+
+        <div className="box-info">
+          <span className="font-size-p">Geolocalização</span>
+        </div>
+
+        <div className="box-geolocalizacao">
+          <div className="box-info">
+            <span className="font-size-p">Latitude</span>
+            <p className="font-size-m">{solicitacao?.latitude}</p>
+          </div>
+          <div className="box-info">
+            <span className="font-size-p">Longitude</span>
+            <p className="font-size-m">{solicitacao?.longitude}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

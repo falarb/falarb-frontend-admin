@@ -1,6 +1,6 @@
 import "./styles.css";
 
-export default function SelectStatus({ value, name, onChange }) {
+export default function SelectStatus({ value, name, children ,onChange }) {
   return (
     <div className="select-status-wrapper">
       <select
@@ -10,8 +10,7 @@ export default function SelectStatus({ value, name, onChange }) {
         onChange={onChange}
         className={`select-status ${value === "ativo" ? "ativo" : "inativo"}`}
       >
-        <option value="ativo">Ativo</option>
-        <option value="inativo">Inativo</option>
+        {children}
       </select>
       <div className={`tag-${value}`}></div>
     </div>

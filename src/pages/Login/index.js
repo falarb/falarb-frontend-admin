@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import Modal from "../../components/Modal";
 import Loading from "../../components/Loading";
 import BtnPrimary from "../../components/Btn/BtnPrimary";
@@ -9,7 +10,7 @@ export default function Login() {
   const [erros, setErro] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [carregando, setCarregando] = useState(false);
-  const [administrador, setAdministador] = useState([]);
+  const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -48,11 +49,8 @@ export default function Login() {
         setMostrarModal(true);
         throw new Error(dados.message || "Erro ao logar");
       }
-
-      console.log(dados);
-      setAdministador(dados.user);
-      localStorage.setItem("tokenAdminSolicitaAi", dados.token);
-      navigate("/administracao");
+      login(dados.token);
+      navigate("/administracao", { replace: true });
     } catch (erro) {
       console.error("Erro do servidor:", erro);
       setErro(erro.message || "Erro ao logar");

@@ -9,20 +9,20 @@ export default function MiniDashboardUser({
   return (
     <>
       <div className="mini_dashboard_user">
-        <span class="title">Número de solicitações</span>
+        <span className="title">Número de solicitações</span>
         <div className="solicitacoes-infos">
           <div className="total">{total}</div>
           <div className="por_status">
             <div>
-              <div class="tag-dashboard-user tag-dashboard-user-concluidas"></div>
+              <div className="tag-dashboard-user tag-dashboard-user-concluidas"></div>
               <span>{concluidas} concluidas</span>
             </div>
             <div>
-              <div class="tag-dashboard-user tag-dashboard-user-agendadas"></div>
+              <div className="tag-dashboard-user tag-dashboard-user-agendadas"></div>
               <span>{agendadas} agendadas</span>
             </div>
             <div>
-              <div class="tag-dashboard-user tag-dashboard-user-em-aberto"></div>
+              <div className="tag-dashboard-user tag-dashboard-user-em-aberto"></div>
               <span>{em_aberto} em aberto</span>
             </div>
           </div>

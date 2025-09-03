@@ -1,11 +1,19 @@
 import * as React from "react";
+
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { status, valueFormatterStatus } from "./status";
 import { category, valueFormatterCategory } from "./category";
-import "./PieCharts.css";
 import { KeyboardArrowRight } from "@mui/icons-material";
 
-export default function PieCharts() {
+import "./PieCharts.css";
+
+export default function PieCharts({
+  totalSolicitacoes,
+  totalConcluidas,
+  totalAgendadas,
+  totalEmAberto,
+  totalIndeferidas,
+}) {
   return (
     <div className="container-pies">
       <div className="pie">
