@@ -1,69 +1,76 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
+import api from "../../../utils/api";
+import html2canvas from "html2canvas";
+
 import Modal from "../../../components/Modal";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Erro from "../../../components/Message/Erro";
 import Loading from "../../../components/Loading";
 import TitleClipPages from "../../../components/TitleClipPages";
-import SelectStatus from "../../../components/Select/SelectStatus";
-import "./styles.css";
 import MiniDashboardUser from "../../../components/MiniDashboardUser";
 
+import "./styles.css";
+
 export default function ViewUser() {
-  const [usuario, setUsuario] = useState(null);
+  const [cidadao, setCidadao] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
   const [modalDeleteAberto, setModalDeleteAberto] = useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
-  const tokenAdminSolicitaAi = localStorage.getItem("tokenAdminSolicitaAi");
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
-      setLoading(true);
+    const listarCidadao = async () => {
       setError(null);
+      setLoading(true);
 
       try {
-        const resposta = await fetch(
-          `http://127.0.0.1:8000/api/cidadaos/${id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${tokenAdminSolicitaAi}`,
-            },
-          }
-        );
+        const resposta = await api.get(`/cidadaos/${id}`);
 
-        if (!resposta.ok) {
-          setError(`Erro HTTP: ${resposta.status}`);
+        if (resposta.status !== 200) {
+          throw new Error(`Erro HTTP ${resposta.status}`);
         }
-
-        const data = await resposta.json();
-        setUsuario(data);
-      } catch (error) {
-        setError(error.mensage);
+        const dados = await resposta;
+        setCidadao(dados?.data || []);
+      } catch (err) {
+        setError(err.message || "Erro desconhecido ao buscar cidadão");
+        setCidadao([]);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchUsuarios();
-    }
+    listarCidadao();
   }, [id]);
 
-  if (!usuario) return <p>Nenhum dado encontrado.</p>;
+  const baixarComprovante = async () => {
+    const element = document.getElementById("container-info-user");
+    if (!element) return;
 
-  console.log(usuario);
+    const canvas = await html2canvas(element);
+    const dataUrl = canvas.toDataURL("image/png");
+
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "cidadao.png";
+    link.click();
+  };
+  // loading
+  if (loading) return <Loading />;
+
+  // erro
+  if (error) return <Erro mensagem={error + error?.mensagem} />;
+
+  // nenhum dado
+  if (!cidadao) return <p>Nenhum dado encontrado.</p>;
 
   return (
     <div>
-      {loading && <Loading />}
-      {error && <Erro mensagem={error + error.mensagem} />}
-
-      <TitleClipPages title={`Usuário CPF ${usuario.cpf}`} />
+      <TitleClipPages title={`Usuário CPF ${cidadao?.cpf}`} />
 
       <div className="nav-tools">
         <BtnSecundary
@@ -86,7 +93,7 @@ export default function ViewUser() {
         <BtnPrimary
           adicionalClass="btn-svg"
           onClick={() => {
-            alert("imprime");
+            baixarComprovante();
           }}
         >
           <svg
@@ -101,9 +108,26 @@ export default function ViewUser() {
         </BtnPrimary>
 
         <BtnPrimary
+          adicionalClass="roxo btn-svg"
+          onClick={() => {
+            alert("retorna lista manutencao");
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#fff"
+          >
+            <path d="M280-600v-80h560v80H280Zm0 160v-80h560v80H280Zm0 160v-80h560v80H280ZM160-600q-17 0-28.5-11.5T120-640q0-17 11.5-28.5T160-680q17 0 28.5 11.5T200-640q0 17-11.5 28.5T160-600Zm0 160q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520q17 0 28.5 11.5T200-480q0 17-11.5 28.5T160-440Zm0 160q-17 0-28.5-11.5T120-320q0-17 11.5-28.5T160-360q17 0 28.5 11.5T200-320q0 17-11.5 28.5T160-280Z" />
+          </svg>
+        </BtnPrimary>
+
+        <BtnPrimary
           adicionalClass="warning btn-svg"
           onClick={() => {
-            navigate(`/administracao/usuario/editar/${usuario.id}`);
+            navigate(`/administracao/usuario/editar/${cidadao.id}`);
           }}
         >
           <svg
@@ -134,25 +158,6 @@ export default function ViewUser() {
           </svg>
         </BtnPrimary>
 
-        <BtnPrimary
-          adicionalClass="list btn-svg"
-          onClick={() => {
-            alert("retorna lista manutencao");
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#fff"
-          >
-            <path d="M280-600v-80h560v80H280Zm0 160v-80h560v80H280Zm0 160v-80h560v80H280ZM160-600q-17 0-28.5-11.5T120-640q0-17 11.5-28.5T160-680q17 0 28.5 11.5T200-640q0 17-11.5 28.5T160-600Zm0 160q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520q17 0 28.5 11.5T200-480q0 17-11.5 28.5T160-440Zm0 160q-17 0-28.5-11.5T120-320q0-17 11.5-28.5T160-360q17 0 28.5 11.5T200-320q0 17-11.5 28.5T160-280Z" />
-          </svg>
-        </BtnPrimary>
-
-        <SelectStatus value="ativo"></SelectStatus>
-
         <div className="container-mini-dashboard-user">
           <MiniDashboardUser
             total="23"
@@ -180,22 +185,25 @@ export default function ViewUser() {
         )}
       </div>
 
-      <div className="container-info-user">
-        <h2>{usuario?.nome}</h2>
+      <div className="container-info-user" id="container-info-user">
+        <div className="box-info">
+          <label className="font-size-p">Nome</label>
+          <p className="font-size-m">{cidadao?.nome}</p>
+        </div>
 
         <div className="box-info">
           <label className="font-size-p">CPF</label>
-          <p className="font-size-m">{usuario?.cpf}</p>
+          <p className="font-size-m">{cidadao?.cpf}</p>
         </div>
 
         <div className="box-info">
           <label className="font-size-p">Email</label>
-          <p className="font-size-m">{usuario?.email}</p>
+          <p className="font-size-m">{cidadao?.email}</p>
         </div>
 
         <div className="box-info">
           <label className="font-size-p">Telefone</label>
-          <p className="font-size-m">{usuario?.cpf}</p>
+          <p className="font-size-m">{cidadao?.cpf}</p>
         </div>
       </div>
     </div>

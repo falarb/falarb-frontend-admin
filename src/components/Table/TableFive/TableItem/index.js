@@ -25,12 +25,6 @@ export default function TableItem({
   return (
     <div className={`table-item ${height}`}>
       <div className="table-item-id">ID #{id}</div>
-      <div className={tipo}>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-      <div className={`table-item-status ${status}`} to="/"></div>
       <div className="table-item-column">
         <Link to={link_view}>{truncate(col1, 60)}</Link>
       </div>
@@ -48,7 +42,7 @@ export default function TableItem({
       </div>
 
       <div
-        className={`table-item-column${classNameCol5} status-${classNameCol5}`}
+        className={`table-item-column${classNameCol5} status status-${classNameCol5}`}
       >
         <span>{truncate(col5, 60)}</span>
       </div>

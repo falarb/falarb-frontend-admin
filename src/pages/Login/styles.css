@@ -4,6 +4,7 @@
     width: 100%;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .container_form_login{
@@ -13,21 +14,39 @@
     width: 100%;
 }
 
-.container_header_form_login{
-
-}
-
-.container_input_form_login{
+.container_input_email,
+.container_input_password{
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    margin: 0 0 20px 0;
+    padding: 0;
     width: 100%;
+    gap: 5px;
+    text-align: left;
+    position: relative;
 }
 
-.container_input_form_login input{
-    width: 100%;
+.container_input_email input,
+.container_input_password input{
+    height: 52px;
+    background-color: #fff;
+    border-radius: 20px;
+    border: 2px solid #d9d9d9;
+    padding: 0 10px;
+    font-size: 16px;
 }
 
-.container_esqueci_senha{
-    
+.container_input_password button{
+    position: absolute;
+    right: 10px;
+    top: 23px;
+    max-width: max-content;
+    background: none;
+    border: none;   
+    cursor: pointer;
+}
+
+.container_main_login button{
+    width: 100%;
+    margin-top: 20px;
 }

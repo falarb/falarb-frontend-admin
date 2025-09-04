@@ -1,6 +1,8 @@
-import "./styles.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
+import api from "../../../utils/api";
+
 import Loading from "../../../components/Loading";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
@@ -8,6 +10,9 @@ import Modal from "../../../components/Modal";
 import TitleClipPages from "../../../components/TitleClipPages";
 import SelectStatus from "../../../components/Select/SelectStatus";
 import MiniDashboardUser from "../../../components/MiniDashboardUser";
+import Erro from "../../../components/Message/Erro";
+
+import "./styles.css";
 
 export default function VisualizarComunidade() {
   const { id } = useParams();
@@ -19,59 +24,51 @@ export default function VisualizarComunidade() {
   const [mostrarModalDelete, setAbrirModalDelete] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const listarComunidade = async () => {
       setLoading(true);
       setError(null);
+
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/tipos-manutencao/${id}`
+        const resposta = await api.get(
+          `/comunidades?id=${id}`
         );
 
-        if (!response.ok) {
-          throw new Error(`Erro HTTP ${response.status}`);
+        if (resposta.status !== 200) {
+          throw new Error(`Erro HTTP ${resposta.status}`);
         }
-        const data = await response.json();
-        setComunidade(data);
+        const dados = await resposta;
+
+        setComunidade(dados?.data?.dados || []);
       } catch (err) {
-        setError(err.message || "Erro desconhecido");
+        setError(err.message || "Erro desconhecido ao buscar comunidade");
+        setComunidade([]);
       } finally {
         setLoading(false);
       }
     };
+    listarComunidade();
+  }, [id]);
 
-    if (id) {
-      fetchData();
-    }
-  }, [id]); // id como dependência
-
-  const fetchDelete = async () => {
-    setError(null);
-    setLoading(true);
-
+  const inativarComunidade = async () => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/condominios/${id}`,
+      setLoading(true);
+      setError(null);
+      const resposta = await api.put(
+        `/comunidade/${id}`,
         {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-          },
+          status: "inativo",
         }
       );
-
-      if (!response.ok) {
-        setError(response.status);
-      }
-
-      alert("Excluido com sucesso.");
-      navigate("/condominios");
-    } catch (error) {
-      setError(error.mensagem);
+    } catch (erro) {
+      setError("Erro ao inativar a comunidade.");
+      throw new Error(`Erro: ${erro}`);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (error) return console.log({ error });
-  if (!comunidade) return console.log("Nenhum dado encontrado");
+  if (error) return <Erro mensagem={error} />;
+  if (!comunidade) return <>Nenhum dado encontrado</>;
 
   return (
     <div>

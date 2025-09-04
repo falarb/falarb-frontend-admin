@@ -18,34 +18,52 @@ import InputCustomMask from "../../../components/Input/InputCustomMask";
 
 import "./styles.css";
 
-export default function AddUser() {
-  const [cidadao, setCidadao] = useState({
-    nome: "",
-    cpf: "",
-    email: "",
-    telefone: "",
-    status: "ativo",
-  });
-
+export default function EditUser() {
+  const [cidadao, setCidadao] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
   const [modalDeleteAberto, setModalDeleteAberto] = useState(false);
 
+  const { id } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const listarCidadao = async () => {
+      setError(null);
+      setLoading(true);
+
+      try {
+        const resposta = await api.get(`/cidadaos/${id}`);
+
+        if (resposta.status !== 200) {
+          throw new Error(`Erro HTTP ${resposta.status}`);
+        }
+        const dados = await resposta;
+        setCidadao(dados?.data || []);
+      } catch (err) {
+        setError(err.message || "Erro desconhecido ao buscar cidadão");
+        setCidadao([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    listarCidadao();
+  }, [id]);
 
   const lidandoComAlteracoes = (evento) => {
     const { name, value } = evento.target;
-    setCidadao((prevCidadao) => ({
-      ...prevCidadao,
+    setCidadao((prevSolicitacao) => ({
+      ...prevSolicitacao,
       [name]: value,
     }));
   };
 
-  const cadastrarCidadao = async () => {
+  const salvarCidadao = async () => {
     try {
       setLoading(true);
       setError(null);
-      const resposta = await api.post(`/cidadaos`, {
+      const resposta = await api.put(`/cidadaos/${id}`, {
         cidadao
       });
 
@@ -54,12 +72,18 @@ export default function AddUser() {
       }
       navigate(-1);
     } catch (erro) {
-      setError("Erro ao cadastrar o cidadão.");
+      setError("Erro ao editar a cidadao.");
       console.error(erro);
     } finally {
       setLoading(false);
     }
   };
+
+  // loading
+  if (loading) return <Loading />;
+
+  // erro
+  if (error) return <div>Erro: {error}</div>;
 
   // nenhum dado
   if (!cidadao) return <p>Nenhum dado encontrado.</p>;
@@ -69,7 +93,7 @@ export default function AddUser() {
       {loading && <Loading />}
       {error && <Erro mensagem={error + error?.mensagem} />}
 
-      <TitleClipPages title="Cadastro de usuário" />
+      <TitleClipPages title={`Usuário CPF ${cidadao?.cpf}`} />
 
       <div className="nav-tools">
         <BtnSecundary
@@ -92,7 +116,7 @@ export default function AddUser() {
         <BtnPrimary
           adicionalClass="success btn-svg"
           onClick={() => {
-            cadastrarCidadao();
+            salvarCidadao();
           }}
         >
           <svg
@@ -107,7 +131,6 @@ export default function AddUser() {
         </BtnPrimary>
 
         <SelectStatus
-          name="status"
           value={cidadao?.status}
           onChange={(evento) => {
             lidandoComAlteracoes(evento);
@@ -139,7 +162,6 @@ export default function AddUser() {
         <InputText
           label="Nome"
           name="nome"
-          placeholder={"Nome do cidadão"}
           value={cidadao?.nome}
           onChange={(evento) => {
             lidandoComAlteracoes(evento);
@@ -149,7 +171,6 @@ export default function AddUser() {
         <InputCPF
           label="CPF"
           name="cpf"
-          placeholder={"000.000.000-00"}
           value={cidadao?.cpf}
           onChange={(evento) => {
             lidandoComAlteracoes(evento);
@@ -159,7 +180,6 @@ export default function AddUser() {
         <InputEmail
           label="Email"
           name="email"
-          placeholder={`email@email.com`}
           value={cidadao?.email}
           onChange={(evento) => {
             lidandoComAlteracoes(evento);
@@ -169,7 +189,7 @@ export default function AddUser() {
         <InputCustomMask
           label="Celular"
           name="telefone"
-          placeholder={`(99) 99999-9999`}
+          placeholder={`${cidadao?.telefone}`}
           value={cidadao?.telefone}
           onChange={(evento) => {
             lidandoComAlteracoes(evento);

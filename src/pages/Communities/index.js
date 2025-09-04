@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import api from "../../utils/api";
+
 import Table from "../../components/Table/TableFive";
 import TableHeader from "../../components/Table/TableFive/TableHeader";
 import TableItem from "../../components/Table/TableFive/TableItem";
@@ -19,14 +22,15 @@ export default function Comunidades() {
   const [comunidadeSelecionada, setComunidadeSelecionada] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [sort_by, setOrderBy] = useState("");
-  const [sort_order, setSortOrder] = useState();
 
-  const tokenAdminSolicitaAi = localStorage.getItem("tokenAdminSolicitaAi");
+  //filtros e paginação
+  const [totalPages, setTotalPages] = useState(null);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,62 +44,52 @@ export default function Comunidades() {
   }, [search]);
 
   useEffect(() => {
-    const fetchComunidades = async () => {
-      setError(null);
+    const listarSolicitacoes = async () => {
       setLoading(true);
+      setError(null);
 
       try {
-        const resposta = await fetch("http://127.0.0.1:8000/api/comunidades", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenAdminSolicitaAi}`,
-          },
-        });
+        const resposta = await api.get(
+          `/comunidades?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}`
+        );
 
-        if (!resposta.ok) {
-          const errorData = await resposta.json();
-          console.error("Erro do servidor:", errorData);
-          throw new Error(errorData.message || "Erro ao cadastrar");
+        if (resposta.status !== 200) {
+          throw new Error(`Erro HTTP ${resposta.status}`);
         }
+        const dados = await resposta;
+        setTotalPages(dados?.data?.ultima_pagina || 1);
 
-        const data = await resposta.json();
-        console.log(data);
-        setComunidades(data?.dados);
-        setTotalPages(data?.ultima_pagina);
-        console.log(data);
-      } catch (error) {
-        console.error("Erro ao buscar tipos de manutenção:", error);
-        setError(error);
+        setComunidades(dados?.data?.dados || []);
+      } catch (err) {
+        setError(err.message || "Erro desconhecido ao buscar comunidades");
+        setComunidades([]);
       } finally {
         setLoading(false);
       }
     };
+    listarSolicitacoes();
+  }, [
+    page,
+    debouncedSearch,
+    sortBy,
+    sortOrder
+  ]);
 
-    fetchComunidades();
-  }, [page, debouncedSearch, sort_order, sort_by]);
-
-  const handleDeleteComunidade = async () => {
+  const inativarComunidade = async () => {
     try {
+      setLoading(true);
       setError(null);
-
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/usuarios/${comunidadeSelecionada.id}`,
+      const resposta = await api.put(
+        `/comunidade/${comunidadeSelecionada.id}`,
         {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-          },
+          status: "inativo",
         }
       );
-      if (!response.ok) {
-        setError(response.status);
-      }
-
-      alert("Excluido com sucesso.");
-      window.location.reload();
-    } catch (error) {
-      setError(error.mensagem);
+    } catch (erro) {
+      setError("Erro ao inativar a solicitação.");
+      throw new Error(`Erro: ${erro}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,9 +101,9 @@ export default function Comunidades() {
         <Modal
           type="danger"
           title="Excluir comunidade"
-          description={`Você solicitou excluir a seguinte comunidade: ${comunidadeSelecionada.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
+          description={`Você solicitou excluir a seguinte comunidade: ${comunidadeSelecionada?.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
           onConfirm={() => {
-            //handleDeleteComunidade()
+
             alert("delete");
             setAbrirModalDelete(false);
             window.location.reload();
@@ -164,8 +158,8 @@ export default function Comunidades() {
           col1="Nome"
           sort1={true}
           onClickSort1={() => {
-            setOrderBy("nome");
-            setSortOrder(sort_order === "asc" ? "desc" : "asc");
+            setSortBy("nome");
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
           }}
           col2="Total de pedidos"
           col3="Nº de concluídos"

@@ -7,7 +7,7 @@
 
 .select-status {
     height: 40px;
-    width: 150px;
+    width: 190px;
 
     font-size: 16px;
     font-family: Inter;
@@ -26,19 +26,29 @@
 }
 
 /* Status "ativo" */
-.select-status.ativo {
+.select-status-concluida,
+.select-status-ativo {
     border-color: #28a745;
     background-color: #e6ffed;
-    color: #155724;
+}
+
+.select-status-inativo {
+    border-color: #a72828;
+    background-color: #ffe6e6;
 }
 
 /* Status "inativo" */
-.select-status.inativo {
-    border-color: #dc3545;
-    background-color: #ffe6e6;
-    color: #721c24;
+.select-status-analise {
+    border-color: #dcb035;
+    background-color: #fdffe6;
 }
 
+.select-status-agendada {
+    border-color: #3546dc;
+    background-color: #e6eaff;
+}
+
+.tag-concluida,
 .tag-ativo{
     position: absolute;
     width: 20px;
@@ -55,7 +65,40 @@
     width: 20px;
     height: 8px;
     border-radius: 10px;
-    background-color: #dc3545;
+    background-color: #a72828;
+    z-index: 9999;
+    top: 16px;
+    right: 30px;
+}
+
+.tag-analise{
+    position: absolute;
+    width: 20px;
+    height: 8px;
+    border-radius: 10px;
+    background-color: #dcb035;
+    z-index: 9999;
+    top: 16px;
+    right: 30px;
+}
+
+.tag-agendada{
+    position: absolute;
+    width: 20px;
+    height: 8px;
+    border-radius: 10px;
+    background-color: #3546dc;
+    z-index: 9999;
+    top: 16px;
+    right: 30px;
+}
+
+.tag-indeferida{
+    position: absolute;
+    width: 20px;
+    height: 8px;
+    border-radius: 10px;
+    background-color: #a7a7a7;
     z-index: 9999;
     top: 16px;
     right: 30px;

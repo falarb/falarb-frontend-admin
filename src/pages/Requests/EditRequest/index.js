@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../../../utils/http";
+
+import api from "../../../utils/api";
 
 import Loading from "../../../components/Loading";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
@@ -8,10 +9,9 @@ import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Modal from "../../../components/Modal";
 import TitleClipPages from "../../../components/TitleClipPages";
 import SelectStatus from "../../../components/Select/SelectStatus";
+import InputText from "../../../components/Input/InputText";
 
 import "./styles.css";
-import InputText from "../../../components/Input/InputText";
-import { status } from "../../../components/Charts/PieCharts/status";
 
 export default function EditarSolicitacao() {
   const [solicitacao, setSolicitacao] = useState(null);
@@ -69,6 +69,7 @@ export default function EditarSolicitacao() {
       if (resposta.status !== 200) {
         throw new Error(`Erro HTTP ${resposta.status}`);
       }
+      navigate(-1);
     } catch (erro) {
       setError("Erro ao inativar a solicitação.");
       console.error(erro);
@@ -111,7 +112,7 @@ export default function EditarSolicitacao() {
         <BtnPrimary
           title="Salvar alterações"
           adicionalClass="success btn-svg"
-          onClick={() => alert("imprimeeeeee")}
+          onClick={() => salvarSolicitacao()}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +121,6 @@ export default function EditarSolicitacao() {
             width="24px"
             fill="#fff"
           >
-            {" "}
             <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />{" "}
           </svg>
         </BtnPrimary>
@@ -132,7 +132,7 @@ export default function EditarSolicitacao() {
             lidandoComAlteracoes(evento);
           }}
         >
-          <option value="em_aberto">Em aberto</option>
+          <option value="analise">Em análise</option>
           <option value="agendada">Agendada</option>
           <option value="concluida">Concluída</option>
           <option value="indeferida">Infererida</option>

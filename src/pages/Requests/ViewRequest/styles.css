@@ -32,3 +32,8 @@
     display: flex;
     gap: 70px;
 }
+
+#container-comprovante{
+    padding: 0 10px 10px 10px;
+    max-width: max-content;
+}

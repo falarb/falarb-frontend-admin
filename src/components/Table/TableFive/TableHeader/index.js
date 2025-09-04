@@ -91,7 +91,7 @@ export default function TableHeader({
         </svg>
       </div>
 
-      <div className={`table-header-item${col5_status}`}>
+      <div className={`table-header-item-col-5 table-header-item${col5_status}`}>
         <span>{col5}</span>
         <svg
           className={`${sort5} ${activeSort5 === 1 ? "active" : "desactive"}`}

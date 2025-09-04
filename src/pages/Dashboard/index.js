@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import api from "../../utils/http";
+import api from "../../utils/api";
 
 import InicialMetrics from "../../components/Charts/InicialMetrics";
 import PieCharts from "../../components/Charts/PieCharts";

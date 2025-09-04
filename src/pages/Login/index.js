@@ -10,6 +10,8 @@ export default function Login() {
   const [erros, setErro] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [carregando, setCarregando] = useState(false);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+
   const { login } = useAuth();
 
   const navigate = useNavigate();
@@ -117,7 +119,7 @@ export default function Login() {
               enviandoFormulario();
             }}
           >
-            <div className="container_input_form_login">
+            <div className="container_input_email">
               <label>Seu email</label>
               <input
                 type="email"
@@ -127,14 +129,21 @@ export default function Login() {
                 onChange={tratandoMudanca}
               />
             </div>
-            <div className="container_input_form_login">
+            <div className="container_input_password">
               <label>Sua senha</label>
               <input
-                type="password"
+                type={mostrarSenha ? "text" : "password"}
                 name="senha"
                 value={credenciais.senha}
                 onChange={tratandoMudanca}
               />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setMostrarSenha((prev) => !prev)}
+              >
+                {mostrarSenha ? "🙈" : "👁️"}
+              </button>
             </div>
 
             <div className="container_esqueci_senha">

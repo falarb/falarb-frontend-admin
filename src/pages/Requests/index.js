@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import api from "../../utils/http";
+import api from "../../utils/api";
 
 import TableFiveColuns from "../../components/Table/TableFive";
 import TableHeader from "../../components/Table/TableFive/TableHeader";
@@ -21,6 +21,8 @@ import "./styles.css";
 
 export default function Solicitacoes() {
   const [solicitacoes, setSolicitacoes] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [comunidades, setComunidades] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,8 +37,8 @@ export default function Solicitacoes() {
   const [status, setStatus] = useState("");
   const [tipo_pedido, setTipoPedido] = useState("");
   const [comunidade, setComunidade] = useState("");
-  const [sort_by, setOrderBy] = useState("");
-  const [sort_order, setSortOrder] = useState();
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("");
 
   const navigate = useNavigate();
 
@@ -51,37 +53,84 @@ export default function Solicitacoes() {
   }, [search]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const listarSolicitacoes = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const resposta = await api.get(`/solicitacoes`);
+        const resposta = await api.get(
+          `/solicitacoes?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}`
+        );
 
         if (resposta.status !== 200) {
           throw new Error(`Erro HTTP ${resposta.status}`);
         }
-        console.log(resposta);
         const dados = await resposta;
-
+console.log(dados)
         setTotalPages(dados?.data?.ultima_pagina || 1);
 
         setSolicitacoes(dados?.data?.dados || []);
       } catch (err) {
-        setError(err.message || "Erro desconhecido");
+        setError(err.message || "Erro desconhecido ao buscar solicitações");
         setSolicitacoes([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    const listarCategorias = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        //se passar de 10 deve ser configurado o limite
+        const resposta = await api.get(`/categorias`);
+
+        if (resposta.status !== 200) {
+          throw new Error(`Erro HTTP ${resposta.status}`);
+        }
+        const dados = await resposta;
+
+        setCategorias(dados?.data?.dados || []);
+      } catch (err) {
+        setError(err.message || "Erro desconhecido ao buscar categorias");
+        setCategorias([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const listarComunidades = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        //se passar de 10 deve ser configurado o limite
+        const resposta = await api.get(`/comunidades`);
+
+        if (resposta.status !== 200) {
+          throw new Error(`Erro HTTP ${resposta.status}`);
+        }
+        const dados = await resposta;
+
+        setComunidades(dados?.data?.dados || []);
+      } catch (err) {
+        setError(err.message || "Erro desconhecido ao buscar comunidades");
+        setCategorias([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    listarSolicitacoes();
+    listarCategorias();
+    listarComunidades();
   }, [
     page,
     status,
     debouncedSearch,
-    sort_by,
-    sort_order,
+    sortBy,
+    sortOrder,
     tipo_pedido,
     comunidade,
   ]);
@@ -144,7 +193,7 @@ export default function Solicitacoes() {
         </BtnSecundary>
         <BtnPrimary
           onClick={() => {
-            navigate("/");
+            alert("url");
           }}
         >
           Cadastrar
@@ -162,8 +211,10 @@ export default function Solicitacoes() {
           }}
         >
           <option value="">Todos</option>
-          <option value="ativo">Ativo</option>
-          <option value="inativo">Inativo</option>
+          <option value="analise">Em análise</option>
+          <option value="agendada">Agendada</option>
+          <option value="concluida">Concluída</option>
+          <option value="indeferida">Indeferida</option>
         </SelectCustom>
 
         <SelectCustom
@@ -172,7 +223,17 @@ export default function Solicitacoes() {
           onChange={(event) => {
             setTipoPedido(event.target.value);
           }}
-        ></SelectCustom>
+        >
+          {categorias.length > 0 ? (
+            categorias.map((categoria) => (
+              <option key={categoria.id} value={categoria.id}>
+                {categoria.nome}
+              </option>
+            ))
+          ) : (
+            <option value="">Nenhuma categoria encontrada</option>
+          )}
+        </SelectCustom>
 
         <SelectCustom
           label="Comunidade"
@@ -180,7 +241,17 @@ export default function Solicitacoes() {
           onChange={(event) => {
             setComunidade(event.target.value);
           }}
-        ></SelectCustom>
+        >
+          {comunidades.length > 0 ? (
+            comunidades.map((comunidade) => (
+              <option key={comunidade.id} value={comunidade.id}>
+                {comunidade.nome}
+              </option>
+            ))
+          ) : (
+            <option value="">Nenhuma comunidade encontrada</option>
+          )}
+        </SelectCustom>
 
         <InputSearch
           label="Busque por solicitações"
@@ -197,11 +268,11 @@ export default function Solicitacoes() {
           col1="Data de criação"
           sort1={true}
           onClickSort1={() => {
-            setOrderBy("nome");
-            setSortOrder(sort_order === "asc" ? "desc" : "asc");
+            setSortBy("created_at"); // primeiro define a coluna
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc")); // usa o valor anterior corretamente
           }}
           col2="Cidadão"
-          sort2={true}
+          sort2={false}
           col3="Tipo de pedido"
           sort3={false}
           col4="Comunidade"
@@ -226,7 +297,17 @@ export default function Solicitacoes() {
               col2={solicitacao?.cidadao?.nome || "—"}
               col3={solicitacao?.categoria?.nome || "—"}
               col4={solicitacao?.comunidade?.nome || "—"}
-              col5={solicitacao?.status}
+              col5={
+                solicitacao?.status === "analise"
+                  ? "Análise"
+                  : solicitacao?.status === "agendada"
+                  ? "Agendada"
+                  : solicitacao?.status === "concluida"
+                  ? "Concluída"
+                  : solicitacao?.status === "indeferida"
+                  ? "Indeferida"
+                  : "Desconhecido"
+              }
               classNameCol5={solicitacao?.status}
               link_view={`/administracao/solicitacao/${solicitacao?.id}`}
               onClickView={() => {

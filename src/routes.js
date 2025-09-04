@@ -14,6 +14,7 @@ import EditRequest from "./pages/Requests/EditRequest";
 
 import Users from "./pages/Users";
 import ViewUser from "./pages/Users/ViewUser";
+import EditUser from "./pages/Users/EditUser";
 import AddUser from "./pages/Users/AddUser";
 
 import Communities from "./pages/Communities";
@@ -46,6 +47,7 @@ function App() {
 
                 <Route path="usuarios" element={<Users />} />
                 <Route path="usuario/:id" element={<ViewUser />} />
+                <Route path="usuario/editar/:id" element={<EditUser />} />
 
                 <Route path="usuario/cadastrar" element={<AddUser />} />
 

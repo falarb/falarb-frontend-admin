@@ -7,7 +7,9 @@
     margin-top: 20px;
     display: flex;
     flex-direction: column;
+    padding: 0 5px 5px 5px;
     gap: 20px;
+    max-width: max-content;
 }
 
 .container-info-user .info-system {
@@ -21,20 +23,6 @@
     gap: 10px;
     font-size: 15px;
 }
-
-.container-info-user .info-system .id {
-    background-color: #fff;
-    width: max-content;
-    padding: 4px;
-    border-radius: 10px;
-    color: #8f8f8f;
-}
-
-.container-info-user h2 {
-    margin: 0;
-    font-size: 26px;
-}
-
 
 .box-info{
     display: flex;

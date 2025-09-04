@@ -1,6 +1,8 @@
-import "./styles.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import api from "../../utils/api";
+
 import Table from "../../components/Table/TableFour";
 import TableHeader from "../../components/Table/TableFour/TableHeader";
 import TableItem from "../../components/Table/TableFour/TableItem";
@@ -13,24 +15,26 @@ import BtnPrimary from "../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../components/Btn/BtnSecundary";
 import Filtros from "../../components/Filters";
 import InputSearch from "../../components/Input/InputSearch";
-import SelectCustom from "../../components/Select/SelectCustom";
+
+import "./styles.css";
 
 export default function Usuarios() {
-  const [usuarios, setUsuarios] = useState([]);
+  const [cidadaos, setCidadaos] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mostrarModalDelete, setMostrarModalDelete] = useState(false);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState();
-  const [search, setSearch] = useState("");
-  const [sort_by, setSortBy] = useState("");
-  const [sort_order, setSortOrder] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
-  const [comunidade, setComunidade] = useState("");
+
+   //filtros e paginação
+   const [totalPages, setTotalPages] = useState(null);
+   const [page, setPage] = useState(1);
+   const [search, setSearch] = useState("");
+   const [debouncedSearch, setDebouncedSearch] = useState(search);
+   const [sortOrder, setSortOrder] = useState("asc");
+   const [sortBy, setSortBy] = useState("");
 
   const navigate = useNavigate();
-  const tokenAdminSolicitaAi = localStorage.getItem("tokenAdminSolicitaAi");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -43,41 +47,32 @@ export default function Usuarios() {
   }, [search]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const listarCidadaos = async () => {
       setError(null);
       setLoading(true);
 
-      try {
-        const resposta = await fetch("http://127.0.0.1:8000/api/cidadaos", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenAdminSolicitaAi}`,
-          },
-        });
+     try {
+        const resposta = await api.get(
+          `/cidadaos?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}`
+        );
 
-        if (!resposta.ok) {
+        if (resposta.status !== 200) {
           throw new Error(`Erro HTTP ${resposta.status}`);
         }
+        const dados = await resposta;
+        setTotalPages(dados?.data?.ultima_pagina || 1);
 
-        const data = await resposta.json();
-        console.log(data);
-
-        if (data) {
-          setUsuarios(data.dados);
-          setTotalPages(data.ultima_pagina || 1);
-        } else {
-          setError("Formato de resposta inesperado da API");
-        }
-      } catch (error) {
-        setError(error.message || "Erro desconhecido");
+        setCidadaos(dados?.data?.dados || []);
+      } catch (err) {
+        setError(err.message || "Erro desconhecido ao buscar solicitações");
+        setCidadaos([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUsers();
-  }, [page, debouncedSearch, sort_by, sort_order, comunidade]);
+    listarCidadaos();
+  }, [page, debouncedSearch, sortBy, sortOrder]);
 
   const handleDeleteUser = async () => {
     try {
@@ -102,7 +97,6 @@ export default function Usuarios() {
       setError(error.mensagem);
     }
   };
-
   return (
     <>
       {loading && <Loading />}
@@ -128,7 +122,7 @@ export default function Usuarios() {
         <BtnPrimary
           type="button"
           onClick={() => {
-            navigate(`/usuario/cadastrar/`);
+            navigate(`/administracao/usuario/cadastrar/`);
           }}
         >
           Cadastrar
@@ -146,19 +140,6 @@ export default function Usuarios() {
             setSearch(event.target.value);
           }}
         />
-
-        <SelectCustom
-          label="Comunidade"
-          value={comunidade}
-          onChange={(event) => {
-            setComunidade(event.target.value);
-          }}
-        >
-          <option value="">Todos</option>
-          <option value="sindico_condominio">Síndico Condomínio</option>
-          <option value="sindico_bloco">Síndico Bloco</option>
-          <option value="ocupante_ap">Ocupante Ap</option>
-        </SelectCustom>
       </Filtros>
 
       <Table>
@@ -167,41 +148,37 @@ export default function Usuarios() {
           sort1={true}
           onClickSort1={() => {
             setSortBy("nome");
-            setSortOrder(sort_order === "asc" ? "desc" : "asc");
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
           }}
           col2="CPF"
           sort2={false}
           col3="Email"
           sort3={false}
           col4="Último Código"
-          sort4={true}
-          onClickSort4={() => {
-            setSortBy("cpf");
-            setSortOrder(sort_order === "asc" ? "desc" : "asc");
-          }}
+          sort4={false}
         />
 
-        {usuarios.length > 0 ? (
-          usuarios.map((usuario) => (
+        {cidadaos?.length > 0 ? (
+          cidadaos?.map((cidadao) => (
             <TableItem
-              key={usuario?.id}
-              id={usuario?.id}
-              status={usuario?.bloqueado ? "inativo" : "ativo"}
-              col1={usuario?.nome}
-              col2={usuario?.cpf}
-              col3={usuario?.email}
-              col4={usuario?.ultimo_codigo}
-              tipo={usuario?.tipo}
-              link_view={`/administracao/usuario/${usuario?.id}`}
+              key={cidadao?.id}
+              id={cidadao?.id}
+              status={cidadao?.bloqueado ? "inativo" : "ativo"}
+              col1={cidadao?.nome}
+              col2={cidadao?.cpf}
+              col3={cidadao?.email}
+              col4={cidadao?.ultimo_codigo}
+              tipo={cidadao?.tipo}
+              link_view={`/administracao/usuario/${cidadao?.id}`}
               onClickView={() => {
-                navigate(`/administracao/usuario/${usuario?.id}`);
+                navigate(`/administracao/usuario/${cidadao?.id}`);
               }}
               onClickEdit={() => {
-                navigate(`/administracao/usuario/editar/${usuario?.id}`);
+                navigate(`/administracao/usuario/editar/${cidadao?.id}`);
               }}
               onClickDelete={() => {
                 setMostrarModalDelete(true);
-                setUsuarioSelecionado(usuario);
+                setUsuarioSelecionado(cidadao);
               }}
             />
           ))
@@ -215,7 +192,7 @@ export default function Usuarios() {
           <Modal
             type="danger"
             title="Excluir usuário"
-            description={`Você solicitou excluir o seguinte usuário: ${usuarioSelecionado.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
+            description={`Você solicitou excluir o seguinte usuário: ${usuarioSelecionado?.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
             onConfirm={() => {
               //handleDeleteUser()
               alert("Delete");

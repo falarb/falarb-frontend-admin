@@ -8,7 +8,7 @@ export default function SelectStatus({ value, name, children ,onChange }) {
         name={name}
         value={value}
         onChange={onChange}
-        className={`select-status ${value === "ativo" ? "ativo" : "inativo"}`}
+        className={`select-status select-status-${value}`}
       >
         {children}
       </select>

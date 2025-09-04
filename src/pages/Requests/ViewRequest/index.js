@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../../../utils/http";
+
+import api from "../../../utils/api";
+import html2canvas from "html2canvas";
 
 import Loading from "../../../components/Loading";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Modal from "../../../components/Modal";
 import TitleClipPages from "../../../components/TitleClipPages";
-import SelectStatus from "../../../components/Select/SelectStatus";
 
 import "./styles.css";
 
@@ -23,7 +24,7 @@ export default function VisualizarSolicitacao() {
   useEffect(() => {
     if (!id) return;
 
-    const fetchData = async () => {
+    const listarSolicitacao = async () => {
       setLoading(true);
       setError(null);
 
@@ -45,7 +46,7 @@ export default function VisualizarSolicitacao() {
       }
     };
 
-    fetchData();
+    listarSolicitacao();
   }, [id]);
 
   const inativarSolicitacao = async () => {
@@ -59,7 +60,7 @@ export default function VisualizarSolicitacao() {
       if (resposta.status !== 200) {
         throw new Error(`Erro HTTP ${resposta.status}`);
       }
-
+      navigate("/administracao/solicitacoes");
       alert("Solicitação inativada com sucesso!");
     } catch (erro) {
       setError("Erro ao inativar a solicitação.");
@@ -67,6 +68,19 @@ export default function VisualizarSolicitacao() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const baixarComprovante = async () => {
+    const element = document.getElementById("container-comprovante");
+    if (!element) return;
+
+    const canvas = await html2canvas(element);
+    const dataUrl = canvas.toDataURL("image/png");
+
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "comprovante.png";
+    link.click();
   };
 
   // loading
@@ -103,7 +117,7 @@ export default function VisualizarSolicitacao() {
         <BtnPrimary
           title="Fazer download do comprovante da solicitação"
           adicionalClass="btn-svg"
-          onClick={() => alert("imprimeeeeee")}
+          onClick={() => baixarComprovante()}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -188,67 +202,79 @@ export default function VisualizarSolicitacao() {
         )}
       </div>
 
-      <div>
-        <div className="box-info">
-          <span className="font-size-p">Data da solicitação</span>
-          <p className="font-size-m">
-            {solicitacao?.created_at &&
-              new Date(solicitacao.created_at).toLocaleDateString("pt-BR", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              }) +
-                " às " +
-                new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}
-          </p>
-        </div>
-
-        <div className="box-info">
-          <span className="font-size-p">Status atual</span>
-          <p className="font-size-m">{solicitacao?.status}</p>
-        </div>
-
-        <div className="box-info">
-          <span className="font-size-p">Solicitante</span>
-          <p className="font-size-m">{solicitacao?.cidadao?.nome}</p>
-        </div>
-
-        <div className="box-info">
-          <span className="font-size-p">CPF</span>
-          <p className="font-size-m">{solicitacao?.cidadao?.cpf}</p>
-        </div>
-
-        <div className="box-info">
-          <span className="font-size-p">Email</span>
-          <p className="font-size-m">{solicitacao?.cidadao?.email}</p>
-        </div>
-
-        <div className="box-info">
-          <span className="font-size-p">Celular</span>
-          <p className="font-size-m">{solicitacao?.cidadao?.telefone}</p>
-        </div>
-
-        <div className="box-info">
-          <span className="font-size-p">Descrição da solicitação</span>
-          <p className="font-size-m">{solicitacao?.descricao}</p>
-        </div>
-
-        <div className="box-info">
-          <span className="font-size-p">Geolocalização</span>
-        </div>
-
-        <div className="box-geolocalizacao">
+      <div id="container-comprovante">
+        <div>
           <div className="box-info">
-            <span className="font-size-p">Latitude</span>
-            <p className="font-size-m">{solicitacao?.latitude}</p>
+            <span className="font-size-p">Data da solicitação</span>
+            <p className="font-size-m">
+              {solicitacao?.created_at &&
+                new Date(solicitacao.created_at).toLocaleDateString("pt-BR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                }) +
+                  " às " +
+                  new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })}
+            </p>
           </div>
+
           <div className="box-info">
-            <span className="font-size-p">Longitude</span>
-            <p className="font-size-m">{solicitacao?.longitude}</p>
+            <span className="font-size-p">Status atual</span>
+            <p className="font-size-m">
+              {solicitacao?.status === "analise"
+                ? "Em análise"
+                : solicitacao?.status === "agendada"
+                ? "Agendada"
+                : solicitacao?.status === "concluida"
+                ? "Concluída"
+                : solicitacao?.status === "indeferida"
+                ? "Indeferida"
+                : "Status desconhecido"}
+            </p>
+          </div>
+
+          <div className="box-info">
+            <span className="font-size-p">Solicitante</span>
+            <p className="font-size-m">{solicitacao?.cidadao?.nome}</p>
+          </div>
+
+          <div className="box-info">
+            <span className="font-size-p">CPF</span>
+            <p className="font-size-m">{solicitacao?.cidadao?.cpf}</p>
+          </div>
+
+          <div className="box-info">
+            <span className="font-size-p">Email</span>
+            <p className="font-size-m">{solicitacao?.cidadao?.email}</p>
+          </div>
+
+          <div className="box-info">
+            <span className="font-size-p">Celular</span>
+            <p className="font-size-m">{solicitacao?.cidadao?.telefone}</p>
+          </div>
+
+          <div className="box-info">
+            <span className="font-size-p">Descrição da solicitação</span>
+            <p className="font-size-m">{solicitacao?.descricao}</p>
+          </div>
+
+          <div className="box-info">
+            <span className="font-size-p">Geolocalização</span>
+          </div>
+
+          <div className="box-geolocalizacao">
+            <div className="box-info">
+              <span className="font-size-p">Latitude</span>
+              <p className="font-size-m">{solicitacao?.latitude}</p>
+            </div>
+            <div className="box-info">
+              <span className="font-size-p">Longitude</span>
+              <p className="font-size-m">{solicitacao?.longitude}</p>
+            </div>
           </div>
         </div>
       </div>
