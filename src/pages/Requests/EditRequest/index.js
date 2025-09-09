@@ -10,6 +10,7 @@ import Modal from "../../../components/Modal";
 import TitleClipPages from "../../../components/TitleClipPages";
 import SelectStatus from "../../../components/Select/SelectStatus";
 import InputText from "../../../components/Input/InputText";
+import InputDate from "../../../components/Input/InputDate";
 
 import "./styles.css";
 
@@ -18,6 +19,11 @@ export default function EditarSolicitacao() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mostrarModalEdit, setAbrirModalEdit] = useState(false);
+  const [mostrarModalIndeferida, setAbrirModalIndeferida] = useState(false);
+  const [mostrarModalAgendamento, setAbrirModalAgendamento] = useState(false);
+  const [mostrarModalConclusao, setAbrirModalConclusao] = useState(false);
+  const [mostrarModalAlterado, setMostrarModalAlterado] = useState(false);
+  const [alterado, setAlterado] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -50,6 +56,7 @@ export default function EditarSolicitacao() {
   }, [id]);
 
   const lidandoComAlteracoes = (evento) => {
+    setAlterado(true);
     const { name, value } = evento.target;
     setSolicitacao((prevSolicitacao) => ({
       ...prevSolicitacao,
@@ -58,23 +65,36 @@ export default function EditarSolicitacao() {
   };
 
   const salvarSolicitacao = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const resposta = await api.put(`/solicitacoes/${id}`, {
-        status: solicitacao.status,
-        anotacoes: solicitacao.anotacoes,
-      });
+    if (!solicitacao) return;
+    if (!id) return;
+    if (solicitacao.status === "analise") {
+      solicitacao.mot_indeferimento = null;
+      solicitacao.data_agendamento = null;
+      solicitacao.data_conclusao = null;
+    } else if (solicitacao.status === "agendada") {
+      solicitacao.data_conclusao = null;
+      solicitacao.mot_indeferimento = null;
+    } else if (solicitacao.status === "concluida") {
+      solicitacao.mot_indeferimento = null;
+      try {
+        setLoading(true);
+        setError(null);
 
-      if (resposta.status !== 200) {
-        throw new Error(`Erro HTTP ${resposta.status}`);
+        const resposta = await api.put(`/solicitacoes/${id}`, {
+          status: solicitacao.status,
+          mot_indeferimento: solicitacao.mot_indeferimento,
+          data_agendamento: solicitacao.data_agendamento,
+          data_conclusao: solicitacao.data_conclusao,
+        });
+        navigate(-1);
+        setAlterado(false);
+        return resposta.data;
+      } catch (erro) {
+        setError("Erro ao inativar a solicitação.");
+        console.error(erro);
+      } finally {
+        setLoading(false);
       }
-      navigate(-1);
-    } catch (erro) {
-      setError("Erro ao inativar a solicitação.");
-      console.error(erro);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -94,7 +114,13 @@ export default function EditarSolicitacao() {
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            if (alterado) {
+              setMostrarModalAlterado(true);
+            } else {
+              navigate(-1);
+            }
+          }}
           title="Voltar"
         >
           <svg
@@ -104,7 +130,6 @@ export default function EditarSolicitacao() {
             width="24px"
             fill="#344054"
           >
-            {" "}
             <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />{" "}
           </svg>
         </BtnSecundary>
@@ -112,7 +137,26 @@ export default function EditarSolicitacao() {
         <BtnPrimary
           title="Salvar alterações"
           adicionalClass="success btn-svg"
-          onClick={() => salvarSolicitacao()}
+          onClick={() => {
+            if (
+              solicitacao.status === "indeferida" &&
+              !solicitacao.mot_indeferimento
+            ) {
+              setAbrirModalIndeferida(true);
+            } else if (
+              solicitacao.status === "agendada" &&
+              !solicitacao.data_agendamento
+            ) {
+              setAbrirModalAgendamento(true);
+            } else if (
+              solicitacao.status === "concluida" &&
+              !solicitacao.data_conclusao
+            ) {
+              setAbrirModalConclusao(true);
+            } else {
+              setAbrirModalEdit(true);
+            }
+          }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -135,8 +179,48 @@ export default function EditarSolicitacao() {
           <option value="analise">Em análise</option>
           <option value="agendada">Agendada</option>
           <option value="concluida">Concluída</option>
-          <option value="indeferida">Infererida</option>
+          <option value="indeferida">Indeferida</option>
         </SelectStatus>
+
+        {mostrarModalAlterado && (
+          <Modal
+            type="warning"
+            title="Salve suas alterações"
+            description="Você tem alterações não salvas. Tem certeza que deseja sair sem salvar?"
+            onConfirm={() => navigate(-1)}
+            onCancel={() => setMostrarModalAlterado(false)}
+          />
+        )}
+
+        {mostrarModalIndeferida && (
+          <Modal
+            type="warning"
+            title="Indeferir solicitação"
+            description="Para mudar o status para indeferida, é obrigatório adicionar o motivo do indeferimento."
+            onConfirm={() => setAbrirModalIndeferida(false)}
+            onCancel={() => setAbrirModalIndeferida(false)}
+          />
+        )}
+
+        {mostrarModalAgendamento && (
+          <Modal
+            type="warning"
+            title="Agendar solicitação"
+            description="Você solicitou agendar essa solicitação. Você deve selecionar uma data para o agendamento."
+            onConfirm={() => setAbrirModalAgendamento(false)}
+            onCancel={() => setAbrirModalAgendamento(false)}
+          />
+        )}
+
+        {mostrarModalConclusao && (
+          <Modal
+            type="warning"
+            title="Concluir solicitação"
+            description="Você solicitou concluir essa solicitação. Você deve selecionar a data da conclusão."
+            onConfirm={() => setAbrirModalConclusao(false)}
+            onCancel={() => setAbrirModalConclusao(false)}
+          />
+        )}
 
         {mostrarModalEdit && (
           <Modal
@@ -144,7 +228,7 @@ export default function EditarSolicitacao() {
             title="Editar solicitação"
             description="Você solicitou editar os dados essa solicitação. Você tem certeza?"
             onConfirm={() => {
-              alert("Delete");
+              salvarSolicitacao();
               setAbrirModalEdit(false);
               navigate(-1);
             }}
@@ -154,17 +238,62 @@ export default function EditarSolicitacao() {
       </div>
 
       <div>
-        <InputText
-          label="Anotações da solicitação"
-          type="text"
-          name="anotacoes"
-          value={solicitacao?.anotacoes || ""}
-          onChange={(evento) => {
-            lidandoComAlteracoes(evento);
-          }}
-          placeholder="Adicione as anotações aqui..."
-          required="true"
-        />
+        {solicitacao?.status === "indeferida" && (
+          <InputText
+            label="Adicione o motivo do indeferimento"
+            type="text"
+            name="mot_indeferimento"
+            value={solicitacao?.mot_indeferimento || ""}
+            onChange={(evento) => {
+              lidandoComAlteracoes(evento);
+            }}
+            placeholder="Adicione o motivo aqui..."
+            required={true}
+          />
+        )}
+
+        {solicitacao?.status === "agendada" && (
+          <InputDate
+            label="Adicione a data do agendamento"
+            name="data_agendamento"
+            value={solicitacao?.data_agendamento}
+            onChange={(evento) => {
+              lidandoComAlteracoes(evento);
+            }}
+            required={true}
+          />
+        )}
+
+        {solicitacao?.status === "concluida" && (
+          <InputDate
+            label="Adicione a data da conclusão"
+            name="data_conclusao"
+            value={solicitacao?.data_conclusao}
+            onChange={(evento) => {
+              lidandoComAlteracoes(evento);
+            }}
+            required={true}
+          />
+        )}
+
+        {solicitacao?.data_conclusao ? (
+          <div className="box-info">
+            <span className="font-size-p">Data de conclusão</span>
+            <p className="font-size-m">
+              {solicitacao?.data_conclusao &&
+                new Date(solicitacao?.data_conclusao).toLocaleDateString(
+                  "pt-BR",
+                  {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }
+                )}
+            </p>
+          </div>
+        ) : (
+          ""
+        )}
 
         <div className="box-info">
           <span className="font-size-p">Data da solicitação</span>
@@ -183,6 +312,25 @@ export default function EditarSolicitacao() {
                 })}
           </p>
         </div>
+
+        {solicitacao?.data_agendamento ? (
+          <div className="box-info">
+            <span className="font-size-p">Data de agendamento</span>
+            <p className="font-size-m">
+              {solicitacao?.data_agendamento &&
+                new Date(solicitacao?.data_agendamento).toLocaleDateString(
+                  "pt-BR",
+                  {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }
+                )}
+            </p>
+          </div>
+        ) : (
+          ""
+        )}
 
         <div className="box-info">
           <span className="font-size-p">Solicitação</span>
@@ -209,10 +357,23 @@ export default function EditarSolicitacao() {
           <p className="font-size-m">{solicitacao?.cidadao?.telefone}</p>
         </div>
 
-        <div className="box-info">
-          <span className="font-size-p">Descrição da solicitação</span>
-          <p className="font-size-m">{solicitacao?.descricao}</p>
-        </div>
+        {solicitacao?.descricao ? (
+          <div className="box-info">
+            <span className="font-size-p">Descrição da solicitação</span>
+            <p className="font-size-m">{solicitacao?.descricao}</p>
+          </div>
+        ) : (
+          ""
+        )}
+
+        {solicitacao?.mot_indeferimento ? (
+          <div className="box-info">
+            <span className="font-size-p">Motivo do indeferimento</span>
+            <p className="font-size-m">{solicitacao?.mot_indeferimento}</p>
+          </div>
+        ) : (
+          ""
+        )}
 
         <div className="box-info">
           <span className="font-size-p">Geolocalização</span>

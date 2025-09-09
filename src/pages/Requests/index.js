@@ -59,17 +59,24 @@ export default function Solicitacoes() {
 
       try {
         const resposta = await api.get(
-          `/solicitacoes?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}`
+          `/solicitacoes?pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&status=${status}&categoria=${tipo_pedido}&comunidade=${comunidade}&termo_geral=${debouncedSearch}&cidadao=`
         );
 
         if (resposta.status !== 200) {
           throw new Error(`Erro HTTP ${resposta.status}`);
         }
-        const dados = await resposta;
-console.log(dados)
-        setTotalPages(dados?.data?.ultima_pagina || 1);
 
-        setSolicitacoes(dados?.data?.dados || []);
+        const dados = resposta.data;
+
+        const ultimaPagina = dados?.ultima_pagina || 1;
+
+        if (page > ultimaPagina) {
+          setPage(ultimaPagina);
+          return;
+        }
+
+        setTotalPages(ultimaPagina);
+        setSolicitacoes(dados?.dados || []);
       } catch (err) {
         setError(err.message || "Erro desconhecido ao buscar solicitações");
         setSolicitacoes([]);
@@ -105,7 +112,6 @@ console.log(dados)
       setError(null);
 
       try {
-        //se passar de 10 deve ser configurado o limite
         const resposta = await api.get(`/comunidades`);
 
         if (resposta.status !== 200) {
@@ -139,15 +145,16 @@ console.log(dados)
     try {
       setLoading(true);
       setError(null);
-      const resposta = await api.put(
-        `/solicitacoes/${solicitacaoSelecionada.id}`,
-        {
-          status: "inativo",
-        }
+
+      const resposta = await api.delete(
+        `/solicitacoes/${solicitacaoSelecionada.id}`
       );
+
+      return resposta.data;
     } catch (erro) {
+      console.error(erro);
       setError("Erro ao inativar a solicitação.");
-      throw new Error(`Erro: ${erro}`);
+      return null; 
     } finally {
       setLoading(false);
     }
@@ -161,10 +168,9 @@ console.log(dados)
         <Modal
           type="danger"
           title="Excluir solicitação"
-          description={`Você solicitou excluir o seguinte condomínio: ${solicitacaoSelecionada.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
+          description={`Você solicitou excluir a solicitação. Essa alteração não pode ser desfeita. Você tem certeza?`}
           onConfirm={() => {
-            //handleDeleteSolicitacao()
-            alert("delete");
+            inativarSolicitacao();
             setAbrirModalDelete(false);
             window.location.reload();
           }}
@@ -219,7 +225,7 @@ console.log(dados)
 
         <SelectCustom
           label="Tipo de pedido"
-          value={status}
+          value={tipo_pedido}
           onChange={(event) => {
             setTipoPedido(event.target.value);
           }}
@@ -237,7 +243,7 @@ console.log(dados)
 
         <SelectCustom
           label="Comunidade"
-          value={status}
+          value={comunidade}
           onChange={(event) => {
             setComunidade(event.target.value);
           }}

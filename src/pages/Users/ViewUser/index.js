@@ -16,6 +16,7 @@ import "./styles.css";
 
 export default function ViewUser() {
   const [cidadao, setCidadao] = useState(null);
+  const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
   const [modalDeleteAberto, setModalDeleteAberto] = useState(false);
@@ -44,8 +45,44 @@ export default function ViewUser() {
       }
     };
 
+    const listarSolicitacoesCidadao = async () => {
+      setError(null);
+      setLoading(true);
+
+      try {
+        const resposta = await api.get(`/dashboard/indicadores?id_cidadao=${id}`);
+        const dados = await resposta;
+        setDashboard(dados?.data || []);
+        console.log(dados.data);
+        return dados;
+      } catch (err) {
+        setError(err.message || "Erro desconhecido");
+        setDashboard([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     listarCidadao();
+    listarSolicitacoesCidadao();
   }, [id]);
+
+  const inativarCidadao = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const resposta = await api.delete(`/cidadaos/${id}`);
+
+      return resposta.data;
+    } catch (erro) {
+      console.error(erro);
+      setError("Erro ao inativar cidadão.");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const baixarComprovante = async () => {
     const element = document.getElementById("container-info-user");
@@ -110,7 +147,7 @@ export default function ViewUser() {
         <BtnPrimary
           adicionalClass="roxo btn-svg"
           onClick={() => {
-            alert("retorna lista manutencao");
+            navigate("/administracao/solicitacoes", { state: { cidadao: id } });
           }}
         >
           <svg
@@ -160,10 +197,11 @@ export default function ViewUser() {
 
         <div className="container-mini-dashboard-user">
           <MiniDashboardUser
-            total="23"
-            concluidas="10"
-            agendadas="6"
-            em_aberto="7"
+            total={dashboard?.solicitacoes_por_status?.total || 0}
+            concluidas={dashboard?.solicitacoes_por_status?.concluidas || 0}
+            agendadas={dashboard?.solicitacoes_por_status?.agendadas || 0}
+            em_aberto={dashboard?.solicitacoes_por_status?.analise || 0}
+            indeferidas={dashboard?.solicitacoes_por_status?.indeferidas || 0}
           />
         </div>
 
@@ -171,10 +209,9 @@ export default function ViewUser() {
           <Modal
             type="danger"
             title="Excluir solicitação"
-            description={`Você solicitou excluir essa solicitação. Essa alteração não pode ser desfeita. Você tem certeza?`}
+            description={`Você solicitou excluir esse usuário. Essa alteração não pode ser desfeita. Você tem certeza?`}
             onConfirm={() => {
-              //fetchDelete()
-              alert("Delete");
+              inativarCidadao();
               setModalDeleteAberto(false);
               navigate(-1);
             }}
@@ -187,7 +224,7 @@ export default function ViewUser() {
 
       <div className="container-info-user" id="container-info-user">
         <div className="box-info">
-          <label className="font-size-p">Nome</label>
+          <label className="font-size-p">Dados do cidadão com nome</label>
           <p className="font-size-m">{cidadao?.nome}</p>
         </div>
 

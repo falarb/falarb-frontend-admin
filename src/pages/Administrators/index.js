@@ -16,22 +16,25 @@ import Filtros from "../../components/Filters";
 import SelectCustom from "../../components/Select/SelectCustom";
 import InputSearch from "../../components/Input/InputSearch";
 
+import api from "../../utils/api";
+
 export default function Administradores() {
   const [administradores, setAdministradores] = useState([]);
+  const [administradorSelecionado, setAdministradorSelecionado] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [mostrarModalDelete, setMostrarModalDelet] = useState(false);
   const [mostrarModalSuccess, setMostrarModalSuccess] = useState(false);
-  const [administradorSelecionado, setAdministradorSelecionado] =
-    useState(null);
+
+  //filtros e paginação
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
-  const [date, setDate] = useState("");
   const [status, setStatus] = useState("");
-  const [sort_by, setOrderBy] = useState("");
-  const [sort_order, setSortOrder] = useState();
+  const [sortBy, setOrderBy] = useState("");
+  const [sortOrder, setSortOrder] = useState(""); 
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,60 +48,53 @@ export default function Administradores() {
   }, [search]);
 
   useEffect(() => {
-    const fetchManutencoes = async () => {
-      try {
-        setError(null);
-        setLoading(true);
+  const listarAdmins = async () => {
+    setError(null);
+    setLoading(true);
 
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/usuarios/?page=${page}&status=${status}&search=${debouncedSearch}&sort_by=${sort_by}&sort_order=${sort_order}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`Erro ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
-        setAdministradores(data.data);
-        setTotalPages(data.last_page);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchManutencoes();
-  }, [page, status, debouncedSearch, sort_by, sort_order]);
-
-  const handleDelete = async (id) => {
     try {
-      setError(null);
-      setLoading(true);
+      const resposta = await api.get(
+        `/administradores?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&pagina=${page}&termo_geral=${debouncedSearch}`
+      );
 
-      const response = await fetch(`http://127.0.0.1:8000/api/usuarios/${id}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        let errorMessage = `Erro ${response.status}`;
-        try {
-          const data = await response.json();
-          if (data?.message) errorMessage = data.message;
-        } catch (_) {}
-
-        throw new Error(errorMessage);
+      if (resposta.status !== 200) {
+        throw new Error(`Erro HTTP ${resposta.status}`);
       }
 
-      console.log("Deletado com sucesso");
-    } catch (error) {
-      console.error("Erro ao deletar:", error);
-      setError(error.message);
+      const dados = resposta.data;
+
+      if (page > dados.ultima_pagina) {
+        setPage(dados.ultima_pagina || 1);
+        return;
+      }
+
+      setTotalPages(dados?.ultima_pagina || 1);
+      setAdministradores(dados?.dados || []);
+    } catch (err) {
+      setError(err.message || "Erro desconhecido na busca");
+      setAdministradores([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  listarAdmins();
+}, [page, debouncedSearch, sortBy, sortOrder]);
+
+  
+  const inativarAdmin = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const resposta = await api.put(
+        `/administradores/${administradorSelecionado?.id}`,
+        {
+          status: "inativo",
+        }
+      );
+    } catch (erro) {
+      setError("Erro ao inativar.");
+      throw new Error(`Erro: ${erro}`);
     } finally {
       setLoading(false);
     }
@@ -165,7 +161,7 @@ export default function Administradores() {
           sort1={true}
           onClickSort1={() => {
             setOrderBy("nome");
-            setSortOrder(sort_order === "asc" ? "desc" : "asc");
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
           }}
           col2="Email"
           sort2={false}

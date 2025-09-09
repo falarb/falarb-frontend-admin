@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { resolvePath, useNavigate } from "react-router-dom";
 
 import api from "../../utils/api";
 
@@ -47,56 +47,61 @@ export default function Usuarios() {
   }, [search]);
 
   useEffect(() => {
-    const listarCidadaos = async () => {
-      setError(null);
-      setLoading(true);
+  const listarCidadaos = async () => {
+    setError(null);
+    setLoading(true);
 
-     try {
-        const resposta = await api.get(
-          `/cidadaos?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}`
-        );
-
-        if (resposta.status !== 200) {
-          throw new Error(`Erro HTTP ${resposta.status}`);
-        }
-        const dados = await resposta;
-        setTotalPages(dados?.data?.ultima_pagina || 1);
-
-        setCidadaos(dados?.data?.dados || []);
-      } catch (err) {
-        setError(err.message || "Erro desconhecido ao buscar solicitações");
-        setCidadaos([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    listarCidadaos();
-  }, [page, debouncedSearch, sortBy, sortOrder]);
-
-  const handleDeleteUser = async () => {
     try {
-      setError(null);
-
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/usuarios/${usuarioSelecionado.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-          },
-        }
+      const resposta = await api.get(
+        `/cidadaos?ativo=true&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&pagina=${page}&termo_geral=${debouncedSearch}`
       );
-      if (!response.ok) {
-        setError(response.status);
+
+      if (resposta.status !== 200) {
+        throw new Error(`Erro HTTP ${resposta.status}`);
       }
 
-      alert("Excluido com sucesso.");
-      window.location.reload();
-    } catch (error) {
-      setError(error.mensagem);
+      const dados = resposta.data;
+
+      if (page > dados.ultima_pagina) {
+        setPage(dados.ultima_pagina || 1);
+        return;
+      }
+
+      setTotalPages(dados?.ultima_pagina || 1);
+      setCidadaos(dados?.dados || []);
+    } catch (err) {
+      setError(err.message || "Erro desconhecido na busca");
+      setCidadaos([]);
+    } finally {
+      setLoading(false);
     }
   };
+
+  listarCidadaos();
+}, [page, debouncedSearch, sortBy, sortOrder]);
+
+
+ 
+const inativarCidadao = async () => {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const resposta = await api.put(`/cidadaos/${usuarioSelecionado?.id}`, {
+      ativo: false, // envia boolean
+    });
+
+    return resposta.data;
+  } catch (erro) {
+    console.error(erro);
+    setError("Erro ao inativar cidadão.");
+    return null;
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   return (
     <>
       {loading && <Loading />}
@@ -194,8 +199,7 @@ export default function Usuarios() {
             title="Excluir usuário"
             description={`Você solicitou excluir o seguinte usuário: ${usuarioSelecionado?.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
             onConfirm={() => {
-              //handleDeleteUser()
-              alert("Delete");
+              inativarCidadao();
               setMostrarModalDelete(false);
             }}
             onCancel={() => {

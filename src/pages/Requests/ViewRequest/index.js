@@ -36,7 +36,6 @@ export default function VisualizarSolicitacao() {
         }
 
         const { data } = resposta;
-        console.log("Dados recebidos:", data);
         setSolicitacao(data);
       } catch (erro) {
         setError(erro.message || "Erro desconhecido");
@@ -53,9 +52,7 @@ export default function VisualizarSolicitacao() {
     try {
       setLoading(true);
       setError(null);
-      const resposta = await api.put(`/solicitacoes/${id}`, {
-        status: "inativo",
-      });
+      const resposta = await api.delete(`/solicitacoes/${id}`);
 
       if (resposta.status !== 200) {
         throw new Error(`Erro HTTP ${resposta.status}`);
@@ -182,7 +179,6 @@ export default function VisualizarSolicitacao() {
             width="24px"
             fill="#fff"
           >
-            {" "}
             <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />{" "}
           </svg>
         </BtnPrimary>
@@ -193,7 +189,7 @@ export default function VisualizarSolicitacao() {
             title="Excluir solicitação"
             description="Você solicitou excluir essa solicitação. Essa alteração não pode ser desfeita. Você tem certeza?"
             onConfirm={() => {
-              alert("Delete");
+              inativarSolicitacao();
               setAbrirModalDelete(false);
               navigate(-1);
             }}
@@ -205,7 +201,9 @@ export default function VisualizarSolicitacao() {
       <div id="container-comprovante">
         <div>
           <div className="box-info">
-            <span className="font-size-p">Data da solicitação</span>
+            <span className="font-size-p">
+              Dados da solicitação realizada em
+            </span>
             <p className="font-size-m">
               {solicitacao?.created_at &&
                 new Date(solicitacao.created_at).toLocaleDateString("pt-BR", {
@@ -221,6 +219,44 @@ export default function VisualizarSolicitacao() {
                   })}
             </p>
           </div>
+
+          {solicitacao?.data_conclusao ? (
+            <div className="box-info">
+              <span className="font-size-p">Data de conclusão</span>
+              <p className="font-size-m">
+                {solicitacao?.data_conclusao &&
+                  new Date(solicitacao?.data_conclusao).toLocaleDateString(
+                    "pt-BR",
+                    {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    }
+                  )}
+              </p>
+            </div>
+          ) : (
+            ""
+          )}
+
+          {solicitacao?.data_agendamento ? (
+            <div className="box-info">
+              <span className="font-size-p">Data de agendamento</span>
+              <p className="font-size-m">
+                {solicitacao?.data_agendamento &&
+                  new Date(solicitacao?.data_agendamento).toLocaleDateString(
+                    "pt-BR",
+                    {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    }
+                  )}
+              </p>
+            </div>
+          ) : (
+            ""
+          )}
 
           <div className="box-info">
             <span className="font-size-p">Status atual</span>
@@ -257,10 +293,23 @@ export default function VisualizarSolicitacao() {
             <p className="font-size-m">{solicitacao?.cidadao?.telefone}</p>
           </div>
 
-          <div className="box-info">
-            <span className="font-size-p">Descrição da solicitação</span>
-            <p className="font-size-m">{solicitacao?.descricao}</p>
-          </div>
+          {solicitacao?.descricao ? (
+            <div className="box-info">
+              <span className="font-size-p">Descrição da solicitação</span>
+              <p className="font-size-m">{solicitacao?.descricao}</p>
+            </div>
+          ) : (
+            ""
+          )}
+
+          {solicitacao?.mot_indeferimento ? (
+            <div className="box-info">
+              <span className="font-size-p">Motivo do indeferimento</span>
+              <p className="font-size-m">{solicitacao?.mot_indeferimento}</p>
+            </div>
+          ) : (
+            ""
+          )}
 
           <div className="box-info">
             <span className="font-size-p">Geolocalização</span>

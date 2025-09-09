@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import api from "../../../utils/api";
-import html2canvas from "html2canvas";
 
 import Modal from "../../../components/Modal";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
@@ -22,7 +21,10 @@ export default function EditUser() {
   const [cidadao, setCidadao] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
-  const [modalDeleteAberto, setModalDeleteAberto] = useState(false);
+  const [modalEditAberto, setModalEditAberto] = useState(false);
+  const [modalAlteradoAberto, setModalAlteradoAberto] = useState(false);
+  const [modalAvisoAberto, setModalAvisoAberto] = useState(false);
+  const [alterado, setAlterado] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -34,12 +36,9 @@ export default function EditUser() {
 
       try {
         const resposta = await api.get(`/cidadaos/${id}`);
-
-        if (resposta.status !== 200) {
-          throw new Error(`Erro HTTP ${resposta.status}`);
-        }
-        const dados = await resposta;
-        setCidadao(dados?.data || []);
+        setCidadao(resposta?.data || []);
+        setAlterado(false);
+        return resposta;
       } catch (err) {
         setError(err.message || "Erro desconhecido ao buscar cidadão");
         setCidadao([]);
@@ -52,6 +51,7 @@ export default function EditUser() {
   }, [id]);
 
   const lidandoComAlteracoes = (evento) => {
+    setAlterado(true);
     const { name, value } = evento.target;
     setCidadao((prevSolicitacao) => ({
       ...prevSolicitacao,
@@ -64,7 +64,9 @@ export default function EditUser() {
       setLoading(true);
       setError(null);
       const resposta = await api.put(`/cidadaos/${id}`, {
-        cidadao
+        nome: cidadao?.nome,
+        email: cidadao?.email,
+        telefone: cidadao?.telefone,
       });
 
       if (resposta.status !== 200) {
@@ -99,7 +101,11 @@ export default function EditUser() {
         <BtnSecundary
           adicionalClass="btn-svg"
           onClick={() => {
-            navigate(-1);
+            if (alterado) {
+              setModalAlteradoAberto(true);
+            } else {
+              navigate(-1);
+            }
           }}
         >
           <svg
@@ -116,7 +122,16 @@ export default function EditUser() {
         <BtnPrimary
           adicionalClass="success btn-svg"
           onClick={() => {
-            salvarCidadao();
+            if (
+              !cidadao?.nome ||
+              cidadao?.cpf.length < 11 ||
+              cidadao?.telefone.length < 11 ||
+              !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cidadao?.email)
+            ) {
+              setModalAvisoAberto(true);
+            } else {
+              setModalEditAberto(true); 
+            }
           }}
         >
           <svg
@@ -130,29 +145,46 @@ export default function EditUser() {
           </svg>
         </BtnPrimary>
 
-        <SelectStatus
-          value={cidadao?.status}
-          onChange={(evento) => {
-            lidandoComAlteracoes(evento);
-          }}
-        >
-          <option value="ativo">Ativo</option>
-          <option value="inativo">Inativo</option>
-        </SelectStatus>
-
-        {modalDeleteAberto && (
+        {modalEditAberto && (
           <Modal
-            type="danger"
-            title="Excluir solicitação"
-            description={`Você solicitou excluir essa solicitação. Essa alteração não pode ser desfeita. Você tem certeza?`}
+            type="warning"
+            title="Editar solicitação"
+            description={`Você solicitou editar esse cidadão. Você tem certeza?`}
             onConfirm={() => {
-              //fetchDelete()
-              alert("Delete");
-              setModalDeleteAberto(false);
+              salvarCidadao();
+              setModalEditAberto(false);
               navigate(-1);
             }}
             onCancel={() => {
-              setModalDeleteAberto(false);
+              setModalEditAberto(false);
+            }}
+          />
+        )}
+
+        {modalAvisoAberto && (
+          <Modal
+            type="warning"
+            title="Preencha todos os campos"
+            description={`Você deve preencher todos os campos corretamente antes de salvar as alterações.`}
+            onConfirm={() => {
+              setModalAvisoAberto(false);
+            }}
+            onCancel={() => {
+              setModalAvisoAberto(false);
+            }}
+          />
+        )}
+
+        {modalAlteradoAberto && (
+          <Modal
+            type="warning"
+            title="Alterações não salvas"
+            description={`Você tem certeza que deseja sair sem salvar as alterações?`}
+            onConfirm={() => {
+              navigate(-1);
+            }}
+            onCancel={() => {
+              setModalAlteradoAberto(false);
             }}
           />
         )}
