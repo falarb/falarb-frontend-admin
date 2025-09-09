@@ -9,7 +9,6 @@ export default function InputCPF({
   onChange,
   placeholder,
 }) {
-
   return (
     <div className="custom-input-mask">
       <label>{label}</label>
@@ -19,10 +18,18 @@ export default function InputCPF({
         placeholder={placeholder}
         name={name}
         value={value}
-        onChange={onChange}
-      >
-  
-      </InputMask>
+        onChange={(e) => {
+          const numericValue = e.target.value.replace(/\D/g, "");
+          onChange({
+            ...e,
+            target: {
+              ...e.target,
+              value: numericValue,
+              name: name, 
+            },
+          });
+        }}
+      />
     </div>
   );
 }

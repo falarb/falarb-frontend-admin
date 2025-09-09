@@ -4,7 +4,7 @@ export default function MiniDashboardUser({
   total,
   concluidas,
   agendadas,
-  em_aberto,
+  analise,
 }) {
   return (
     <>
@@ -23,7 +23,7 @@ export default function MiniDashboardUser({
             </div>
             <div>
               <div className="tag-dashboard-user tag-dashboard-user-em-aberto"></div>
-              <span>{em_aberto} em aberto</span>
+              <span>{analise} em aberto</span>
             </div>
           </div>
         </div>

@@ -67,6 +67,7 @@ export default function EditUser() {
         nome: cidadao?.nome,
         email: cidadao?.email,
         telefone: cidadao?.telefone,
+        cpf: cidadao?.cpf,
       });
 
       if (resposta.status !== 200) {

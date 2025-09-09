@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import api from "../../../utils/api";
-import html2canvas from "html2canvas";
 
 import Modal from "../../../components/Modal";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
@@ -10,7 +9,6 @@ import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Erro from "../../../components/Message/Erro";
 import Loading from "../../../components/Loading";
 import TitleClipPages from "../../../components/TitleClipPages";
-import SelectStatus from "../../../components/Select/SelectStatus";
 import InputText from "../../../components/Input/InputText";
 import InputCPF from "../../../components/Input/InputCPF";
 import InputEmail from "../../../components/Input/InputEmail";
@@ -35,6 +33,7 @@ export default function AddUser() {
 
   const lidandoComAlteracoes = (evento) => {
     const { name, value } = evento.target;
+    console.log(name, value);
     setCidadao((prevCidadao) => ({
       ...prevCidadao,
       [name]: value,
@@ -46,13 +45,14 @@ export default function AddUser() {
       setLoading(true);
       setError(null);
       const resposta = await api.post(`/cidadaos`, {
-        cidadao
+        nome: cidadao.nome,
+        cpf: cidadao.cpf,
+        email: cidadao.email,
+        telefone: cidadao.telefone,
       });
 
-      if (resposta.status !== 200) {
-        throw new Error(`Erro HTTP ${resposta.status}`);
-      }
       navigate(-1);
+      return resposta;
     } catch (erro) {
       setError("Erro ao cadastrar o cidadão.");
       console.error(erro);
@@ -67,7 +67,7 @@ export default function AddUser() {
   return (
     <div>
       {loading && <Loading />}
-      {error && <Erro mensagem={error + error?.mensagem} />}
+      {error && <Erro mensagem={error} />}
 
       <TitleClipPages title="Cadastro de usuário" />
 
@@ -105,18 +105,7 @@ export default function AddUser() {
             <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
           </svg>
         </BtnPrimary>
-
-        <SelectStatus
-          name="status"
-          value={cidadao?.status}
-          onChange={(evento) => {
-            lidandoComAlteracoes(evento);
-          }}
-        >
-          <option value="ativo">Ativo</option>
-          <option value="inativo">Inativo</option>
-        </SelectStatus>
-
+        
         {modalDeleteAberto && (
           <Modal
             type="danger"

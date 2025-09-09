@@ -87,9 +87,7 @@ const inativarCidadao = async () => {
     setLoading(true);
     setError(null);
 
-    const resposta = await api.put(`/cidadaos/${usuarioSelecionado?.id}`, {
-      ativo: false, // envia boolean
-    });
+    const resposta = await api.delete(`/cidadaos/${usuarioSelecionado?.id}`);
 
     return resposta.data;
   } catch (erro) {
@@ -98,6 +96,8 @@ const inativarCidadao = async () => {
     return null;
   } finally {
     setLoading(false);
+    setUsuarioSelecionado(null);
+    window.location.reload();
   }
 };
 

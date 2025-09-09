@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import api from "../../../utils/api";
 import "./styles.css";
 import InputText from "../../../components/Input/InputText";
 import Erro from "../../../components/Message/Erro";
@@ -8,44 +9,34 @@ import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Loading from "../../../components/Loading";
 import TitleClipPages from "../../../components/TitleClipPages";
 import Modal from "../../../components/Modal";
-import SelectStatus from "../../../components/Select/SelectStatus";
 
 export default function EditarComunidade() {
   const [comunidade, setComunidade] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(null);
-  const [validationErrors, setValidationErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [modalEditAberto, setModalEditAberto] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchcomunidade = async () => {
+    const listarComunidade = async () => {
+      setLoading(true);
       setError(null);
-      setLoading(false);
 
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/tipos-manutencao/${id}`
-        );
-
-        if (!response.ok) {
-          setError(response.status);
-        }
-
-        const data = await response.json();
-        setComunidade(data);
-      } catch (error) {
-        setError(error);
+        const resposta = await api.get(`/comunidades/${id}`);
+        setComunidade(resposta.data || {});
+      } catch (err) {
+        setError(err.message || "Erro desconhecido ao buscar comunidade");
+        setComunidade({});
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchcomunidade();
-    }
+    listarComunidade();
   }, [id]);
 
   const handleChange = (evento) => {
@@ -57,73 +48,45 @@ export default function EditarComunidade() {
     }));
   };
 
-  const handleSubmit = async (evento) => {
-    evento.preventDefault();
-
+  const salvarComunidade = async () => {
+    if (!comunidade) return;
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/tipos-manutencao/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(comunidade),
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 422) {
-          try {
-            const data = await response.json(); // pode falhar se não for JSON
-            setValidationErrors(data.errors || {});
-          } catch (e) {
-            setError(
-              "Erro de validação, mas não foi possível interpretar a resposta."
-            );
-          }
-          return;
-        }
-
-        throw new Error(`Erro HTTP ${response.status}`);
-      }
-
-      const newComunidade = await response.json();
-      setComunidade(newComunidade);
-    } catch (error) {
-      setError(error);
+      await api.put(`/comunidades`, { nome: comunidade.nome });
+      setIsDirty(false);
+      navigate(-1);
+    } catch (erro) {
+      setError("Erro ao salvar a comunidade.");
+      console.error(erro);
     } finally {
       setLoading(false);
     }
   };
-  if (!comunidade) return console.log("Nenhum usuário encontrado.");
+
+  if (loading) return <Loading />;
 
   return (
     <div>
-      {loading && <Loading />}
-      {error && <Erro mensagem={error + error.mensagem} />}
+      {error && <Erro mensagem={error} />}
       {modalEditAberto && (
         <Modal
           type="warning"
-          title="Editar usuário"
-          description={`Você solicitou editar as informações desse usuário. Essa alteração não pode ser desfeita. Você tem certeza?`}
+          title="Editar comunidade"
+          description={`Você solicitou editar as informações dessa comunidade. Você tem certeza?`}
           onConfirm={(evento) => {
-            //handleSubmit()
-            alert("Editar");
-            setModalEditAberto(false);
-            navigate(-1);
-          }}
-          onCancel={() => {
+            evento.preventDefault();
+            salvarComunidade();
             setModalEditAberto(false);
           }}
+          onCancel={() => setModalEditAberto(false)}
         />
       )}
 
-      <TitleClipPages title={`Edição de comunidade com #ID ${comunidade.id}`} />
+      <TitleClipPages
+        title={`Edição de comunidade`}
+      />
 
       <div className="nav-tools">
         <BtnSecundary
@@ -135,7 +98,7 @@ export default function EditarComunidade() {
               );
               if (!confirmLeave) return;
             }
-            navigate(`/comunidade/${comunidade.id}`);
+            navigate(-1);
           }}
         >
           <svg
@@ -148,9 +111,26 @@ export default function EditarComunidade() {
             <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
           </svg>
         </BtnSecundary>
+
+        <BtnPrimary
+          title="Salvar alterações"
+          adicionalClass="success btn-svg"
+          onClick={() => {
+            setModalEditAberto(true);
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#fff"
+          >
+            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />{" "}
+          </svg>
+        </BtnPrimary>
       </div>
 
-      {error && <p style={{ color: "red" }}>Erro: {error}</p>}
       <h2>Editar Comunidade</h2>
       <form
         onSubmit={(evento) => {
@@ -158,24 +138,15 @@ export default function EditarComunidade() {
           setModalEditAberto(true);
         }}
       >
-        <SelectStatus value="ativo"></SelectStatus>
-
         <div className="container-single-input">
           <InputText
             label="Nome"
             type="text"
             name="nome"
-            value={comunidade.nome}
+            value={comunidade?.nome || ""}
             onChange={handleChange}
           />
-          <div className="validation-error">
-            {validationErrors ? `${validationErrors.nome}` : ""}
-          </div>
         </div>
-
-        <BtnPrimary type="submit" onClick={() => {}}>
-          Salvar
-        </BtnPrimary>
       </form>
     </div>
   );

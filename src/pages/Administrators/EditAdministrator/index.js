@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import api from "../../../utils/api";
 import "./styles.css";
 import InputText from "../../../components/Input/InputText";
 import InputEmail from "../../../components/Input/InputEmail";
@@ -13,127 +14,97 @@ import Modal from "../../../components/Modal";
 
 export default function EditarAdministrador() {
   const [usuario, setUsuario] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(null);
-  const [validationErrors, setValidationErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
   const [modalEditAberto, setModalEditAberto] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // Busca do usuário
   useEffect(() => {
     const fetchUsuario = async () => {
-      setError(null);
-      setLoading(false);
+      setLoading(true);
+      setError("");
 
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/usuarios/${id}`
-        );
-
-        if (!response.ok) {
-          setError(response.status);
-        }
-
-        const data = await response.json();
+        const { data } = await api.get(`/administradores/${id}`);
         setUsuario(data);
-      } catch (error) {
-        setError(error);
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Erro ao buscar usuário."
+        );
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchUsuario();
-    }
+    if (id) fetchUsuario();
   }, [id]);
 
   const handleChange = (evento) => {
     setIsDirty(true);
     const { name, value } = evento.target;
-    setUsuario((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setUsuario((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (evento) => {
-    evento.preventDefault();
-
+  const handleSubmit = async () => {
     setLoading(true);
-    setError(null);
+    setError("");
+    setValidationErrors({});
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/usuarios/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(usuario),
-      });
-
-      if (!response.ok) {
-        if (response.status === 422) {
-          try {
-            const data = await response.json(); // pode falhar se não for JSON
-            setValidationErrors(data.errors || {});
-          } catch (e) {
-            setError(
-              "Erro de validação, mas não foi possível interpretar a resposta."
-            );
-          }
-          return;
-        }
-
-        throw new Error(`Erro HTTP ${response.status}`);
+      const { data } = await api.put(`/administradores/${id}`, usuario);
+      setUsuario(data);
+      setIsDirty(false);
+      alert("Usuário atualizado com sucesso!");
+      navigate(-1);
+    } catch (err) {
+      if (err.response?.status === 422) {
+        setValidationErrors(err.response.data.errors || {});
+      } else {
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Erro ao atualizar usuário."
+        );
       }
-
-      const newUsuario = await response.json();
-      setUsuario(newUsuario);
-    } catch (error) {
-      setError(error);
     } finally {
       setLoading(false);
     }
   };
-  if (!usuario) return console.log("Nenhum usuário encontrado.");
+
+  if (loading) return <Loading />;
+  if (!usuario) return <p>Nenhum usuário encontrado.</p>;
 
   return (
-    <div>
-      {loading && <Loading />}
-      {error && <Erro mensagem={error + error.mensagem} />}
+    <div className="editar-administrador-container">
+      {error && <Erro mensagem={error} />}
+
       {modalEditAberto && (
         <Modal
           type="warning"
           title="Editar usuário"
-          description={`Você solicitou editar as informações desse usuário. Essa alteração não pode ser desfeita. Você tem certeza?`}
-          onConfirm={(evento) => {
-            //handleSubmit()
-            alert("Editar");
-            setModalEditAberto(false);
-            navigate(-1);
-          }}
-          onCancel={() => {
+          description={`Você solicitou editar as informações desse usuário. Tem certeza que deseja continuar?`}
+          onConfirm={() => {
+            handleSubmit();
             setModalEditAberto(false);
           }}
+          onCancel={() => setModalEditAberto(false)}
         />
       )}
 
-      <TitleClipPages title={`Edição de usuário com CPF ${usuario.cpf}`} />
+      <TitleClipPages title={`Edição de usuário administrador`} />
 
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"
           onClick={() => {
-            if (isDirty) {
-              const confirmLeave = window.confirm(
-                "Você fez alterações que não foram salvas. Deseja sair mesmo assim?"
-              );
-              if (!confirmLeave) return;
-            }
-            navigate(`/usuario/${usuario.id}`);
+            navigate(-1);
           }}
         >
           <svg
@@ -147,26 +118,21 @@ export default function EditarAdministrador() {
           </svg>
         </BtnSecundary>
       </div>
-
-      {error && <p style={{ color: "red" }}>Erro: {error}</p>}
-      <h2>Editar Usuário</h2>
+      
       <form
-        onSubmit={(evento) => {
-          evento.preventDefault();
+        onSubmit={(e) => {
+          e.preventDefault();
           setModalEditAberto(true);
         }}
       >
         <div className="container-single-input">
           <InputText
             label="Nome"
-            type="text"
             name="nome"
             value={usuario.nome}
             onChange={handleChange}
           />
-          <div className="validation-error">
-            {validationErrors ? `${validationErrors.nome}` : ""}
-          </div>
+          <div className="validation-error">{validationErrors.nome}</div>
         </div>
 
         <div className="container-single-input">
@@ -176,42 +142,32 @@ export default function EditarAdministrador() {
             value={usuario.email}
             onChange={handleChange}
           />
-          <div className="validation-error">
-            {validationErrors ? `${validationErrors.email}` : ""}
-          </div>
+          <div className="validation-error">{validationErrors.email}</div>
         </div>
 
         <div className="container-single-input">
           <InputCustomMask
             label="CPF"
             mask="999.999.999-99"
-            type="text"
             name="cpf"
             value={usuario.cpf}
             onChange={handleChange}
           />
-          <div className="validation-error">
-            {validationErrors ? `${validationErrors.nome}` : ""}
-          </div>
+          <div className="validation-error">{validationErrors.cpf}</div>
         </div>
 
         <div className="container-single-input">
           <InputCustomMask
             label="Celular"
             mask="(99) 9 9999-9999"
-            type="text"
-            name="cpf"
-            value={usuario.cpf}
+            name="celular"
+            value={usuario.celular || ""}
             onChange={handleChange}
           />
-          <div className="validation-error">
-            {validationErrors ? `${validationErrors.nome}` : ""}
-          </div>
+          <div className="validation-error">{validationErrors.celular}</div>
         </div>
 
-        <BtnPrimary type="submit" onClick={() => {}}>
-          Salvar
-        </BtnPrimary>
+        <BtnPrimary type="submit">Salvar</BtnPrimary>
       </form>
     </div>
   );

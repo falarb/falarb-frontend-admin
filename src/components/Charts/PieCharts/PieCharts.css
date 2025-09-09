@@ -1,13 +1,11 @@
 .container-pies{
     width: 100%;
-    max-width: calc(100% - 40px);
+    max-width: calc(100%);
     display: flex;
     flex-direction: row;
     gap: 20px;
     margin: 0;
 }
-
-
 
 
 .container-pies .pie{

@@ -19,20 +19,12 @@ export default function Dashboard() {
   const navegacao = useNavigate();
 
   useEffect(() => {
-    async function fetchDashboard() {
+    async function alimentarDashboard() {
       try {
         setErros(null);
         setCarregando(true);
 
         const resposta = await api.get("/dashboard/indicadores");
-
-        if (resposta.status !== 200) {
-          setErros("Erro ao carregar o dashboard.");
-          console.error("Erro ao carregar o dashboard:", resposta);
-          setMostrarModal(true);
-          navegacao("/");
-          return;
-        }
 
         const dados_recebidos = resposta.data;
         setDados(dados_recebidos);
@@ -46,8 +38,11 @@ export default function Dashboard() {
       }
     }
 
-    fetchDashboard();
+    alimentarDashboard();
   }, []);
+
+//  2R7nwMZX4lqYqk7woctIB6gk
+//  4D41tDfRy6ddEAs2nw4UmxEj
 
   return (
     <>
@@ -66,6 +61,7 @@ export default function Dashboard() {
         totalAgendadas={dados?.solicitacoes_por_status?.agendada || 0}
         totalEmAberto={dados?.solicitacoes_por_status?.analise || 0}
         totalIndeferido={dados?.solicitacoes_por_status?.indeferida || 0}
+        dados={dados}
       />
 
       <PieCharts
@@ -74,6 +70,7 @@ export default function Dashboard() {
         totalAgendadas={dados?.solicitacoes_por_status?.agendada || 0}
         totalEmAberto={dados?.solicitacoes_por_status?.analise || 0}
         totalIndeferido={dados?.solicitacoes_por_status?.indeferida || 0}
+        dados={dados}
       />
     </>
   );

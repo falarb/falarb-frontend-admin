@@ -92,10 +92,6 @@ export default function Solicitacoes() {
       try {
         //se passar de 10 deve ser configurado o limite
         const resposta = await api.get(`/categorias`);
-
-        if (resposta.status !== 200) {
-          throw new Error(`Erro HTTP ${resposta.status}`);
-        }
         const dados = await resposta;
 
         setCategorias(dados?.data?.dados || []);

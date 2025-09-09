@@ -22,13 +22,7 @@ export default function TableItem({
 
   return (
     <div className={`table-item ${height}`}>
-      <div className="table-item-id">ID #{id}</div>
-      <div className={tipo}>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-      <div className={`table-item-status ${status}`} to="/"></div>
+      <div className="table-item-id">ID {id}</div>
       <div className="table-item-column">
         <Link to={link_view}>{truncate(col1, 60)}</Link>
       </div>

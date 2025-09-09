@@ -1,63 +1,58 @@
 import "./styles.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import api from "../../../utils/api";
+
 import InputText from "../../../components/Input/InputText";
+import Erro from "../../../components/Message/Erro";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
 
 export default function CadastrarComunidade() {
-  const [novoTipoManutencao, setNovoTipoManutencao] = useState({
-    nome: "",
-  });
+  const [novaComunidade, setNovaComunidade] = useState({ nome: "" });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [status, setStatus] = useState(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
-  const handleChange = (evento) => {
-    const { name, value } = evento.target;
-    setNovoTipoManutencao({
-      ...novoTipoManutencao,
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNovaComunidade((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus("");
     setError("");
+    setSuccess("");
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/tipos-manutencao",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(novoTipoManutencao),
-        }
-      );
+      const response = await api.post("comunidades", {
+        nome: novaComunidade.nome,
+      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Erro do servidor:", errorData);
-        throw new Error(errorData.message || "Erro ao cadastrar");
-      }
-
-      const data = await response.json();
-      console.log("Sucesso:", data);
-    } catch (error) {
-      console.error("Erro na requisição:", error);
+      setSuccess(`Comunidade "${response.data.nome}" cadastrada com sucesso!`);
+      setNovaComunidade({ nome: "" });
+      return response;
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Erro desconhecido ao cadastrar comunidade.");
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
   return (
-    <div>
+    <div className="cadastrar-comunidade-container">
+      {error && <Erro mensagem={error}/>}
+      {success && <p className="success-message">{success}</p>}
       <BtnSecundary
         onClick={() => {
-          navigate("/comunidades");
+          navigate("-1");
         }}
       >
         <svg
@@ -78,11 +73,13 @@ export default function CadastrarComunidade() {
           label="Nome da nova comunidade"
           placeholder="Insira o nome..."
           name="nome"
-          value={novoTipoManutencao.nome}
+          value={novaComunidade.nome}
           onChange={handleChange}
-          required={true}
-        ></InputText>
-        <BtnPrimary type="submit">Cadastrar</BtnPrimary>
+          required
+        />
+        <BtnPrimary type="submit" disabled={loading}>
+          {loading ? "Cadastrando..." : "Cadastrar"}
+        </BtnPrimary>
       </form>
     </div>
   );

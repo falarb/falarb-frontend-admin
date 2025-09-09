@@ -19,7 +19,7 @@ import AddUser from "./pages/Users/AddUser";
 
 import Communities from "./pages/Communities";
 import ViewCommunity from "./pages/Communities/ViewCommunity";
-import EditCommunity from "./pages/Communities/EditCommunity";
+import EditarComunidade from "./pages/Communities/EditCommunity";
 import AddCommunity from "./pages/Communities/AddCommunity";
 
 import Administrators from "./pages/Administrators";
@@ -53,9 +53,7 @@ function App() {
 
                 <Route path="comunidades" element={<Communities />} />
                 <Route path="comunidade/:id" element={<ViewCommunity />} />
-                <Route
-                  path="comunidade/editar/:id"
-                  element={<EditCommunity />}
+                <Route path="comunidade/editar/:id" element={<EditarComunidade />}
                 />
                 <Route path="comunidade/cadastrar" element={<AddCommunity />} />
 
@@ -87,73 +85,3 @@ function App() {
 }
 
 export default App;
-
-/*---------------------------------------*/
-
-/*
-ROTAS PÚBLICAS - BACKEND
-
-POST /login
-POST /esqueci-senha
-POST /admin
-
-GET  /comunidades/
-
-POST /cidadaos/
-POST /cidadaos/envia-token/{id}
-POST /cidadaos/verifica-email/{id}
-GET  /cidadaos/email-existe
-
-POST /solicitacoes/
-GET  /solicitacoes/busca-por-token/{token}
-
-GET  /categorias/
-*/
-
-/*---------------------------------------*/
-
-/*
-Rotas Protegidas (auth:sanctum)
-POST /logout
-
-# Administradores
-GET  /administradores/
-GET  /administradores/{id}
-
-# Categorias
-POST   /categorias/
-GET    /categorias/{id}
-PUT    /categorias/{id}
-DELETE /categorias/{id}
-
-# Comunidades
-GET    /comunidades/{id}
-POST   /comunidades/
-PUT    /comunidades/{id}
-DELETE /comunidades/{id}
-
-# Cidadãos
-GET  /cidadaos/
-GET  /cidadaos/{id}
-PUT  /cidadaos/{id}
-
-# Modificações
-GET    /modificacoes/
-POST   /modificacoes/
-GET    /modificacoes/{id}
-PUT    /modificacoes/{id}
-DELETE /modificacoes/{id}
-
-# Solicitações
-GET    /solicitacoes/
-GET    /solicitacoes/{id}
-PUT    /solicitacoes/{id}
-DELETE /solicitacoes/{id}
-
-# Dashboard
-GET /dashboard/indicadores
-
-# Relatórios
-GET /relatorios/geral
-
-*/

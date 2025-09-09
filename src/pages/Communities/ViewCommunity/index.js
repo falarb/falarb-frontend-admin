@@ -8,7 +8,6 @@ import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Modal from "../../../components/Modal";
 import TitleClipPages from "../../../components/TitleClipPages";
-import SelectStatus from "../../../components/Select/SelectStatus";
 import MiniDashboardUser from "../../../components/MiniDashboardUser";
 import Erro from "../../../components/Message/Erro";
 
@@ -22,6 +21,7 @@ export default function VisualizarComunidade() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mostrarModalDelete, setAbrirModalDelete] = useState(false);
+  const [dashboard, setDashboard] = useState(null);
 
   useEffect(() => {
     const listarComunidade = async () => {
@@ -29,16 +29,9 @@ export default function VisualizarComunidade() {
       setError(null);
 
       try {
-        const resposta = await api.get(
-          `/comunidades?id=${id}`
-        );
-
-        if (resposta.status !== 200) {
-          throw new Error(`Erro HTTP ${resposta.status}`);
-        }
-        const dados = await resposta;
-
-        setComunidade(dados?.data?.dados || []);
+        const resposta = await api.get(`/comunidades/${id}`);
+        setComunidade(resposta?.data || []);
+        return resposta;
       } catch (err) {
         setError(err.message || "Erro desconhecido ao buscar comunidade");
         setComunidade([]);
@@ -46,19 +39,38 @@ export default function VisualizarComunidade() {
         setLoading(false);
       }
     };
+
+    const listarSolicitacoesComunidade = async () => {
+      setError(null);
+      setLoading(true);
+
+      try {
+        const resposta = await api.get(
+          `/dashboard/indicadores?comunidade_id=${id}`
+        );
+        const dados = await resposta;
+        setDashboard(dados?.data || []);
+        console.log(dados.data);
+        return dados;
+      } catch (err) {
+        setError(err.message || "Erro desconhecido");
+        setDashboard([]);
+      } finally {
+        setLoading(false);
+      }
+    };
     listarComunidade();
+    listarSolicitacoesComunidade();
   }, [id]);
 
   const inativarComunidade = async () => {
     try {
       setLoading(true);
       setError(null);
-      const resposta = await api.put(
-        `/comunidade/${id}`,
-        {
-          status: "inativo",
-        }
-      );
+      const resposta = await api.put(`/comunidade/${id}`, {
+        status: "inativo",
+      });
+      return resposta;
     } catch (erro) {
       setError("Erro ao inativar a comunidade.");
       throw new Error(`Erro: ${erro}`);
@@ -76,7 +88,7 @@ export default function VisualizarComunidade() {
       {error && `Erro: ${error}`}
       {!comunidade && `Nenhum condomínio encontrado`}
 
-      <TitleClipPages title={`Comunidade ID: ${comunidade.id}`} />
+      <TitleClipPages title={`Comunidade ID: ${comunidade?.id}`} />
 
       <div className="nav-tools">
         <BtnSecundary
@@ -97,26 +109,9 @@ export default function VisualizarComunidade() {
         </BtnSecundary>
 
         <BtnPrimary
-          adicionalClass="btn-svg"
-          onClick={() => {
-            alert("imprimeeeeee");
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#fff"
-          >
-            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
-          </svg>
-        </BtnPrimary>
-
-        <BtnPrimary
           adicionalClass="warning btn-svg"
           onClick={() => {
-            navigate(`/comunidade/editar/${comunidade.id}`);
+            navigate(`/administracao/comunidade/editar/${comunidade.id}`);
           }}
         >
           <svg
@@ -147,14 +142,13 @@ export default function VisualizarComunidade() {
           </svg>
         </BtnPrimary>
 
-        <SelectStatus value="ativo"></SelectStatus>
-
         <div className="container-mini-dashboard-user">
           <MiniDashboardUser
-            total="23"
-            concluidas="10"
-            agendadas="6"
-            em_aberto="7"
+            total={dashboard?.solicitacoes_por_status?.total || 0}
+            concluidas={dashboard?.solicitacoes_por_status?.concluidas || 0}
+            agendadas={dashboard?.solicitacoes_por_status?.agendadas || 0}
+            analise={dashboard?.solicitacoes_por_status?.analise || 0}
+            indeferidas={dashboard?.solicitacoes_por_status?.indeferidas || 0}
           />
         </div>
 
@@ -162,10 +156,9 @@ export default function VisualizarComunidade() {
           <Modal
             type="danger"
             title="Excluir solicitação"
-            description={`Você solicitou excluir essa solicitação. Essa alteração não pode ser desfeita. Você tem certeza?`}
+            description={`Você solicitou excluir essa comunidade. Essa alteração não pode ser desfeita. Você tem certeza?`}
             onConfirm={() => {
-              //fetchDelete()
-              alert("Delete");
+              inativarComunidade();
               setAbrirModalDelete(false);
               navigate(-1);
             }}
@@ -178,7 +171,7 @@ export default function VisualizarComunidade() {
 
       <div className="box-info">
         <span className="font-size-p">Nome</span>
-        <p className="font-size-m">{comunidade.nome}</p>
+        <p className="font-size-m">{comunidade?.nome}</p>
       </div>
     </div>
   );

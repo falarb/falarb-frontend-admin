@@ -50,16 +50,20 @@ export default function Comunidades() {
 
       try {
         const resposta = await api.get(
-          `/comunidades?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}`
+          `/comunidades?limite=10&pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&termo_geral=${debouncedSearch}`
         );
 
-        if (resposta.status !== 200) {
-          throw new Error(`Erro HTTP ${resposta.status}`);
-        }
-        const dados = await resposta;
-        setTotalPages(dados?.data?.ultima_pagina || 1);
+        
+        const ultimaPagina = resposta?.data.ultima_pagina || 1;
 
-        setComunidades(dados?.data?.dados || []);
+        if (page > ultimaPagina) {
+          setPage(ultimaPagina);
+          return;
+        }
+
+        setTotalPages(ultimaPagina);
+
+        setComunidades(resposta?.data?.dados || []);
       } catch (err) {
         setError(err.message || "Erro desconhecido ao buscar comunidades");
         setComunidades([]);
@@ -68,28 +72,20 @@ export default function Comunidades() {
       }
     };
     listarSolicitacoes();
-  }, [
-    page,
-    debouncedSearch,
-    sortBy,
-    sortOrder
-  ]);
+  }, [page, debouncedSearch, sortBy, sortOrder]);
 
   const inativarComunidade = async () => {
     try {
       setLoading(true);
       setError(null);
-      const resposta = await api.put(
-        `/comunidade/${comunidadeSelecionada.id}`,
-        {
-          status: "inativo",
-        }
-      );
+      const resposta = await api.delete(`/comunidade/${comunidadeSelecionada.id}`);
+      return resposta;
     } catch (erro) {
       setError("Erro ao inativar a solicitação.");
       throw new Error(`Erro: ${erro}`);
     } finally {
       setLoading(false);
+      setDebouncedSearch('');
     }
   };
 
@@ -103,7 +99,6 @@ export default function Comunidades() {
           title="Excluir comunidade"
           description={`Você solicitou excluir a seguinte comunidade: ${comunidadeSelecionada?.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
           onConfirm={() => {
-
             alert("delete");
             setAbrirModalDelete(false);
             window.location.reload();
@@ -162,9 +157,25 @@ export default function Comunidades() {
             setSortOrder(sortOrder === "asc" ? "desc" : "asc");
           }}
           col2="Total de pedidos"
+          onClickSort2={() => {
+            setSortBy("total_solicitacoes");
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+          }}
           col3="Nº de concluídos"
+          onClickSort3={() => {
+            setSortBy("concluidas_solicitacoes");
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+          }}
           col4="Nº de agendados"
+          onClickSort4={() => {
+            setSortBy("agendadas_solicitacoes");
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+          }}
           col5="Nº em espera"
+          onClickSort5={() => {
+            setSortBy("em_espera_solicitacoes");
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+          }}
         />
 
         {loading ? (
@@ -181,12 +192,12 @@ export default function Comunidades() {
               col3={comunidade?.solicitacoes_info?.agendadas}
               col4={comunidade?.solicitacoes_info?.concluidas}
               col5={comunidade?.solicitacoes_info?.em_espera}
-              link_view={`/administracao/comunidade/${comunidade.id}`}
+              link_view={`/administracao/comunidade/${comunidade?.id}`}
               onClickView={() => {
-                navigate(`/administracao/comunidade/${comunidade.id}`);
+                navigate(`/administracao/comunidade/${comunidade?.id}`);
               }}
               onClickEdit={() => {
-                navigate(`/administracao/comunidade/editar/${comunidade.id}`);
+                navigate(`/administracao/comunidade/editar/${comunidade?.id}`);
               }}
               onClickDelete={() => {
                 setComunidadeSelecionada(comunidade);
