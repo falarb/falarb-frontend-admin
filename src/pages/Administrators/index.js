@@ -20,7 +20,8 @@ import "./styles.css";
 
 export default function Administradores() {
   const [administradores, setAdministradores] = useState([]);
-  const [administradorSelecionado, setAdministradorSelecionado] = useState(null);
+  const [administradorSelecionado, setAdministradorSelecionado] =
+    useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [mostrarModalDelete, setMostrarModalDelete] = useState(false);
@@ -49,9 +50,7 @@ export default function Administradores() {
         const resposta = await api.get(
           `/administradores?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&pagina=${page}&termo_geral=${debouncedSearch}`
         );
-
-        if (resposta.status !== 200) throw new Error(`Erro HTTP ${resposta.status}`);
-
+        
         const dados = resposta.data;
         setTotalPages(dados?.ultima_pagina || 1);
         setAdministradores(dados?.dados || []);
@@ -97,11 +96,7 @@ export default function Administradores() {
       {loading && <Loading />}
 
       <div className="nav-tools">
-        
-        <BtnSecundary
-          adicionalClass="btn-svg"
-          onClick={() => navigate("/")}
-        >
+        <BtnSecundary adicionalClass="btn-svg" onClick={() => navigate("/")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -139,7 +134,7 @@ export default function Administradores() {
           onClickSort1={() => handleSort("nome")}
           col2="Email"
           sort2={false}
-          col3="CPF"
+          col3="Telefone"
           sort3={false}
           col4="Status"
           sort4={false}
@@ -154,20 +149,28 @@ export default function Administradores() {
         {!loading &&
           administradores.map((administrador) => (
             <TableItem
-              key={administrador.id}
-              id={administrador.id}
-              link_view={`/administrador/${administrador.id}`}
-              status={administrador.status}
-              col1={administrador.nome}
-              col2={administrador.email}
-              col3={administrador.cpf}
+              key={administrador?.id}
+              id={administrador?.id}
+              link_view={`/administrador/${administrador?.id}`}
+              status={administrador?.status}
+              col1={administrador?.nome}
+              col2={administrador?.email}
+              col3={administrador?.telefone}
               col4={
-                <span className={`col-status col-status-${administrador.status}`}>
+                <span
+                  className={`col-status col-status-${administrador?.status}`}
+                >
                   {administrador.status}
                 </span>
               }
-              onClickView={() => navigate(`/administracao/administrador/${administrador.id}`)}
-              onClickEdit={() => navigate(`/administracao/administrador/editar/${administrador.id}`)}
+              onClickView={() =>
+                navigate(`/administracao/administrador/${administrador?.id}`)
+              }
+              onClickEdit={() =>
+                navigate(
+                  `/administracao/administrador/editar/${administrador?.id}`
+                )
+              }
               onClickDelete={() => {
                 setAdministradorSelecionado(administrador);
                 setMostrarModalDelete(true);

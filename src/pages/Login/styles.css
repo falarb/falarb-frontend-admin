@@ -8,10 +8,29 @@
 }
 
 .container_form_login{
+    padding: 20px;
+    margin-top: 50px;
+    border:#d9d9d9 2px solid;
+    border-radius: 30px;
     display: flex;
     flex-direction: column;
+    gap: 40px;
     max-width: 400px;
     width: 100%;
+}
+
+.container_form_login h2{
+    font-size: 32px;
+    font-weight: 400;
+    margin: 20px 0 10px 0;
+    padding: 0;
+}
+
+.container_form_login p{
+    font-size: 14px;
+    font-weight: 400;
+    margin: 10px 0;
+    padding: 0;
 }
 
 .container_input_email,

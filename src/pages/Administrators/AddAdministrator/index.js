@@ -11,12 +11,15 @@ import Erro from "../../../components/Message/Erro";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Loading from "../../../components/Loading";
+import InputCustomMask from "../../../components/Input/InputCustomMask";
 
 export default function CadastrarAdministrador() {
   const [usuario, setUsuario] = useState({
     nome: "",
     email: "",
     cpf: "",
+    telefone: "",
+    senha: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -40,6 +43,11 @@ export default function CadastrarAdministrador() {
     } catch (err) {
       if (err.response?.status === 422) {
         setValidationErrors(err.response.data.errors || {});
+      } else if (
+        err.response?.status === 500 &&
+        err.response?.data?.message?.includes("Duplicate entry")
+      ) {
+        setError("Esse e-mail já está cadastrado. Tente outro.");
       } else {
         setError(
           err.response?.data?.message ||
@@ -55,6 +63,7 @@ export default function CadastrarAdministrador() {
   return (
     <div className="cadastrar-administrador-container">
       {loading && <Loading />}
+      {console.log(error)}
       {error && <Erro mensagem={error} />}
 
       <div className="nav-tools">
@@ -109,6 +118,28 @@ export default function CadastrarAdministrador() {
             onChange={handleChange}
           />
           <div className="validation-error">{validationErrors.cpf}</div>
+        </div>
+
+        <div className="container-single-input">
+          <InputCustomMask
+            label="Telefone"
+            name="telefone"
+            placeholder="(99) 9 9999-9999"
+            value={usuario.telefone}
+            onChange={handleChange}
+          />
+          <div className="validation-error">{validationErrors.nome}</div>
+        </div>
+
+        <div className="container-single-input">
+          <InputText
+            label="Senha"
+            name="senha"
+            type="password"
+            value={usuario.senha}
+            onChange={handleChange}
+          />
+          <div className="validation-error">{validationErrors.nome}</div>
         </div>
 
         <BtnPrimary type="submit">Cadastrar</BtnPrimary>

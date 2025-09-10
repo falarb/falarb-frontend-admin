@@ -1,0 +1,74 @@
+.modal-download{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ffffffad;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-download .card-download {
+    width: 350px;
+    max-width: 350px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .carregando{
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  .modal-download .card-download .card-content-download {
+    padding: 1.25rem 1rem 1rem 1rem;
+    background-color: #ffffff;
+    
+  }
+  
+    .image-download {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    background-color: #a4ccff69;
+
+  }
+  
+  .image-download  svg{
+    fill: #2f10b9 !important
+  } 
+  
+
+  .modal-download .card-download .content-download {
+    margin-top: 0.75rem;
+  }
+  
+  .modal-download .card-download .title-download {
+    color: #111827;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    text-align: right !important; 
+  }
+  
+  .actions-download button{
+    margin: 20px 0;
+    width: 100% !important;
+    max-width: 100% !important;
+  }

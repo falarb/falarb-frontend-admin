@@ -58,10 +58,16 @@ export default function EditarAdministrador() {
     setValidationErrors({});
 
     try {
-      const { data } = await api.put(`/administradores/${id}`, usuario);
+      const { data } = await api.put(`/administradores/${id}`, 
+        {
+          nome: usuario.nome,
+          email: usuario.email,
+          cpf: usuario.cpf,
+          celular: usuario.celular
+        }
+      );
       setUsuario(data);
       setIsDirty(false);
-      alert("Usuário atualizado com sucesso!");
       navigate(-1);
     } catch (err) {
       if (err.response?.status === 422) {

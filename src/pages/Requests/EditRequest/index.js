@@ -76,25 +76,26 @@ export default function EditarSolicitacao() {
       solicitacao.mot_indeferimento = null;
     } else if (solicitacao.status === "concluida") {
       solicitacao.mot_indeferimento = null;
-      try {
-        setLoading(true);
-        setError(null);
+    }
 
-        const resposta = await api.put(`/solicitacoes/${id}`, {
-          status: solicitacao.status,
-          mot_indeferimento: solicitacao.mot_indeferimento,
-          data_agendamento: solicitacao.data_agendamento,
-          data_conclusao: solicitacao.data_conclusao,
-        });
-        navigate(-1);
-        setAlterado(false);
-        return resposta.data;
-      } catch (erro) {
-        setError("Erro ao inativar a solicitação.");
-        console.error(erro);
-      } finally {
-        setLoading(false);
-      }
+    try {
+      setLoading(true);
+      setError(null);
+
+      const resposta = await api.put(`/solicitacoes/${id}`, {
+        status: solicitacao.status,
+        mot_indeferimento: solicitacao.mot_indeferimento,
+        data_agendamento: solicitacao.data_agendamento,
+        data_conclusao: solicitacao.data_conclusao,
+      });
+      navigate(-1);
+      setAlterado(false);
+      return resposta.data;
+    } catch (erro) {
+      setError("Erro ao inativar a solicitação.");
+      console.error(erro);
+    } finally {
+      setLoading(false);
     }
   };
 
