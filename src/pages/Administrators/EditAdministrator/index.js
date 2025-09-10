@@ -62,8 +62,7 @@ export default function EditarAdministrador() {
         {
           nome: usuario.nome,
           email: usuario.email,
-          cpf: usuario.cpf,
-          celular: usuario.celular
+          telefone: usuario.telefone
         }
       );
       setUsuario(data);
@@ -135,7 +134,7 @@ export default function EditarAdministrador() {
           <InputText
             label="Nome"
             name="nome"
-            value={usuario.nome}
+            value={usuario?.nome}
             onChange={handleChange}
           />
           <div className="validation-error">{validationErrors.nome}</div>
@@ -145,7 +144,7 @@ export default function EditarAdministrador() {
           <InputEmail
             label="Email"
             name="email"
-            value={usuario.email}
+            value={usuario?.email}
             onChange={handleChange}
           />
           <div className="validation-error">{validationErrors.email}</div>
@@ -153,21 +152,10 @@ export default function EditarAdministrador() {
 
         <div className="container-single-input">
           <InputCustomMask
-            label="CPF"
-            mask="999.999.999-99"
-            name="cpf"
-            value={usuario.cpf}
-            onChange={handleChange}
-          />
-          <div className="validation-error">{validationErrors.cpf}</div>
-        </div>
-
-        <div className="container-single-input">
-          <InputCustomMask
             label="Celular"
             mask="(99) 9 9999-9999"
             name="celular"
-            value={usuario.celular || ""}
+            value={usuario?.telefone || ""}
             onChange={handleChange}
           />
           <div className="validation-error">{validationErrors.celular}</div>

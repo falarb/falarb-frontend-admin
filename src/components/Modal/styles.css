@@ -54,8 +54,16 @@
     background-color: #ffe6cf;
   }
 
+  .normal-image{
+    background-color: #cfe8ff;
+  }
+
   .warning-image svg{
     fill: #ff7a00 !important
+  } 
+
+  .normal-image svg{
+    fill: #0059ff !important
   } 
   
   .modal .card .content {
@@ -89,6 +97,11 @@
 
   .modal .card .button-warning{
     background-color: #ff7a00;
+  }
+
+
+  .modal .card .button-normal{
+    background-color: #2b6adf;
   }
 
   .modal .card .desactivate {

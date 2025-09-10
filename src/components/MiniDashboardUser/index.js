@@ -5,6 +5,7 @@ export default function MiniDashboardUser({
   concluidas,
   agendadas,
   analise,
+  indeferida
 }) {
   return (
     <>
@@ -15,15 +16,19 @@ export default function MiniDashboardUser({
           <div className="por_status">
             <div>
               <div className="tag-dashboard-user tag-dashboard-user-concluidas"></div>
-              <span>{concluidas} concluidas</span>
+              <span>{concluidas} concluida(s)</span>
             </div>
             <div>
               <div className="tag-dashboard-user tag-dashboard-user-agendadas"></div>
-              <span>{agendadas} agendadas</span>
+              <span>{agendadas} agendada(s)</span>
             </div>
             <div>
-              <div className="tag-dashboard-user tag-dashboard-user-em-aberto"></div>
-              <span>{analise} em aberto</span>
+              <div className="tag-dashboard-user tag-dashboard-user-analise"></div>
+              <span>{analise} em análise</span>
+            </div>
+            <div>
+              <div className="tag-dashboard-user tag-dashboard-user-indeferida"></div>
+              <span>{indeferida} indeferida(s)</span>
             </div>
           </div>
         </div>

@@ -4,6 +4,8 @@
     margin: 0;
     padding: 0;
     gap: 10px;
+    position: absolute;
+    top: 50px;
 }
 
 .mini_dashboard_user .title{
@@ -18,9 +20,9 @@
 }
 
 .total{
-    font-size: 68px;
+    font-size: 90px;
     font-weight: 500;
-    line-height: 58px;
+    line-height: 80px;
 }
 
 .por_status{
@@ -51,6 +53,10 @@
     background-color: #FF8E0C;
 }   
 
-.tag-dashboard-user-em-aberto{
+.tag-dashboard-user-analise{
     background-color: #FF4040;
+}   
+
+.tag-dashboard-user-indeferida{
+    background-color: #727272;
 }   

@@ -9,7 +9,6 @@ import TableItem from "../../components/Table/TableFive/TableItem";
 import TableItemEmpty from "../../components/Table/TableFive/TableItemEmpty";
 import TableFooter from "../../components/Table/TableFive/TableFooter";
 import Erro from "../../components/Message/Erro";
-import Modal from "../../components/Modal";
 import Filtros from "../../components/Filters";
 import Loading from "../../components/Loading";
 import SelectCustom from "../../components/Select/SelectCustom";
@@ -26,8 +25,6 @@ export default function Solicitacoes() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [mostrarModalDelete, setAbrirModalDelete] = useState(true);
-  const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
 
   //filtros e paginação
   const [totalPages, setTotalPages] = useState(null);
@@ -90,7 +87,6 @@ export default function Solicitacoes() {
       setError(null);
 
       try {
-        //se passar de 10 deve ser configurado o limite
         const resposta = await api.get(`/categorias`);
         const dados = await resposta;
 
@@ -137,44 +133,10 @@ export default function Solicitacoes() {
     comunidade,
   ]);
 
-  const inativarSolicitacao = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const resposta = await api.delete(
-        `/solicitacoes/${solicitacaoSelecionada.id}`
-      );
-
-      return resposta.data;
-    } catch (erro) {
-      console.error(erro);
-      setError("Erro ao inativar a solicitação.");
-      return null; 
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <>
       {error && <Erro mensagem={error} onClose={null} />}
       {loading && <Loading />}
-      {mostrarModalDelete && solicitacaoSelecionada && (
-        <Modal
-          type="danger"
-          title="Excluir solicitação"
-          description={`Você solicitou excluir a solicitação. Essa alteração não pode ser desfeita. Você tem certeza?`}
-          onConfirm={() => {
-            inativarSolicitacao();
-            setAbrirModalDelete(false);
-            window.location.reload();
-          }}
-          onCancel={() => {
-            setAbrirModalDelete(false);
-          }}
-        />
-      )}
 
       <div className="navTools">
         <BtnSecundary
@@ -270,8 +232,8 @@ export default function Solicitacoes() {
           col1="Data de criação"
           sort1={true}
           onClickSort1={() => {
-            setSortBy("created_at"); // primeiro define a coluna
-            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc")); // usa o valor anterior corretamente
+            setSortBy("created_at"); 
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
           }}
           col2="Cidadão"
           sort2={false}
@@ -320,10 +282,7 @@ export default function Solicitacoes() {
                   `/administracao/solicitacao/editar/${solicitacao?.id}`
                 );
               }}
-              onClickDelete={() => {
-                setSolicitacaoSelecionada(solicitacao);
-                setAbrirModalDelete(true);
-              }}
+              excluir_ativo="false"
             />
           ))
         ) : (

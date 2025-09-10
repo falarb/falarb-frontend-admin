@@ -188,10 +188,10 @@ export default function Comunidades() {
               key={comunidade?.id}
               id={comunidade?.id}
               col1={comunidade?.nome}
-              col2={comunidade?.solicitacoes_info?.total}
-              col3={comunidade?.solicitacoes_info?.agendadas}
-              col4={comunidade?.solicitacoes_info?.concluidas}
-              col5={comunidade?.solicitacoes_info?.em_espera}
+              col2={comunidade?.solicitacoes_info?.total ? comunidade?.solicitacoes_info?.total : "0"}
+              col3={comunidade?.solicitacoes_info?.agendadas ? comunidade?.solicitacoes_info?.agendadas : "0"}
+              col4={comunidade?.solicitacoes_info?.concluidas ? comunidade?.solicitacoes_info?.concluidas : "0"}
+              col5={comunidade?.solicitacoes_info?.em_espera ? comunidade?.solicitacoes_info?.em_espera : "0"}
               link_view={`/administracao/comunidade/${comunidade?.id}`}
               onClickView={() => {
                 navigate(`/administracao/comunidade/${comunidade?.id}`);

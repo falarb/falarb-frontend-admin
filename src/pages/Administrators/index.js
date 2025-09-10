@@ -156,13 +156,7 @@ export default function Administradores() {
               col1={administrador?.nome}
               col2={administrador?.email}
               col3={administrador?.telefone}
-              col4={
-                <span
-                  className={`col-status col-status-${administrador?.status}`}
-                >
-                  {administrador.status}
-                </span>
-              }
+              col4={administrador?.ativo === 1 ? <span className="status-admin-ativo">Ativo</span> : <span className="status-admin-inativo">Inativo</span>}
               onClickView={() =>
                 navigate(`/administracao/administrador/${administrador?.id}`)
               }
