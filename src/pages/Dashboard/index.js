@@ -59,7 +59,7 @@ export default function Dashboard() {
         totalSolicitacoes={dados?.solicitacoes_por_status?.total || 0}
         totalConcluidas={dados?.solicitacoes_por_status?.concluida || 0}
         totalAgendadas={dados?.solicitacoes_por_status?.agendada || 0}
-        totalEmAberto={dados?.solicitacoes_por_status?.analise || 0}
+        totalEmAnalise={dados?.solicitacoes_por_status?.analise || 0}
         totalIndeferido={dados?.solicitacoes_por_status?.indeferida || 0}
         dados={dados}
       />

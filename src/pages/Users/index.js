@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { resolvePath, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { formataCpf } from "../../utils/functions";
 
 import api from "../../utils/api";
 
@@ -26,13 +27,13 @@ export default function Usuarios() {
   const [mostrarModalDelete, setMostrarModalDelete] = useState(false);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
 
-   //filtros e paginação
-   const [totalPages, setTotalPages] = useState(null);
-   const [page, setPage] = useState(1);
-   const [search, setSearch] = useState("");
-   const [debouncedSearch, setDebouncedSearch] = useState(search);
-   const [sortOrder, setSortOrder] = useState("asc");
-   const [sortBy, setSortBy] = useState("");
+  //filtros e paginação
+  const [totalPages, setTotalPages] = useState(null);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("");
 
   const navigate = useNavigate();
 
@@ -47,59 +48,59 @@ export default function Usuarios() {
   }, [search]);
 
   useEffect(() => {
-  const listarCidadaos = async () => {
-    setError(null);
-    setLoading(true);
+    const listarCidadaos = async () => {
+      setError(null);
+      setLoading(true);
 
+      try {
+        const resposta = await api.get(
+          `/cidadaos?ativo=true&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&pagina=${page}&termo_geral=${debouncedSearch}`
+        );
+
+        if (resposta.status !== 200) {
+          throw new Error(`Erro HTTP ${resposta.status}`);
+        }
+
+        const dados = resposta.data;
+
+        if (page > dados.ultima_pagina) {
+          setPage(dados.ultima_pagina || 1);
+          return;
+        }
+
+        setTotalPages(dados?.ultima_pagina || 1);
+        setCidadaos(dados?.dados || []);
+      } catch (err) {
+        setError(err.message || "Erro desconhecido na busca");
+        setCidadaos([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    listarCidadaos();
+  }, [page, debouncedSearch, sortBy, sortOrder]);
+
+
+
+  const inativarCidadao = async () => {
     try {
-      const resposta = await api.get(
-        `/cidadaos?ativo=true&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&pagina=${page}&termo_geral=${debouncedSearch}`
-      );
+      setLoading(true);
+      setError(null);
 
-      if (resposta.status !== 200) {
-        throw new Error(`Erro HTTP ${resposta.status}`);
-      }
+      const resposta = await api.delete(`/cidadaos/${usuarioSelecionado?.id}`);
 
-      const dados = resposta.data;
-
-      if (page > dados.ultima_pagina) {
-        setPage(dados.ultima_pagina || 1);
-        return;
-      }
-
-      setTotalPages(dados?.ultima_pagina || 1);
-      setCidadaos(dados?.dados || []);
-    } catch (err) {
-      setError(err.message || "Erro desconhecido na busca");
-      setCidadaos([]);
+      return resposta.data;
+    } catch (erro) {
+      console.error(erro);
+      setError("Erro ao inativar cidadão.");
+      return null;
     } finally {
       setLoading(false);
+      setUsuarioSelecionado(null);
+      window.location.reload();
     }
   };
-
-  listarCidadaos();
-}, [page, debouncedSearch, sortBy, sortOrder]);
-
-
- 
-const inativarCidadao = async () => {
-  try {
-    setLoading(true);
-    setError(null);
-
-    const resposta = await api.delete(`/cidadaos/${usuarioSelecionado?.id}`);
-
-    return resposta.data;
-  } catch (erro) {
-    console.error(erro);
-    setError("Erro ao inativar cidadão.");
-    return null;
-  } finally {
-    setLoading(false);
-    setUsuarioSelecionado(null);
-    window.location.reload();
-  }
-};
 
 
   return (
@@ -168,12 +169,10 @@ const inativarCidadao = async () => {
             <TableItem
               key={cidadao?.id}
               id={cidadao?.id}
-              status={cidadao?.bloqueado ? "inativo" : "ativo"}
               col1={cidadao?.nome}
-              col2={cidadao?.cpf}
+              col2={formataCpf(cidadao?.cpf)}
               col3={cidadao?.email}
               col4={cidadao?.ultimo_codigo}
-              tipo={cidadao?.tipo}
               link_view={`/administracao/usuario/${cidadao?.id}`}
               onClickView={() => {
                 navigate(`/administracao/usuario/${cidadao?.id}`);

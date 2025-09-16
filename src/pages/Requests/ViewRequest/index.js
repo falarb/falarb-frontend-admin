@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { formataCpf, formataTelefone } from "../../../utils/functions";
 
 import api from "../../../utils/api";
 import html2canvas from "html2canvas";
@@ -7,7 +8,6 @@ import html2canvas from "html2canvas";
 import Loading from "../../../components/Loading";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
-import Modal from "../../../components/Modal";
 import TitleClipPages from "../../../components/TitleClipPages";
 
 import "./styles.css";
@@ -46,25 +46,6 @@ export default function VisualizarSolicitacao() {
 
     listarSolicitacao();
   }, [id]);
-
-  const inativarSolicitacao = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const resposta = await api.delete(`/solicitacoes/${id}`);
-
-      if (resposta.status !== 200) {
-        throw new Error(`Erro HTTP ${resposta.status}`);
-      }
-      navigate("/administracao/solicitacoes");
-      alert("Solicitação inativada com sucesso!");
-    } catch (erro) {
-      setError("Erro ao inativar a solicitação.");
-      console.error(erro);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const baixarComprovante = async () => {
     const element = document.getElementById("container-comprovante");
@@ -178,12 +159,12 @@ export default function VisualizarSolicitacao() {
                   month: "2-digit",
                   year: "numeric",
                 }) +
-                  " às " +
-                  new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  })}
+                " às " +
+                new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
             </p>
           </div>
 
@@ -231,12 +212,12 @@ export default function VisualizarSolicitacao() {
               {solicitacao?.status === "analise"
                 ? "Em análise"
                 : solicitacao?.status === "agendada"
-                ? "Agendada"
-                : solicitacao?.status === "concluida"
-                ? "Concluída"
-                : solicitacao?.status === "indeferida"
-                ? "Indeferida"
-                : "Status desconhecido"}
+                  ? "Agendada"
+                  : solicitacao?.status === "concluida"
+                    ? "Concluída"
+                    : solicitacao?.status === "indeferida"
+                      ? "Indeferida"
+                      : "Status desconhecido"}
             </p>
           </div>
 
@@ -247,7 +228,7 @@ export default function VisualizarSolicitacao() {
 
           <div className="box-info">
             <span className="font-size-p">CPF</span>
-            <p className="font-size-m">{solicitacao?.cidadao?.cpf}</p>
+            <p className="font-size-m">{formataCpf(solicitacao?.cidadao?.cpf)}</p>
           </div>
 
           <div className="box-info">
@@ -257,7 +238,7 @@ export default function VisualizarSolicitacao() {
 
           <div className="box-info">
             <span className="font-size-p">Celular</span>
-            <p className="font-size-m">{solicitacao?.cidadao?.telefone}</p>
+            <p className="font-size-m">{formataTelefone(solicitacao?.cidadao?.telefone)}</p>
           </div>
 
           {solicitacao?.descricao ? (

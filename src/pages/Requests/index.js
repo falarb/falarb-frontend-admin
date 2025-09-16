@@ -13,7 +13,6 @@ import Filtros from "../../components/Filters";
 import Loading from "../../components/Loading";
 import SelectCustom from "../../components/Select/SelectCustom";
 import InputSearch from "../../components/Input/InputSearch";
-import BtnPrimary from "../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../components/Btn/BtnSecundary";
 
 import "./styles.css";
@@ -22,6 +21,8 @@ export default function Solicitacoes() {
   const [solicitacoes, setSolicitacoes] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [comunidades, setComunidades] = useState([]);
+
+  const idCidadao = new URLSearchParams(window.location.search).get("id_cidadao");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -56,7 +57,7 @@ export default function Solicitacoes() {
 
       try {
         const resposta = await api.get(
-          `/solicitacoes?pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&status=${status}&categoria=${tipo_pedido}&comunidade=${comunidade}&termo_geral=${debouncedSearch}&cidadao=`
+          `/solicitacoes?pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&status=${status}&categoria=${tipo_pedido}&comunidade=${comunidade}&termo_geral=${debouncedSearch}&cidadao=${idCidadao || ""}`
         );
 
         if (resposta.status !== 200) {
@@ -87,10 +88,9 @@ export default function Solicitacoes() {
       setError(null);
 
       try {
-        const resposta = await api.get(`/categorias`);
-        const dados = await resposta;
+        const resposta = await api.get(`/categorias?ordenar_por=nome&ordenar_direcao=asc`);
 
-        setCategorias(dados?.data?.dados || []);
+        setCategorias(resposta?.data?.dados || []);
       } catch (err) {
         setError(err.message || "Erro desconhecido ao buscar categorias");
         setCategorias([]);
@@ -104,17 +104,16 @@ export default function Solicitacoes() {
       setError(null);
 
       try {
-        const resposta = await api.get(`/comunidades`);
+        const resposta = await api.get(`/comunidades?ordenar_por=nome&ordenar_direcao=asc`);
 
         if (resposta.status !== 200) {
           throw new Error(`Erro HTTP ${resposta.status}`);
         }
-        const dados = await resposta;
 
-        setComunidades(dados?.data?.dados || []);
+        setComunidades(resposta?.data?.dados || []);
       } catch (err) {
         setError(err.message || "Erro desconhecido ao buscar comunidades");
-        setCategorias([]);
+        setComunidades([]);
       } finally {
         setLoading(false);
       }
@@ -131,6 +130,7 @@ export default function Solicitacoes() {
     sortOrder,
     tipo_pedido,
     comunidade,
+    idCidadao,
   ]);
 
   return (
@@ -155,13 +155,6 @@ export default function Solicitacoes() {
             <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
           </svg>
         </BtnSecundary>
-        <BtnPrimary
-          onClick={() => {
-            alert("url");
-          }}
-        >
-          Cadastrar
-        </BtnPrimary>
       </div>
 
       <h2>Listagem de Solicitações</h2>
@@ -175,9 +168,9 @@ export default function Solicitacoes() {
           }}
         >
           <option value="">Todos</option>
-          <option value="analise">Em análise</option>
           <option value="agendada">Agendada</option>
           <option value="concluida">Concluída</option>
+          <option value="analise">Em análise</option>
           <option value="indeferida">Indeferida</option>
         </SelectCustom>
 
@@ -220,7 +213,7 @@ export default function Solicitacoes() {
         <InputSearch
           label="Busque por solicitações"
           value={search}
-          placeholder="Busque por solicitações..."
+          placeholder="Busque por cidadão, tipo de p..."
           onChange={(event) => {
             setSearch(event.target.value);
           }}
@@ -232,7 +225,7 @@ export default function Solicitacoes() {
           col1="Data de criação"
           sort1={true}
           onClickSort1={() => {
-            setSortBy("created_at"); 
+            setSortBy("created_at");
             setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
           }}
           col2="Cidadão"
@@ -265,12 +258,12 @@ export default function Solicitacoes() {
                 solicitacao?.status === "analise"
                   ? "Análise"
                   : solicitacao?.status === "agendada"
-                  ? "Agendada"
-                  : solicitacao?.status === "concluida"
-                  ? "Concluída"
-                  : solicitacao?.status === "indeferida"
-                  ? "Indeferida"
-                  : "Desconhecido"
+                    ? "Agendada"
+                    : solicitacao?.status === "concluida"
+                      ? "Concluída"
+                      : solicitacao?.status === "indeferida"
+                        ? "Indeferida"
+                        : "Desconhecido"
               }
               classNameCol5={solicitacao?.status}
               link_view={`/administracao/solicitacao/${solicitacao?.id}`}

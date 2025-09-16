@@ -50,7 +50,7 @@ export default function Administradores() {
         const resposta = await api.get(
           `/administradores?ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&pagina=${page}&termo_geral=${debouncedSearch}`
         );
-        
+
         const dados = resposta.data;
         setTotalPages(dados?.ultima_pagina || 1);
         setAdministradores(dados?.dados || []);
@@ -73,6 +73,9 @@ export default function Administradores() {
     try {
       await api.delete(`/administradores/${id}`);
       setMostrarModalSuccess(true);
+
+      // Recarregar a lista após inativar
+      window.location.reload();
     } catch (err) {
       console.error(err);
       setError("Erro ao inativar administrador.");

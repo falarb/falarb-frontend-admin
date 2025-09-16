@@ -28,19 +28,19 @@
   background: #f9fafb;
 }
 
-.table-item-column{
+.table-item-column {
   width: 100%;
-  word-break: break-all;
+  word-break: break-word;
 }
 
-.table-item-columnundefined{
+.table-item-columnundefined {
   position: relative !important;
   left: 0;
-  top:0;
+  top: 0;
   width: 100%;
 }
 
-.table-item-columnundefined span{
+.table-item-columnundefined span {
   font-size: 16px !important;
 }
 
@@ -72,11 +72,11 @@
   left: 0;
 }
 
-.table-item  .status{
+.table-item .status {
   position: absolute;
-  right: 42px;
-  border-radius: 10px;
-  padding: 3px 10px;
+  right: 70px;
+  border-radius: 21px;
+  padding: 12px 32px;
 }
 
 .ativo,
@@ -106,9 +106,8 @@
 }
 
 .status span {
-  font-size: 12px;
-  position: relative;
-  top: -2px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .table-item-action {
@@ -147,6 +146,6 @@
   fill: #e45656;
 }
 
-.delete-false{
+.delete-false {
   display: none;
 }

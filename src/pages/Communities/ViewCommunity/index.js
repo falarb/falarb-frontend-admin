@@ -145,10 +145,10 @@ export default function VisualizarComunidade() {
         <div className="container-mini-dashboard-user">
           <MiniDashboardUser
             total={dashboard?.solicitacoes_por_status?.total || 0}
-            concluidas={dashboard?.solicitacoes_por_status?.concluidas || 0}
-            agendadas={dashboard?.solicitacoes_por_status?.agendadas || 0}
+            concluidas={dashboard?.solicitacoes_por_status?.concluida || 0}
+            agendadas={dashboard?.solicitacoes_por_status?.agendada || 0}
             analise={dashboard?.solicitacoes_por_status?.analise || 0}
-            indeferidas={dashboard?.solicitacoes_por_status?.indeferidas || 0}
+            indeferida={dashboard?.solicitacoes_por_status?.indeferida || 0}
           />
         </div>
 

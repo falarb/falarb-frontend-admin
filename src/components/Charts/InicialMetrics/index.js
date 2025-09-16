@@ -5,7 +5,7 @@ const InicialMetrics = ({
   totalSolicitacoes,
   totalConcluidas,
   totalAgendadas,
-  totalEmAberto,
+  totalEmAnalise,
   totalIndeferido,
 }) => {
   return (
@@ -29,9 +29,9 @@ const InicialMetrics = ({
         totalSolicitacoes={totalSolicitacoes}
       />
       <Card
-        titleCard="Em aberto"
-        type="em-aberto"
-        valueCard={totalEmAberto}
+        titleCard="Em análise"
+        type="em-analise"
+        valueCard={totalEmAnalise}
         totalSolicitacoes={totalSolicitacoes}
       />
       <Card

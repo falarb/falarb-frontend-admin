@@ -19,6 +19,15 @@ export default function PieCharts({ dados }) {
       id: idx,
       value,
       label: key.charAt(0).toUpperCase() + key.slice(1),
+      color: key === "analise"
+        ? "#ffc014ff"
+        : key === "agendada"
+          ? "#ff8408"
+          : key === "concluida"
+            ? "#10B981"
+            : key === "indeferida"
+              ? "#858585"
+              : "#8884d8",
     }));
 
   // Extrair dados de categoria
@@ -42,6 +51,7 @@ export default function PieCharts({ dados }) {
               cornerRadius: 10,
               startAngle: -45,
               endAngle: 225,
+              colorKey: "color",
             },
           ]}
           width={250}

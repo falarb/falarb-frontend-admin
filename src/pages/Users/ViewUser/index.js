@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { formataCpf, formataTelefone } from "../../../utils/functions";
 
 import api from "../../../utils/api";
 import html2canvas from "html2canvas";
@@ -30,12 +31,11 @@ export default function ViewUser() {
       setLoading(true);
 
       try {
-        const resposta = await api.get(`/cidadaos/${id}`);
+        const dados = await api.get(`/cidadaos/${id}`);
 
-        if (resposta.status !== 200) {
-          throw new Error(`Erro HTTP ${resposta.status}`);
+        if (dados.status !== 200) {
+          throw new Error(`Erro HTTP ${dados.status}`);
         }
-        const dados = await resposta;
         setCidadao(dados?.data || []);
       } catch (err) {
         setError(err.message || "Erro desconhecido ao buscar cidadão");
@@ -50,8 +50,7 @@ export default function ViewUser() {
       setLoading(true);
 
       try {
-        const resposta = await api.get(`/dashboard/indicadores?id_cidadao=${id}`);
-        const dados = await resposta;
+        const dados = await api.get(`/dashboard/indicadores?id_cidadao=${id}`);
         setDashboard(dados?.data || []);
         console.log(dados.data);
         return dados;
@@ -144,10 +143,11 @@ export default function ViewUser() {
           </svg>
         </BtnPrimary>
 
+        {/* Botão para visualizar solicitações */}
         <BtnPrimary
           adicionalClass="roxo btn-svg"
           onClick={() => {
-            navigate("/administracao/solicitacoes", { state: { cidadao: id } });
+            navigate(`/administracao/solicitacoes?id_cidadao=${cidadao?.id}`);
           }}
         >
           <svg
@@ -230,7 +230,7 @@ export default function ViewUser() {
 
         <div className="box-info">
           <label className="font-size-p">CPF</label>
-          <p className="font-size-m">{cidadao?.cpf}</p>
+          <p className="font-size-m">{formataCpf(cidadao?.cpf)}</p>
         </div>
 
         <div className="box-info">
@@ -240,7 +240,7 @@ export default function ViewUser() {
 
         <div className="box-info">
           <label className="font-size-p">Telefone</label>
-          <p className="font-size-m">{cidadao?.cpf}</p>
+          <p className="font-size-m">{formataTelefone(cidadao?.telefone)}</p>
         </div>
       </div>
     </div>

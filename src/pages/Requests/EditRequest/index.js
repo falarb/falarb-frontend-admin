@@ -19,9 +19,6 @@ export default function EditarSolicitacao() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mostrarModalEdit, setAbrirModalEdit] = useState(false);
-  const [mostrarModalIndeferida, setAbrirModalIndeferida] = useState(false);
-  const [mostrarModalAgendamento, setAbrirModalAgendamento] = useState(false);
-  const [mostrarModalConclusao, setAbrirModalConclusao] = useState(false);
   const [mostrarModalAlterado, setMostrarModalAlterado] = useState(false);
   const [alterado, setAlterado] = useState(false);
 
@@ -139,35 +136,12 @@ export default function EditarSolicitacao() {
           title="Salvar alterações"
           adicionalClass="success btn-svg"
           onClick={() => {
-            if (
-              solicitacao.status === "indeferida" &&
-              !solicitacao.mot_indeferimento
-            ) {
-              setAbrirModalIndeferida(true);
-            } else if (
-              solicitacao.status === "agendada" &&
-              !solicitacao.data_agendamento
-            ) {
-              setAbrirModalAgendamento(true);
-            } else if (
-              solicitacao.status === "concluida" &&
-              !solicitacao.data_conclusao
-            ) {
-              setAbrirModalConclusao(true);
-            } else {
-              setAbrirModalEdit(true);
-            }
+            setAbrirModalEdit(true);
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#fff"
-          >
-            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />{" "}
-          </svg>
+          <span class="material-symbols-outlined" style={{ color: "#fff", margin: "auto" }}>
+            save
+          </span>
         </BtnPrimary>
 
         <SelectStatus
@@ -190,36 +164,6 @@ export default function EditarSolicitacao() {
             description="Você tem alterações não salvas. Tem certeza que deseja sair sem salvar?"
             onConfirm={() => navigate(-1)}
             onCancel={() => setMostrarModalAlterado(false)}
-          />
-        )}
-
-        {mostrarModalIndeferida && (
-          <Modal
-            type="warning"
-            title="Indeferir solicitação"
-            description="Para mudar o status para indeferida, é obrigatório adicionar o motivo do indeferimento."
-            onConfirm={() => setAbrirModalIndeferida(false)}
-            onCancel={() => setAbrirModalIndeferida(false)}
-          />
-        )}
-
-        {mostrarModalAgendamento && (
-          <Modal
-            type="warning"
-            title="Agendar solicitação"
-            description="Você solicitou agendar essa solicitação. Você deve selecionar uma data para o agendamento."
-            onConfirm={() => setAbrirModalAgendamento(false)}
-            onCancel={() => setAbrirModalAgendamento(false)}
-          />
-        )}
-
-        {mostrarModalConclusao && (
-          <Modal
-            type="warning"
-            title="Concluir solicitação"
-            description="Você solicitou concluir essa solicitação. Você deve selecionar a data da conclusão."
-            onConfirm={() => setAbrirModalConclusao(false)}
-            onCancel={() => setAbrirModalConclusao(false)}
           />
         )}
 
@@ -305,12 +249,12 @@ export default function EditarSolicitacao() {
                 month: "2-digit",
                 year: "numeric",
               }) +
-                " às " +
-                new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}
+              " às " +
+              new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
           </p>
         </div>
 

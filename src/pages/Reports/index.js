@@ -1,5 +1,4 @@
 import "./styles.css";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import api from "../../utils/api";
@@ -12,8 +11,6 @@ import Download from "../../components/Modal/Download";
 import Loading from "../../components/Loading";
 
 export default function Relatorios() {
-  const navigate = useNavigate();
-
   const [abrirModalDownload, setAbrirModalDownload] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [erros, setErros] = useState("");
@@ -30,14 +27,14 @@ export default function Relatorios() {
       try {
         setCarregando(true);
         setErros("");
-        const resposta = await api.get(`/categorias`);
+        const resposta = await api.get(`/categorias?ordenar_por=nome&ordenar_direcao=asc`);
         const dados = resposta.data;
         setCategorias(dados?.dados || []);
       } catch (err) {
         setErros(
           err.response?.data?.message ||
-            err.message ||
-            "Erro ao buscar categoria."
+          err.message ||
+          "Erro ao buscar categoria."
         );
       } finally {
         setCarregando(false);
@@ -48,14 +45,13 @@ export default function Relatorios() {
       try {
         setCarregando(true);
         setErros("");
-        const resposta = await api.get(`/comunidades`);
-        const dados = resposta.data;
-        setComunidades(dados?.dados || []);
+        const { data } = await api.get(`/comunidades?ordenar_por=nome&ordenar_direcao=asc`);
+        setComunidades(data?.dados || []);
       } catch (err) {
         setErros(
           err.response?.data?.message ||
-            err.message ||
-            "Erro ao buscar categoria."
+          err.message ||
+          "Erro ao buscar categoria."
         );
       } finally {
         setCarregando(false);
@@ -100,8 +96,8 @@ export default function Relatorios() {
       } else {
         setErros(
           err.response?.data?.message ||
-            err.message ||
-            "Erro ao buscar relatório."
+          err.message ||
+          "Erro ao buscar relatório."
         );
       }
     } finally {
@@ -153,7 +149,7 @@ export default function Relatorios() {
 
       {abrirModalDownload && (
         <Download
-          classeAdicional={ carregando && 'carregando' }
+          classeAdicional={carregando && 'carregando'}
           title="Crie seu relatório personalizado"
           onConfirm={() => {
             trazerRelatorioGeral();
@@ -163,7 +159,7 @@ export default function Relatorios() {
           }}
         >
           {carregando && <Loading />}
-          {erros && <Erro mensagem={erros}/>}
+          {erros && <Erro mensagem={erros} />}
           <div className="container-form-relatorio">
             <SelectCustom
               label="Comunidade"

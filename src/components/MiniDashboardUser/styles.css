@@ -1,62 +1,63 @@
-.mini_dashboard_user{
+.mini_dashboard_user {
     display: flex;
     flex-direction: column;
     margin: 0;
     padding: 0;
     gap: 10px;
     position: absolute;
-    top: 50px;
+    top: 80px;
+    margin-left: 80px;
 }
 
-.mini_dashboard_user .title{
+.mini_dashboard_user .title {
     color: #BDBDBD;
     font-size: 16px;
 }
 
 
-.solicitacoes-infos{
+.solicitacoes-infos {
     display: flex;
     gap: 20px;
 }
 
-.total{
+.total {
     font-size: 90px;
     font-weight: 500;
     line-height: 80px;
 }
 
-.por_status{
+.por_status {
     font-size: 13px;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.por_status div{
+.por_status div {
     font-size: 13px;
     display: flex;
     align-items: center;
 }
 
-.tag-dashboard-user{
+.tag-dashboard-user {
     width: 15px;
     height: 7px;
     border-radius: 10px;
     margin: 0 6px 0 0;
-}   
+}
 
-.tag-dashboard-user-concluidas{
+.tag-dashboard-user-concluidas {
     background-color: #25D366;
-}   
+}
 
-.tag-dashboard-user-agendadas{
+.tag-dashboard-user-agendadas {
     background-color: #FF8E0C;
-}   
+}
 
-.tag-dashboard-user-analise{
+.tag-dashboard-user-analise {
     background-color: #FF4040;
-}   
+}
 
-.tag-dashboard-user-indeferida{
+.tag-dashboard-user-indeferida {
     background-color: #727272;
-}   
+}

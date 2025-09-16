@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Modal from "../../components/Modal";
@@ -20,6 +20,14 @@ export default function Login() {
     email: "",
     senha: "",
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("tokenAdminSolicitaAi");
+
+    if (token) {
+      navigate("/administracao", { replace: true });
+    }
+  }, [navigate]);
 
   const tratandoMudanca = (evento) => {
     const { name, value } = evento.target;
@@ -167,9 +175,9 @@ export default function Login() {
               </button>
             </div>
 
-            <div className="container_esqueci_senha">
+            {/* <div className="container_esqueci_senha">
               <a>Esqueci minha senha</a>
-            </div>
+            </div> */}
             <BtnPrimary>Entrar</BtnPrimary>
           </form>
         </div>
