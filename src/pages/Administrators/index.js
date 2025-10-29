@@ -15,10 +15,17 @@ import BtnSecundary from "../../components/Btn/BtnSecundary";
 import Filtros from "../../components/Filters";
 import InputSearch from "../../components/Input/InputSearch";
 
+import ModalHelp from "../../components/Modal/Help";
+import HelpIndicator from "../../components/HelpIndicator";
+import { useHelp } from "../../hooks/useHelp";
+import { helpConfigs } from "../../utils/helpConfigs";
+
 import api from "../../utils/api";
 import "./styles.css";
 
 export default function Administradores() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [administradores, setAdministradores] = useState([]);
   const [administradorSelecionado, setAdministradorSelecionado] =
     useState(null);
@@ -26,6 +33,7 @@ export default function Administradores() {
   const [loading, setLoading] = useState(false);
   const [mostrarModalDelete, setMostrarModalDelete] = useState(false);
   const [mostrarModalSuccess, setMostrarModalSuccess] = useState(false);
+  const [mostrarModalWarning, setMostrarModalWarning] = useState(false);
 
   // filtros e paginação
   const [page, setPage] = useState(1);
@@ -68,19 +76,23 @@ export default function Administradores() {
   }, [page, debouncedSearch, sortBy, sortOrder]);
 
   const inativarAdmin = async (id) => {
-    setLoading(true);
-    setError("");
-    try {
-      await api.delete(`/administradores/${id}`);
-      setMostrarModalSuccess(true);
+    if (administradores?.filter((adm) => adm.ativo === 1).length !== 1) {
+      setLoading(true);
+      setError("");
+      try {
+        await api.delete(`/administradores/${id}`);
+        setMostrarModalSuccess(true);
 
-      // Recarregar a lista após inativar
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-      setError("Erro ao inativar administrador.");
-    } finally {
-      setLoading(false);
+        // Recarregar a lista após inativar
+        window.location.reload();
+      } catch (err) {
+        console.error(err);
+        setError("Erro ao inativar administrador.");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setMostrarModalWarning(true);
     }
   };
 
@@ -95,7 +107,7 @@ export default function Administradores() {
 
   return (
     <div className="administradores-container">
-      {error && <Erro mensagem={error} />}
+      {error && <Erro mensagem={"Tivemos um problema, tente novamente ou entre em contato com o suporte."} />}
       {loading && <Loading />}
 
       <div className="nav-tools">
@@ -153,13 +165,18 @@ export default function Administradores() {
           administradores.map((administrador) => (
             <TableItem
               key={administrador?.id}
-              id={administrador?.id}
               link_view={`/administrador/${administrador?.id}`}
-              status={administrador?.status}
+              status={administrador?.ativo === 1 ? "ativo" : "inativo" || 0}
               col1={administrador?.nome}
               col2={administrador?.email}
               col3={administrador?.telefone}
-              col4={administrador?.ativo === 1 ? <span className="status-admin-ativo">Ativo</span> : <span className="status-admin-inativo">Inativo</span>}
+              col4={
+                administrador?.ativo === 1 ? (
+                  <span className="status-admin-ativo">Ativo</span>
+                ) : (
+                  <span className="status-admin-inativo">Inativo</span>
+                )
+              }
               onClickView={() =>
                 navigate(`/administracao/administrador/${administrador?.id}`)
               }
@@ -203,6 +220,25 @@ export default function Administradores() {
           onConfirm={() => setMostrarModalSuccess(false)}
         />
       )}
+
+      {mostrarModalWarning && (
+        <Modal
+          type="warning"
+          title="Atenção"
+          description="Você não pode inativar esse administrador pois ele é o único com acesso ao sistema."
+          onConfirm={() => setMostrarModalWarning(false)}
+          onCancel={() => setMostrarModalWarning(false)}
+        />
+      )}
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

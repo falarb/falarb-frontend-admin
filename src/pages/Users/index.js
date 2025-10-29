@@ -17,9 +17,16 @@ import BtnSecundary from "../../components/Btn/BtnSecundary";
 import Filtros from "../../components/Filters";
 import InputSearch from "../../components/Input/InputSearch";
 
+import ModalHelp from "../../components/Modal/Help";
+import HelpIndicator from "../../components/HelpIndicator";
+import { useHelp } from "../../hooks/useHelp";
+import { helpConfigs } from "../../utils/helpConfigs";
+
 import "./styles.css";
 
 export default function Usuarios() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [cidadaos, setCidadaos] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -81,8 +88,6 @@ export default function Usuarios() {
     listarCidadaos();
   }, [page, debouncedSearch, sortBy, sortOrder]);
 
-
-
   const inativarCidadao = async () => {
     try {
       setLoading(true);
@@ -102,11 +107,16 @@ export default function Usuarios() {
     }
   };
 
-
   return (
     <>
       {loading && <Loading />}
-      {error && <Erro mensagem={error} />}
+      {error && (
+        <Erro
+          mensagem={
+            "Tivemos um problema, tente novamente ou entre em contato com o suporte."
+          }
+        />
+      )}
 
       <div className="nav-tools">
         <BtnSecundary
@@ -168,7 +178,7 @@ export default function Usuarios() {
           cidadaos?.map((cidadao) => (
             <TableItem
               key={cidadao?.id}
-              id={cidadao?.id}
+              id={cidadao?.telefone}
               col1={cidadao?.nome}
               col2={formataCpf(cidadao?.cpf)}
               col3={cidadao?.email}
@@ -215,6 +225,14 @@ export default function Usuarios() {
           }}
         />
       </Table>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </>
   );
 }

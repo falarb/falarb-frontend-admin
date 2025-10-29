@@ -1,5 +1,6 @@
 import "./InicialMetrics.css";
 import Card from "./Card";
+import SelectCustom from "../../Select/SelectCustom";
 
 const InicialMetrics = ({
   totalSolicitacoes,
@@ -40,6 +41,9 @@ const InicialMetrics = ({
         valueCard={totalIndeferido}
         totalSolicitacoes={totalSolicitacoes}
       />
+      <Card type="select">
+        <SelectCustom label="Período" />
+      </Card>
     </div>
   );
 };

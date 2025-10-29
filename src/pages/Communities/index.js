@@ -16,7 +16,14 @@ import Filtros from "../../components/Filters";
 import Modal from "../../components/Modal";
 import InputSearch from "../../components/Input/InputSearch";
 
+import ModalHelp from "../../components/Modal/Help";
+import HelpIndicator from "../../components/HelpIndicator";
+import { useHelp } from "../../hooks/useHelp";
+import { helpConfigs } from "../../utils/helpConfigs";
+
 export default function Comunidades() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [comunidades, setComunidades] = useState([]);
   const [mostrarModalDelete, setAbrirModalDelete] = useState(true);
   const [comunidadeSelecionada, setComunidadeSelecionada] = useState(null);
@@ -53,7 +60,6 @@ export default function Comunidades() {
           `/comunidades?limite=10&pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&termo_geral=${debouncedSearch}`
         );
 
-        
         const ultimaPagina = resposta?.data.ultima_pagina || 1;
 
         if (page > ultimaPagina) {
@@ -78,21 +84,23 @@ export default function Comunidades() {
     try {
       setLoading(true);
       setError(null);
-      const resposta = await api.delete(`/comunidade/${comunidadeSelecionada.id}`);
+      const resposta = await api.delete(
+        `/comunidade/${comunidadeSelecionada.id}`
+      );
       return resposta;
     } catch (erro) {
       setError("Erro ao inativar a solicitação.");
       throw new Error(`Erro: ${erro}`);
     } finally {
       setLoading(false);
-      setDebouncedSearch('');
+      setDebouncedSearch("");
     }
   };
 
   return (
     <div>
       {loading && <Loading />}
-      {error && <Erro mensagem={error.message || "Erro desconhecido"} />}
+      {error && <Erro mensagem={"Tivemos um problema, tente novamente ou entre em contato com o suporte." || "Erro desconhecido"} />}
       {mostrarModalDelete && comunidadeSelecionada && (
         <Modal
           type="danger"
@@ -186,12 +194,27 @@ export default function Comunidades() {
           comunidades.map((comunidade) => (
             <TableItem
               key={comunidade?.id}
-              id={comunidade?.id}
               col1={comunidade?.nome}
-              col2={comunidade?.solicitacoes_info?.total ? comunidade?.solicitacoes_info?.total : "0"}
-              col3={comunidade?.solicitacoes_info?.agendadas ? comunidade?.solicitacoes_info?.agendadas : "0"}
-              col4={comunidade?.solicitacoes_info?.concluidas ? comunidade?.solicitacoes_info?.concluidas : "0"}
-              col5={comunidade?.solicitacoes_info?.em_espera ? comunidade?.solicitacoes_info?.em_espera : "0"}
+              col2={
+                comunidade?.solicitacoes_info?.total
+                  ? comunidade?.solicitacoes_info?.total
+                  : "0"
+              }
+              col3={
+                comunidade?.solicitacoes_info?.agendadas
+                  ? comunidade?.solicitacoes_info?.agendadas
+                  : "0"
+              }
+              col4={
+                comunidade?.solicitacoes_info?.concluidas
+                  ? comunidade?.solicitacoes_info?.concluidas
+                  : "0"
+              }
+              col5={
+                comunidade?.solicitacoes_info?.em_espera
+                  ? comunidade?.solicitacoes_info?.em_espera
+                  : "0"
+              }
               link_view={`/administracao/comunidade/${comunidade?.id}`}
               onClickView={() => {
                 navigate(`/administracao/comunidade/${comunidade?.id}`);
@@ -217,6 +240,15 @@ export default function Comunidades() {
           }}
         />
       </Table>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

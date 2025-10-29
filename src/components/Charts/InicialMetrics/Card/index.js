@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { Children, useEffect, useRef } from "react";
 import "./Card.css";
+import { Outlet } from "react-router-dom";
 
-const Card = ({ totalSolicitacoes, type, titleCard, valueCard }) => {
+const Card = ({ totalSolicitacoes, type, titleCard, valueCard, children }) => {
   if (totalSolicitacoes === 0 || totalSolicitacoes === null) {
     totalSolicitacoes = 1; // Evita divisão por zero
   }
@@ -19,19 +20,22 @@ const Card = ({ totalSolicitacoes, type, titleCard, valueCard }) => {
   }, [percentCard]);
 
   return (
-    <div className="card">
-      <div className="title-card-dashboard">
-        <p className="title-text">{titleCard}</p>
-        <p className={`percent type-${type}`}>{percentCard.toFixed(2)}%</p>
-      </div>
-      <div className={`data ${type === "total" ? "data-large" : ""}`}>
-        <p>{valueCard}</p>
-        <div className={`range ${type === "total" ? "range-none" : ""}`}>
-          <div
-            ref={fillRef}
-            className={`fill type-${type}`}
-            style={{ width: "0%" }}
-          ></div>
+    <div className={`card cart-type-${type}`}>
+      {children}
+      <div className="card-content">
+        <div className="title-card-dashboard">
+          <p className="title-text">{titleCard}</p>
+          <p className={`percent type-${type}`}>{percentCard.toFixed(2)}%</p>
+        </div>
+        <div className={`data ${type === "total" ? "data-large" : ""}`}>
+          <p>{valueCard}</p>
+          <div className={`range ${type === "total" ? "range-none" : ""}`}>
+            <div
+              ref={fillRef}
+              className={`fill type-${type}`}
+              style={{ width: "0%" }}
+            ></div>
+          </div>
         </div>
       </div>
     </div>

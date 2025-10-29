@@ -10,7 +10,14 @@ import Erro from "../../components/Message/Erro";
 import Download from "../../components/Modal/Download";
 import Loading from "../../components/Loading";
 
+import ModalHelp from "../../components/Modal/Help";
+import HelpIndicator from "../../components/HelpIndicator";
+import { useHelp } from "../../hooks/useHelp";
+import { helpConfigs } from "../../utils/helpConfigs";
+
 export default function Relatorios() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [abrirModalDownload, setAbrirModalDownload] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [erros, setErros] = useState("");
@@ -27,14 +34,16 @@ export default function Relatorios() {
       try {
         setCarregando(true);
         setErros("");
-        const resposta = await api.get(`/categorias?ordenar_por=nome&ordenar_direcao=asc`);
+        const resposta = await api.get(
+          `/categorias?ordenar_por=nome&ordenar_direcao=asc`
+        );
         const dados = resposta.data;
         setCategorias(dados?.dados || []);
       } catch (err) {
         setErros(
           err.response?.data?.message ||
-          err.message ||
-          "Erro ao buscar categoria."
+            err.message ||
+            "Erro ao buscar categoria."
         );
       } finally {
         setCarregando(false);
@@ -45,13 +54,15 @@ export default function Relatorios() {
       try {
         setCarregando(true);
         setErros("");
-        const { data } = await api.get(`/comunidades?ordenar_por=nome&ordenar_direcao=asc`);
+        const { data } = await api.get(
+          `/comunidades?ordenar_por=nome&ordenar_direcao=asc`
+        );
         setComunidades(data?.dados || []);
       } catch (err) {
         setErros(
           err.response?.data?.message ||
-          err.message ||
-          "Erro ao buscar categoria."
+            err.message ||
+            "Erro ao buscar categoria."
         );
       } finally {
         setCarregando(false);
@@ -96,8 +107,8 @@ export default function Relatorios() {
       } else {
         setErros(
           err.response?.data?.message ||
-          err.message ||
-          "Erro ao buscar relatório."
+            err.message ||
+            "Erro ao buscar relatório."
         );
       }
     } finally {
@@ -107,7 +118,7 @@ export default function Relatorios() {
 
   return (
     <div className="container-relatorios">
-      {erros && <Erro mensagem={erros} />}
+      {erros && <Erro mensagem={"Tivemos um problema, tente novamente ou entre em contato com o suporte."} />}
       {carregando && <Loading />}
       <TitleClipPages title={`Emissão de relatório`} />
       <h2 className="titulo-pagina-relatorios">
@@ -149,7 +160,7 @@ export default function Relatorios() {
 
       {abrirModalDownload && (
         <Download
-          classeAdicional={carregando && 'carregando'}
+          classeAdicional={carregando && "carregando"}
           title="Crie seu relatório personalizado"
           onConfirm={() => {
             trazerRelatorioGeral();
@@ -203,6 +214,15 @@ export default function Relatorios() {
           </div>
         </Download>
       )}
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

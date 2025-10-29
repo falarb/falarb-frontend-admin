@@ -14,9 +14,16 @@ import InputCPF from "../../../components/Input/InputCPF";
 import InputEmail from "../../../components/Input/InputEmail";
 import InputCustomMask from "../../../components/Input/InputCustomMask";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 import "./styles.css";
 
 export default function AddUser() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [cidadao, setCidadao] = useState({
     nome: "",
     cpf: "",
@@ -105,7 +112,7 @@ export default function AddUser() {
             <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
           </svg>
         </BtnPrimary>
-        
+
         {modalDeleteAberto && (
           <Modal
             type="danger"
@@ -165,6 +172,14 @@ export default function AddUser() {
           }}
         />
       </div>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

@@ -15,14 +15,23 @@ import SelectCustom from "../../components/Select/SelectCustom";
 import InputSearch from "../../components/Input/InputSearch";
 import BtnSecundary from "../../components/Btn/BtnSecundary";
 
+import ModalHelp from "../../components/Modal/Help";
+import HelpIndicator from "../../components/HelpIndicator";
+import { useHelp } from "../../hooks/useHelp";
+import { helpConfigs } from "../../utils/helpConfigs";
+
 import "./styles.css";
 
 export default function Solicitacoes() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [solicitacoes, setSolicitacoes] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [comunidades, setComunidades] = useState([]);
 
-  const idCidadao = new URLSearchParams(window.location.search).get("id_cidadao");
+  const idCidadao = new URLSearchParams(window.location.search).get(
+    "id_cidadao"
+  );
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -57,7 +66,9 @@ export default function Solicitacoes() {
 
       try {
         const resposta = await api.get(
-          `/solicitacoes?pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&status=${status}&categoria=${tipo_pedido}&comunidade=${comunidade}&termo_geral=${debouncedSearch}&cidadao=${idCidadao || ""}`
+          `/solicitacoes?pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&status=${status}&categoria=${tipo_pedido}&comunidade=${comunidade}&termo_geral=${debouncedSearch}&cidadao=${
+            idCidadao || ""
+          }`
         );
 
         if (resposta.status !== 200) {
@@ -88,7 +99,9 @@ export default function Solicitacoes() {
       setError(null);
 
       try {
-        const resposta = await api.get(`/categorias?ordenar_por=nome&ordenar_direcao=asc`);
+        const resposta = await api.get(
+          `/categorias?ordenar_por=nome&ordenar_direcao=asc`
+        );
 
         setCategorias(resposta?.data?.dados || []);
       } catch (err) {
@@ -104,7 +117,9 @@ export default function Solicitacoes() {
       setError(null);
 
       try {
-        const resposta = await api.get(`/comunidades?ordenar_por=nome&ordenar_direcao=asc`);
+        const resposta = await api.get(
+          `/comunidades?ordenar_por=nome&ordenar_direcao=asc`
+        );
 
         if (resposta.status !== 200) {
           throw new Error(`Erro HTTP ${resposta.status}`);
@@ -133,9 +148,18 @@ export default function Solicitacoes() {
     idCidadao,
   ]);
 
+  console.log(solicitacoes);
+
   return (
     <>
-      {error && <Erro mensagem={error} onClose={null} />}
+      {error && (
+        <Erro
+          mensagem={
+            "Tivemos um problema, tente novamente ou entre em contato com o suporte."
+          }
+          onClose={null}
+        />
+      )}
       {loading && <Loading />}
 
       <div className="navTools">
@@ -242,7 +266,7 @@ export default function Solicitacoes() {
           solicitacoes.map((solicitacao) => (
             <TableItem
               key={solicitacao?.id}
-              id={solicitacao?.id}
+              id={solicitacao?.cidadao.telefone}
               status={solicitacao?.status}
               col1={new Date(solicitacao?.created_at).toLocaleString("pt-BR", {
                 day: "2-digit",
@@ -258,12 +282,12 @@ export default function Solicitacoes() {
                 solicitacao?.status === "analise"
                   ? "Análise"
                   : solicitacao?.status === "agendada"
-                    ? "Agendada"
-                    : solicitacao?.status === "concluida"
-                      ? "Concluída"
-                      : solicitacao?.status === "indeferida"
-                        ? "Indeferida"
-                        : "Desconhecido"
+                  ? "Agendada"
+                  : solicitacao?.status === "concluida"
+                  ? "Concluída"
+                  : solicitacao?.status === "indeferida"
+                  ? "Indeferida"
+                  : "Desconhecido"
               }
               classNameCol5={solicitacao?.status}
               link_view={`/administracao/solicitacao/${solicitacao?.id}`}
@@ -288,6 +312,14 @@ export default function Solicitacoes() {
           onPageChange={(newPage) => setPage(newPage)}
         />
       </TableFiveColuns>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </>
   );
 }

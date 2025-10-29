@@ -11,9 +11,16 @@ import TitleClipPages from "../../../components/TitleClipPages";
 import MiniDashboardUser from "../../../components/MiniDashboardUser";
 import Erro from "../../../components/Message/Erro";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 import "./styles.css";
 
 export default function VisualizarComunidade() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -87,9 +94,7 @@ export default function VisualizarComunidade() {
       {loading && <Loading />}
       {error && `Erro: ${error}`}
       {!comunidade && `Nenhum condomínio encontrado`}
-
-      <TitleClipPages title={`Comunidade ID: ${comunidade?.id}`} />
-
+      <TitleClipPages title={`Visualização de comunidade`} />
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"
@@ -168,11 +173,21 @@ export default function VisualizarComunidade() {
           />
         )}
       </div>
-
-      <div className="box-info">
+      <div className="box-info-comunidade">
         <span className="font-size-p">Nome</span>
         <p className="font-size-m">{comunidade?.nome}</p>
       </div>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }
+
+
+

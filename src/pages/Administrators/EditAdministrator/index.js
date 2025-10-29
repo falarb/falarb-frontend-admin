@@ -12,7 +12,14 @@ import Loading from "../../../components/Loading";
 import TitleClipPages from "../../../components/TitleClipPages";
 import Modal from "../../../components/Modal";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 export default function EditarAdministrador() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -58,13 +65,11 @@ export default function EditarAdministrador() {
     setValidationErrors({});
 
     try {
-      const { data } = await api.put(`/administradores/${id}`, 
-        {
-          nome: usuario.nome,
-          email: usuario.email,
-          telefone: usuario.telefone
-        }
-      );
+      const { data } = await api.put(`/administradores/${id}`, {
+        nome: usuario.nome,
+        email: usuario.email,
+        telefone: usuario.telefone,
+      });
       setUsuario(data);
       setIsDirty(false);
       navigate(-1);
@@ -123,7 +128,7 @@ export default function EditarAdministrador() {
           </svg>
         </BtnSecundary>
       </div>
-      
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -154,7 +159,7 @@ export default function EditarAdministrador() {
           <InputCustomMask
             label="Celular"
             mask="(99) 9 9999-9999"
-            name="celular"
+            name="telefone"
             value={usuario?.telefone || ""}
             onChange={handleChange}
           />
@@ -163,6 +168,15 @@ export default function EditarAdministrador() {
 
         <BtnPrimary type="submit">Salvar</BtnPrimary>
       </form>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

@@ -78,7 +78,9 @@ export default function Login() {
         <Modal
           type="danger"
           title="Ops... Encontramos problemas."
-          description={erros}
+          description={
+            "Tente novamente. Entre em contato com o suporte se o problema persistir."
+          }
           onConfirm={() => {
             setMostrarModal(false);
           }}

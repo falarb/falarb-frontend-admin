@@ -166,3 +166,9 @@
 .delete:hover svg{
     fill: #e45656;
 }
+
+.inativo{
+    opacity: .3;
+    cursor: not-allowed;
+    pointer-events: none !important;
+}

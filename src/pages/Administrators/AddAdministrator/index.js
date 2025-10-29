@@ -13,7 +13,14 @@ import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Loading from "../../../components/Loading";
 import InputCustomMask from "../../../components/Input/InputCustomMask";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 export default function CadastrarAdministrador() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [usuario, setUsuario] = useState({
     nome: "",
     email: "",
@@ -48,6 +55,10 @@ export default function CadastrarAdministrador() {
         err.response?.data?.message?.includes("Duplicate entry")
       ) {
         setError("Esse e-mail já está cadastrado. Tente outro.");
+      } else if (
+        err.response?.data?.message?.includes("Column 'nome' cannot be null")
+      ) {
+        setError("Defina um nome para o administrador.");
       } else {
         setError(
           err.response?.data?.message ||
@@ -110,17 +121,6 @@ export default function CadastrarAdministrador() {
         </div>
 
         <div className="container-single-input">
-          <InputCPF
-            label="CPF"
-            name="cpf"
-            placeholder="123.456.789-10"
-            value={usuario.cpf}
-            onChange={handleChange}
-          />
-          <div className="validation-error">{validationErrors.cpf}</div>
-        </div>
-
-        <div className="container-single-input">
           <InputCustomMask
             label="Telefone"
             name="telefone"
@@ -144,6 +144,15 @@ export default function CadastrarAdministrador() {
 
         <BtnPrimary type="submit">Cadastrar</BtnPrimary>
       </form>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

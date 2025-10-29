@@ -72,6 +72,24 @@
   left: 0;
 }
 
+.table-item-id a svg{
+  width: 13px;
+  height: 13px;
+  fill: rgb(179, 179, 179);
+  position: relative;
+  top: 1px;
+}
+
+.table-item-id a{
+  text-decoration: none;
+  color: rgb(179, 179, 179);
+}
+
+.table-item-id a:hover{
+  text-decoration: underline;
+}
+
+
 .table-item .status {
   position: absolute;
   right: 70px;

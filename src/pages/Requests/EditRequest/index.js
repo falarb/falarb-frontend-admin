@@ -12,9 +12,16 @@ import SelectStatus from "../../../components/Select/SelectStatus";
 import InputText from "../../../components/Input/InputText";
 import InputDate from "../../../components/Input/InputDate";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 import "./styles.css";
 
 export default function EditarSolicitacao() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [solicitacao, setSolicitacao] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -139,7 +146,10 @@ export default function EditarSolicitacao() {
             setAbrirModalEdit(true);
           }}
         >
-          <span class="material-symbols-outlined" style={{ color: "#fff", margin: "auto" }}>
+          <span
+            class="material-symbols-outlined"
+            style={{ color: "#fff", margin: "auto" }}
+          >
             save
           </span>
         </BtnPrimary>
@@ -222,7 +232,7 @@ export default function EditarSolicitacao() {
         )}
 
         {solicitacao?.data_conclusao ? (
-          <div className="box-info">
+          <div className="box-info-editar-solicitacao-editar-solicitacao">
             <span className="font-size-p">Data de conclusão</span>
             <p className="font-size-m">
               {solicitacao?.data_conclusao &&
@@ -240,7 +250,7 @@ export default function EditarSolicitacao() {
           ""
         )}
 
-        <div className="box-info">
+        <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Data da solicitação</span>
           <p className="font-size-m">
             {solicitacao?.created_at &&
@@ -249,17 +259,17 @@ export default function EditarSolicitacao() {
                 month: "2-digit",
                 year: "numeric",
               }) +
-              " às " +
-              new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              })}
+                " às " +
+                new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
           </p>
         </div>
 
         {solicitacao?.data_agendamento ? (
-          <div className="box-info">
+          <div className="box-info-editar-solicitacao">
             <span className="font-size-p">Data de agendamento</span>
             <p className="font-size-m">
               {solicitacao?.data_agendamento &&
@@ -277,33 +287,33 @@ export default function EditarSolicitacao() {
           ""
         )}
 
-        <div className="box-info">
+        <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Solicitação</span>
           <p className="font-size-m">{solicitacao?.categoria?.nome}</p>
         </div>
 
-        <div className="box-info">
+        <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Solicitante</span>
           <p className="font-size-m">{solicitacao?.cidadao?.nome}</p>
         </div>
 
-        <div className="box-info">
+        <div className="box-info-editar-solicitacao">
           <span className="font-size-p">CPF</span>
           <p className="font-size-m">{solicitacao?.cidadao?.cpf}</p>
         </div>
 
-        <div className="box-info">
+        <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Email</span>
           <p className="font-size-m">{solicitacao?.cidadao?.email}</p>
         </div>
 
-        <div className="box-info">
+        <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Celular</span>
           <p className="font-size-m">{solicitacao?.cidadao?.telefone}</p>
         </div>
 
         {solicitacao?.descricao ? (
-          <div className="box-info">
+          <div className="box-info-editar-solicitacao">
             <span className="font-size-p">Descrição da solicitação</span>
             <p className="font-size-m">{solicitacao?.descricao}</p>
           </div>
@@ -312,7 +322,7 @@ export default function EditarSolicitacao() {
         )}
 
         {solicitacao?.mot_indeferimento ? (
-          <div className="box-info">
+          <div className="box-info-editar-solicitacao">
             <span className="font-size-p">Motivo do indeferimento</span>
             <p className="font-size-m">{solicitacao?.mot_indeferimento}</p>
           </div>
@@ -320,21 +330,29 @@ export default function EditarSolicitacao() {
           ""
         )}
 
-        <div className="box-info">
+        <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Geolocalização</span>
         </div>
 
         <div className="box-geolocalizacao">
-          <div className="box-info">
+          <div className="box-info-editar-solicitacao">
             <span className="font-size-p">Latitude</span>
             <p className="font-size-m">{solicitacao?.latitude}</p>
           </div>
-          <div className="box-info">
+          <div className="box-info-editar-solicitacao">
             <span className="font-size-p">Longitude</span>
             <p className="font-size-m">{solicitacao?.longitude}</p>
           </div>
         </div>
       </div>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

@@ -8,9 +8,16 @@ import PieCharts from "../../components/Charts/PieCharts";
 import Modal from "../../components/Modal";
 import Loading from "../../components/Loading";
 
+import ModalHelp from "../../components/Modal/Help";
+import HelpIndicator from "../../components/HelpIndicator";
+import { useHelp } from "../../hooks/useHelp";
+import { helpConfigs } from "../../utils/helpConfigs";
+
 import "./styles.css";
 
 export default function Dashboard() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [erros, setErros] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [carregando, setCarregando] = useState(true);
@@ -41,16 +48,17 @@ export default function Dashboard() {
     alimentarDashboard();
   }, []);
 
-//  2R7nwMZX4lqYqk7woctIB6gk
-//  4D41tDfRy6ddEAs2nw4UmxEj
+  //  2R7nwMZX4lqYqk7woctIB6gk
+  //  4D41tDfRy6ddEAs2nw4UmxEj
 
   return (
     <>
       {carregando ? <Loading /> : null}
       {erros && mostrarModal && (
         <Modal
+          type="normal"
           title="Ops, tivemos um problema..."
-          description="Tente novamente mais tarde"
+          description="Entre em contato com o suporte e tente novamente mais tarde."
           onCancel={() => setMostrarModal(false)}
           onConfirm={() => setMostrarModal(false)}
         />
@@ -72,6 +80,14 @@ export default function Dashboard() {
         totalIndeferido={dados?.solicitacoes_por_status?.indeferida || 0}
         dados={dados}
       />
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </>
   );
 }

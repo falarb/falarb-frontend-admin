@@ -10,11 +10,12 @@
     margin-left: 10px;
 }
 
-.box-info{
+.box-info-visualizar-solicitacao{
     display: flex;
     flex-direction: column;
     gap: 5px;
     margin: 20px 0 0 0 !important; 
+    max-width: 550px;
 }
 
 .font-size-m{

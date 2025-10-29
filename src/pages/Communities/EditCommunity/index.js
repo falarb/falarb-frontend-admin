@@ -10,7 +10,14 @@ import Loading from "../../../components/Loading";
 import TitleClipPages from "../../../components/TitleClipPages";
 import Modal from "../../../components/Modal";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 export default function EditarComunidade() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [comunidade, setComunidade] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -84,9 +91,7 @@ export default function EditarComunidade() {
         />
       )}
 
-      <TitleClipPages
-        title={`Edição de comunidade`}
-      />
+      <TitleClipPages title={`Edição de comunidade`} />
 
       <div className="nav-tools">
         <BtnSecundary
@@ -119,7 +124,10 @@ export default function EditarComunidade() {
             setModalEditAberto(true);
           }}
         >
-          <span class="material-symbols-outlined" style={{ color: "#fff", margin: "auto" }}>
+          <span
+            class="material-symbols-outlined"
+            style={{ color: "#fff", margin: "auto" }}
+          >
             save
           </span>
         </BtnPrimary>
@@ -142,6 +150,15 @@ export default function EditarComunidade() {
           />
         </div>
       </form>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

@@ -9,7 +9,14 @@ import Erro from "../../../components/Message/Erro";
 import BtnPrimary from "../../../components/Btn/BtnPrimary";
 import BtnSecundary from "../../../components/Btn/BtnSecundary";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 export default function CadastrarComunidade() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [novaComunidade, setNovaComunidade] = useState({ nome: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -48,11 +55,11 @@ export default function CadastrarComunidade() {
 
   return (
     <div className="cadastrar-comunidade-container">
-      {error && <Erro mensagem={error}/>}
+      {error && <Erro mensagem={error} />}
       {success && <p className="success-message">{success}</p>}
       <BtnSecundary
         onClick={() => {
-          navigate("-1");
+          navigate(-1);
         }}
       >
         <svg
@@ -81,6 +88,15 @@ export default function CadastrarComunidade() {
           {loading ? "Cadastrando..." : "Cadastrar"}
         </BtnPrimary>
       </form>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

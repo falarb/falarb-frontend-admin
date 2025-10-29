@@ -13,9 +13,16 @@ import Loading from "../../../components/Loading";
 import TitleClipPages from "../../../components/TitleClipPages";
 import MiniDashboardUser from "../../../components/MiniDashboardUser";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 import "./styles.css";
 
 export default function ViewUser() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [cidadao, setCidadao] = useState(null);
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(null);
@@ -223,26 +230,34 @@ export default function ViewUser() {
       </div>
 
       <div className="container-info-user" id="container-info-user">
-        <div className="box-info">
+        <div className="box-info-visualizar-usuario">
           <label className="font-size-p">Dados do cidadão com nome</label>
           <p className="font-size-m">{cidadao?.nome}</p>
         </div>
 
-        <div className="box-info">
+        <div className="box-info-visualizar-usuario">
           <label className="font-size-p">CPF</label>
           <p className="font-size-m">{formataCpf(cidadao?.cpf)}</p>
         </div>
 
-        <div className="box-info">
+        <div className="box-info-visualizar-usuario">
           <label className="font-size-p">Email</label>
           <p className="font-size-m">{cidadao?.email}</p>
         </div>
 
-        <div className="box-info">
+        <div className="box-info-visualizar-usuario">
           <label className="font-size-p">Telefone</label>
           <p className="font-size-m">{formataTelefone(cidadao?.telefone)}</p>
         </div>
       </div>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }

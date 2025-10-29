@@ -15,9 +15,16 @@ import InputCPF from "../../../components/Input/InputCPF";
 import InputEmail from "../../../components/Input/InputEmail";
 import InputCustomMask from "../../../components/Input/InputCustomMask";
 
+import ModalHelp from "../../../components/Modal/Help";
+import HelpIndicator from "../../../components/HelpIndicator";
+import { useHelp } from "../../../hooks/useHelp";
+import { helpConfigs } from "../../../utils/helpConfigs";
+
 import "./styles.css";
 
 export default function EditUser() {
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+
   const [cidadao, setCidadao] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
@@ -131,7 +138,7 @@ export default function EditUser() {
             ) {
               setModalAvisoAberto(true);
             } else {
-              setModalEditAberto(true); 
+              setModalEditAberto(true);
             }
           }}
         >
@@ -229,6 +236,14 @@ export default function EditUser() {
           }}
         />
       </div>
+
+      <ModalHelp
+        title={helpConfigs.step001.title}
+        content={helpConfigs.step001.content}
+        isOpen={isHelpOpen}
+        onClose={closeHelp}
+      />
+      <HelpIndicator onHelpOpen={openHelp} isOpen={!isHelpOpen} />
     </div>
   );
 }
