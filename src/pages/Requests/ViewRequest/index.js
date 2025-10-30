@@ -78,8 +78,6 @@ export default function VisualizarSolicitacao() {
 
   return (
     <div>
-      <TitleClipPages title={`Solicitação ID: ${solicitacao?.id}`} />
-
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"
@@ -166,12 +164,12 @@ export default function VisualizarSolicitacao() {
                   month: "2-digit",
                   year: "numeric",
                 }) +
-                  " às " +
-                  new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  })}
+                " às " +
+                new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
             </p>
           </div>
 
@@ -219,18 +217,23 @@ export default function VisualizarSolicitacao() {
               {solicitacao?.status === "analise"
                 ? "Em análise"
                 : solicitacao?.status === "agendada"
-                ? "Agendada"
-                : solicitacao?.status === "concluida"
-                ? "Concluída"
-                : solicitacao?.status === "indeferida"
-                ? "Indeferida"
-                : "Status desconhecido"}
+                  ? "Agendada"
+                  : solicitacao?.status === "concluida"
+                    ? "Concluída"
+                    : solicitacao?.status === "indeferida"
+                      ? "Indeferida"
+                      : "Status desconhecido"}
             </p>
           </div>
 
           <div className="box-info-visualizar-solicitacao">
             <span className="font-size-p">Solicitante</span>
             <p className="font-size-m">{solicitacao?.cidadao?.nome}</p>
+          </div>
+
+          <div className="box-info-visualizar-solicitacao">
+            <span className="font-size-p">Código único</span>
+            <p className="font-size-m">{solicitacao?.token_solicitacao}</p>
           </div>
 
           <div className="box-info-visualizar-solicitacao">

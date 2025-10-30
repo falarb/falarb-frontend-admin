@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import api from "../../utils/api";
 
@@ -22,8 +21,7 @@ export default function Dashboard() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [dados, setDados] = useState(null);
-
-  const navegacao = useNavigate();
+  const [filters, setFilters] = useState({ data: "ultimo_ano" });
 
   useEffect(() => {
     async function alimentarDashboard() {
@@ -31,11 +29,9 @@ export default function Dashboard() {
         setErros(null);
         setCarregando(true);
 
-        const resposta = await api.get("/dashboard/indicadores");
+        const { data } = await api.get("/dashboard/indicadores?data=" + filters?.data);
 
-        const dados_recebidos = resposta.data;
-        setDados(dados_recebidos);
-        console.log(dados_recebidos);
+        setDados(data);
       } catch (erro) {
         setErros("Ocorreu um erro ao carregar o dashboard.");
         console.error(erro);
@@ -46,10 +42,7 @@ export default function Dashboard() {
     }
 
     alimentarDashboard();
-  }, []);
-
-  //  2R7nwMZX4lqYqk7woctIB6gk
-  //  4D41tDfRy6ddEAs2nw4UmxEj
+  }, [filters]);
 
   return (
     <>
@@ -63,6 +56,7 @@ export default function Dashboard() {
           onConfirm={() => setMostrarModal(false)}
         />
       )}
+
       <InicialMetrics
         totalSolicitacoes={dados?.solicitacoes_por_status?.total || 0}
         totalConcluidas={dados?.solicitacoes_por_status?.concluida || 0}
@@ -70,6 +64,8 @@ export default function Dashboard() {
         totalEmAnalise={dados?.solicitacoes_por_status?.analise || 0}
         totalIndeferido={dados?.solicitacoes_por_status?.indeferida || 0}
         dados={dados}
+        filters={filters}
+        setFilters={setFilters}
       />
 
       <PieCharts
