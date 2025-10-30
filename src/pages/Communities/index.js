@@ -149,7 +149,7 @@ export default function Comunidades() {
         <InputSearch
           label="Busque por solicitações"
           value={search}
-          placeholder="Busque por solicitações..."
+          placeholder="Busque pela comunidade..."
           onChange={(event) => {
             setSearch(event.target.value);
           }}

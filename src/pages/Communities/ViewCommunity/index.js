@@ -173,7 +173,7 @@ export default function VisualizarComunidade() {
           />
         )}
       </div>
-      <div className="box-info-comunidade">
+      <div className="box-info-comunidade" style={{ marginTop: 14 }}>
         <span className="font-size-p">Nome</span>
         <p className="font-size-m">{comunidade?.nome}</p>
       </div>

@@ -78,6 +78,7 @@ export default function VisualizarSolicitacao() {
 
   return (
     <div>
+      <TitleClipPages title={solicitacao?.token_solicitacao} />
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"
@@ -229,11 +230,6 @@ export default function VisualizarSolicitacao() {
           <div className="box-info-visualizar-solicitacao">
             <span className="font-size-p">Solicitante</span>
             <p className="font-size-m">{solicitacao?.cidadao?.nome}</p>
-          </div>
-
-          <div className="box-info-visualizar-solicitacao">
-            <span className="font-size-p">Código único</span>
-            <p className="font-size-m">{solicitacao?.token_solicitacao}</p>
           </div>
 
           <div className="box-info-visualizar-solicitacao">
