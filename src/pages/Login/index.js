@@ -5,9 +5,9 @@ import Modal from "../../components/Modal";
 import Loading from "../../components/Loading";
 import BtnPrimary from "../../components/Btn/BtnPrimary";
 import "./styles.css";
+import api from "../../utils/api";
 
 export default function Login() {
-  const [erros, setErro] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -41,31 +41,14 @@ export default function Login() {
   const enviandoFormulario = async () => {
     try {
       setCarregando(true);
-      setErro(null);
+      const { data } = await api.post("/login", credenciais);
 
-      const resposta = await fetch("http://localhost:8000/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credenciais),
-      });
-
-      const dados = await resposta.json();
-
-      if (!resposta.ok) {
-        console.error("Erro do servidor:", dados);
-        setErro(dados.message || "Erro ao logar");
-        setMostrarModal(true);
-        throw new Error(dados.message || "Erro ao logar");
-      }
-      login(dados.token);
+      login(data?.token);
       navigate("/administracao", { replace: true });
     } catch (erro) {
-      console.error("Erro do servidor:", erro);
-      setErro(erro.message || "Erro ao logar");
+      console.error("Erro", erro);
       setMostrarModal(true);
-      throw new Error(erro.message || "Erro ao logar");
+      throw new Error("Erro ao fazer login. Verifique suas credenciais.");
     } finally {
       setCarregando(false);
     }
@@ -74,19 +57,13 @@ export default function Login() {
   return (
     <>
       {carregando && <Loading />}
-      {erros && mostrarModal && (
+      {mostrarModal && (
         <Modal
           type="danger"
-          title="Ops... Encontramos problemas."
-          description={
-            "Tente novamente. Entre em contato com o suporte se o problema persistir."
-          }
-          onConfirm={() => {
-            setMostrarModal(false);
-          }}
-          onCancel={() => {
-            setMostrarModal(false);
-          }}
+          title="Erro ao fazer login"
+          description={"Verifique suas credenciais e tente novamente."}
+          onConfirm={() => { setMostrarModal(false) }}
+          onCancel={() => { setMostrarModal(false) }}
         />
       )}
       <div className="container_main_login">
@@ -177,9 +154,6 @@ export default function Login() {
               </button>
             </div>
 
-            {/* <div className="container_esqueci_senha">
-              <a>Esqueci minha senha</a>
-            </div> */}
             <BtnPrimary>Entrar</BtnPrimary>
           </form>
         </div>

@@ -83,11 +83,9 @@ export default function Comunidades() {
   const inativarComunidade = async () => {
     try {
       setLoading(true);
+      setAbrirModalDelete(false);
       setError(null);
-      const resposta = await api.delete(
-        `/comunidade/${comunidadeSelecionada.id}`
-      );
-      return resposta;
+      await api.delete(`/comunidade/${comunidadeSelecionada?.id}`);
     } catch (erro) {
       setError("Erro ao inativar a solicitação.");
       throw new Error(`Erro: ${erro}`);
@@ -100,17 +98,13 @@ export default function Comunidades() {
   return (
     <div>
       {loading && <Loading />}
-      {error && <Erro mensagem={"Tivemos um problema, tente novamente ou entre em contato com o suporte." || "Erro desconhecido"} />}
+      {error && <Erro mensagem={"Tivemos um problema ao inativar a comunidade. Tente novamente mais tarde."} />}
       {mostrarModalDelete && comunidadeSelecionada && (
         <Modal
           type="danger"
           title="Excluir comunidade"
           description={`Você solicitou excluir a seguinte comunidade: ${comunidadeSelecionada?.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
-          onConfirm={() => {
-            alert("delete");
-            setAbrirModalDelete(false);
-            window.location.reload();
-          }}
+          onConfirm={() => { inativarComunidade(); }}
           onCancel={() => {
             setAbrirModalDelete(false);
           }}
