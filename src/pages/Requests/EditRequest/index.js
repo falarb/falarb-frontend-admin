@@ -183,11 +183,7 @@ export default function EditarSolicitacao() {
             type="warning"
             title="Editar solicitação"
             description="Você solicitou editar os dados essa solicitação. Você tem certeza?"
-            onConfirm={() => {
-              salvarSolicitacao();
-              setAbrirModalEdit(false);
-              navigate(-1);
-            }}
+            onConfirm={() => salvarSolicitacao()}
             onCancel={() => setAbrirModalEdit(false)}
           />
         )}
@@ -204,7 +200,6 @@ export default function EditarSolicitacao() {
               lidandoComAlteracoes(evento);
             }}
             placeholder="Adicione o motivo aqui..."
-            required={true}
           />
         )}
 
@@ -214,7 +209,6 @@ export default function EditarSolicitacao() {
             name="data_agendamento"
             value={solicitacao?.data_agendamento}
             onChange={(evento) => { lidandoComAlteracoes(evento) }}
-            required={true}
           />
         )}
 

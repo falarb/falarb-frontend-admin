@@ -55,6 +55,7 @@ const InicialMetrics = ({
       <Card type="select">
         <SelectCustom
           label="Período"
+          placeholder="Sempre"
           options={optionsPeriod}
           value={filters.data}
           onChange={(e) => setFilters({ ...filters, data: e.target.value })}

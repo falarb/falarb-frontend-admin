@@ -7,9 +7,8 @@ export default function Menu({ menuIsOpen }) {
 
   return (
     <aside
-      className={`asside-menu-bar asside-menu-bar-${
-        menuIsOpen ? "menu-is-close" : "menu-is-open"
-      }`}
+      className={`asside-menu-bar asside-menu-bar-${menuIsOpen ? "menu-is-close" : "menu-is-open"
+        }`}
     >
       <svg
         width="182"
@@ -42,9 +41,8 @@ export default function Menu({ menuIsOpen }) {
 
       <div className="list-menu-itens">
         <Link
-          className={`menu-item ${
-            location.pathname === "/administracao" ? "active" : ""
-          }`}
+          className={`menu-item ${location.pathname === "/administracao" ? "active" : ""
+            }`}
           to="/administracao"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
@@ -53,9 +51,8 @@ export default function Menu({ menuIsOpen }) {
           <span>Dashboard</span>
         </Link>
         <Link
-          className={`menu-item ${
-            location.pathname === "/administracao/solicitacoes" ? "active" : ""
-          }`}
+          className={`menu-item ${(location.pathname.includes("solicitacoes") || location.pathname.includes("solicitacao")) ? "active" : ""
+            }`}
           to="/administracao/solicitacoes"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
@@ -64,9 +61,8 @@ export default function Menu({ menuIsOpen }) {
           <span>Solicitações</span>
         </Link>
         <Link
-          className={`menu-item ${
-            location.pathname === "/administracao/usuarios" ? "active" : ""
-          }`}
+          className={`menu-item ${(location.pathname.includes("usuarios") || location.pathname.includes("usuario")) ? "active" : ""
+            }`}
           to="/administracao/usuarios"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
@@ -75,9 +71,8 @@ export default function Menu({ menuIsOpen }) {
           <span>Usuários</span>
         </Link>
         <Link
-          className={`menu-item ${
-            location.pathname === "/administracao/comunidades" ? "active" : ""
-          }`}
+          className={`menu-item ${(location.pathname.includes("comunidades") || location.pathname.includes("comunidade")) ? "active" : ""
+            }`}
           to="/administracao/comunidades"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
@@ -86,9 +81,8 @@ export default function Menu({ menuIsOpen }) {
           <span>Comunidades</span>
         </Link>
         <Link
-          className={`menu-item ${
-            location.pathname === "/administracao/relatorios" ? "active" : ""
-          }`}
+          className={`menu-item ${location.pathname === "/administracao/relatorios" ? "active" : ""
+            }`}
           to="/administracao/relatorios"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
@@ -97,11 +91,10 @@ export default function Menu({ menuIsOpen }) {
           <span>Relatórios</span>
         </Link>
         <Link
-          className={`menu-item ${
-            location.pathname === "/administracao/administradores"
-              ? "active"
-              : ""
-          }`}
+          className={`menu-item ${location.pathname === "/administracao/administradores"
+            ? "active"
+            : ""
+            }`}
           to="/administracao/administradores"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
