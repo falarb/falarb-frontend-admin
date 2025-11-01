@@ -66,8 +66,7 @@ export default function Solicitacoes() {
 
       try {
         const resposta = await api.get(
-          `/solicitacoes?pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&status=${status}&categoria=${tipo_pedido}&comunidade=${comunidade}&termo_geral=${debouncedSearch}&cidadao=${
-            idCidadao || ""
+          `/solicitacoes?pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&status=${status}&categoria=${tipo_pedido}&comunidade=${comunidade}&termo_geral=${debouncedSearch}&cidadao=${idCidadao || ""
           }`
         );
 
@@ -165,9 +164,7 @@ export default function Solicitacoes() {
       <div className="navTools">
         <BtnSecundary
           adicionalClass="btn-svg"
-          onClick={() => {
-            navigate("/");
-          }}
+          onClick={() => { navigate(-1) }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -186,6 +183,7 @@ export default function Solicitacoes() {
       <Filtros>
         <SelectCustom
           label="Status"
+          withEmpty={false}
           value={status}
           onChange={(event) => {
             setStatus(event.target.value);
@@ -282,12 +280,12 @@ export default function Solicitacoes() {
                 solicitacao?.status === "analise"
                   ? "Análise"
                   : solicitacao?.status === "agendada"
-                  ? "Agendada"
-                  : solicitacao?.status === "concluida"
-                  ? "Concluída"
-                  : solicitacao?.status === "indeferida"
-                  ? "Indeferida"
-                  : "Desconhecido"
+                    ? "Agendada"
+                    : solicitacao?.status === "concluida"
+                      ? "Concluída"
+                      : solicitacao?.status === "indeferida"
+                        ? "Indeferida"
+                        : "Desconhecido"
               }
               classNameCol5={solicitacao?.status}
               link_view={`/administracao/solicitacao/${solicitacao?.id}`}

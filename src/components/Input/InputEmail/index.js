@@ -4,6 +4,7 @@ import "./styles.css";
 export default function InputEmail({
   label,
   adicionalClass,
+  required,
   name,
   value,
   onChange,
@@ -23,7 +24,11 @@ export default function InputEmail({
 
   return (
     <div className={`container-input-email ${adicionalClass}`}>
-      <label>{label}</label>
+      <label>
+        {label}
+        {required && <span className="required">*</span>}
+      </label>
+
       <input
         type="email"
         placeholder={placeholder}

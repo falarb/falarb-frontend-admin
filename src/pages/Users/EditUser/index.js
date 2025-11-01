@@ -9,7 +9,6 @@ import BtnSecundary from "../../../components/Btn/BtnSecundary";
 import Erro from "../../../components/Message/Erro";
 import Loading from "../../../components/Loading";
 import TitleClipPages from "../../../components/TitleClipPages";
-import SelectStatus from "../../../components/Select/SelectStatus";
 import InputText from "../../../components/Input/InputText";
 import InputCPF from "../../../components/Input/InputCPF";
 import InputEmail from "../../../components/Input/InputEmail";
@@ -89,6 +88,20 @@ export default function EditUser() {
     }
   };
 
+  const handleDisabled = () => {
+    if (loading) return true;
+
+    if (
+      !cidadao.nome ||
+      !cidadao.cpf ||
+      !cidadao.email
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   // loading
   if (loading) return <Loading />;
 
@@ -129,6 +142,7 @@ export default function EditUser() {
 
         <BtnPrimary
           adicionalClass="success btn-svg"
+          disabled={handleDisabled()}
           onClick={() => {
             if (
               !cidadao?.nome ||
@@ -142,15 +156,9 @@ export default function EditUser() {
             }
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#fff"
-          >
-            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
-          </svg>
+          <span class="material-symbols-outlined" style={{ color: "#fff", margin: "auto" }}>
+            save
+          </span>
         </BtnPrimary>
 
         {modalEditAberto && (

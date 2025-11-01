@@ -16,13 +16,13 @@ import { useHelp } from "../../../hooks/useHelp";
 import { helpConfigs } from "../../../utils/helpConfigs";
 
 import "./styles.css";
+import moment from "moment";
 
 export default function VisualizarSolicitacao() {
   const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
 
   const [solicitacao, setSolicitacao] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -32,19 +32,11 @@ export default function VisualizarSolicitacao() {
 
     const listarSolicitacao = async () => {
       setLoading(true);
-      setError(null);
 
       try {
-        const resposta = await api.get(`/solicitacoes/${id}`);
-
-        if (resposta.status !== 200) {
-          throw new Error(`Erro HTTP ${resposta.status}`);
-        }
-
-        const { data } = resposta;
+        const { data } = await api.get(`/solicitacoes/${id}`);
         setSolicitacao(data);
       } catch (erro) {
-        setError(erro.message || "Erro desconhecido");
         console.error(erro);
       } finally {
         setLoading(false);
@@ -70,15 +62,12 @@ export default function VisualizarSolicitacao() {
   // loading
   if (loading) return <Loading />;
 
-  // erro
-  if (error) return <div>Erro: {error}</div>;
-
   // nenhum dado
   if (!solicitacao) return <div>Nenhuma solicitação encontrada.</div>;
 
   return (
     <div>
-      <TitleClipPages title={solicitacao?.token_solicitacao} />
+      <TitleClipPages title={`Código: ${solicitacao?.token_solicitacao}`} />
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"
@@ -155,64 +144,6 @@ export default function VisualizarSolicitacao() {
       <div id="container-comprovante">
         <div>
           <div className="box-info-visualizar-solicitacao">
-            <span className="font-size-p">
-              Dados da solicitação realizada em
-            </span>
-            <p className="font-size-m">
-              {solicitacao?.created_at &&
-                new Date(solicitacao.created_at).toLocaleDateString("pt-BR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                }) +
-                " às " +
-                new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}
-            </p>
-          </div>
-
-          {solicitacao?.data_conclusao ? (
-            <div className="box-info-visualizar-solicitacao">
-              <span className="font-size-p">Data de conclusão</span>
-              <p className="font-size-m">
-                {solicitacao?.data_conclusao &&
-                  new Date(solicitacao?.data_conclusao).toLocaleDateString(
-                    "pt-BR",
-                    {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    }
-                  )}
-              </p>
-            </div>
-          ) : (
-            ""
-          )}
-
-          {solicitacao?.data_agendamento ? (
-            <div className="box-info-visualizar-solicitacao">
-              <span className="font-size-p">Data de agendamento</span>
-              <p className="font-size-m">
-                {solicitacao?.data_agendamento &&
-                  new Date(solicitacao?.data_agendamento).toLocaleDateString(
-                    "pt-BR",
-                    {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    }
-                  )}
-              </p>
-            </div>
-          ) : (
-            ""
-          )}
-
-          <div className="box-info-visualizar-solicitacao">
             <span className="font-size-p">Status atual</span>
             <p className="font-size-m">
               {solicitacao?.status === "analise"
@@ -224,6 +155,46 @@ export default function VisualizarSolicitacao() {
                     : solicitacao?.status === "indeferida"
                       ? "Indeferida"
                       : "Status desconhecido"}
+            </p>
+          </div>
+
+          {(solicitacao?.status === 'concluida' && solicitacao?.data_conclusao) &&
+            <div className="box-info-visualizar-solicitacao">
+              <span className="font-size-p">Data de conclusão</span>
+              <p className="font-size-m">
+                {solicitacao?.data_conclusao &&
+                  moment(solicitacao?.data_conclusao).add(3, 'hours').format("DD/MM/YYYY")
+                }
+              </p>
+            </div>
+          }
+
+          {(solicitacao?.status === "agendada" && solicitacao?.data_agendamento) &&
+            <div className="box-info-visualizar-solicitacao">
+              <span className="font-size-p">Data de agendamento</span>
+              <p className="font-size-m">
+                {solicitacao?.data_agendamento &&
+                  moment(solicitacao?.data_agendamento).add(3, 'hours').format("DD/MM/YYYY")
+                }
+              </p>
+            </div>
+          }
+
+          {(solicitacao?.status === 'indeferida' && solicitacao?.mot_indeferimento) &&
+            <div className="box-info-visualizar-solicitacao">
+              <span className="font-size-p">Motivo do indeferimento</span>
+              <p className="font-size-m">{solicitacao?.mot_indeferimento}</p>
+            </div>
+          }
+
+          <div className="box-info-visualizar-solicitacao">
+            <span className="font-size-p">Criado em</span>
+            <p className="font-size-m">
+              {solicitacao?.created_at &&
+                moment(solicitacao.created_at).format("DD/MM/YYYY") +
+                " às " +
+                moment(solicitacao.created_at).format("HH:mm:ss")
+              }
             </p>
           </div>
 
@@ -244,12 +215,30 @@ export default function VisualizarSolicitacao() {
             <p className="font-size-m">{solicitacao?.cidadao?.email}</p>
           </div>
 
+          {solicitacao?.cidadao?.telefone &&
+            <div className="box-info-visualizar-solicitacao">
+              <span className="font-size-p">Celular</span>
+              <p className="font-size-m">
+                {formataTelefone(solicitacao?.cidadao?.telefone)}
+              </p>
+            </div>
+          }
+
           <div className="box-info-visualizar-solicitacao">
-            <span className="font-size-p">Celular</span>
+            <span className="font-size-p">Comunidade</span>
             <p className="font-size-m">
-              {formataTelefone(solicitacao?.cidadao?.telefone)}
+              {solicitacao?.comunidade?.nome}
             </p>
           </div>
+
+          {solicitacao?.additional_address &&
+            <div className="box-info-visualizar-solicitacao">
+              <span className="font-size-p">Endereço completo (para Centro)</span>
+              <p className="font-size-m">
+                {solicitacao?.additional_address}
+              </p>
+            </div>
+          }
 
           {solicitacao?.descricao ? (
             <div className="box-info-visualizar-solicitacao">
@@ -259,30 +248,6 @@ export default function VisualizarSolicitacao() {
           ) : (
             ""
           )}
-
-          {solicitacao?.mot_indeferimento ? (
-            <div className="box-info-visualizar-solicitacao">
-              <span className="font-size-p">Motivo do indeferimento</span>
-              <p className="font-size-m">{solicitacao?.mot_indeferimento}</p>
-            </div>
-          ) : (
-            ""
-          )}
-
-          <div className="box-info-visualizar-solicitacao">
-            <span className="font-size-p">Geolocalização</span>
-          </div>
-
-          <div className="box-geolocalizacao">
-            <div className="box-info-visualizar-solicitacao">
-              <span className="font-size-p">Latitude</span>
-              <p className="font-size-m">{solicitacao?.latitude}</p>
-            </div>
-            <div className="box-info-visualizar-solicitacao">
-              <span className="font-size-p">Longitude</span>
-              <p className="font-size-m">{solicitacao?.longitude}</p>
-            </div>
-          </div>
         </div>
       </div>
 

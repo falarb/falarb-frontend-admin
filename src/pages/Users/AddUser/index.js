@@ -68,7 +68,20 @@ export default function AddUser() {
     }
   };
 
-  // nenhum dado
+  const handleDisabled = () => {
+    if (loading) return true;
+
+    if (
+      !cidadao.nome ||
+      !cidadao.cpf ||
+      !cidadao.email
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   if (!cidadao) return <p>Nenhum dado encontrado.</p>;
 
   return (
@@ -98,19 +111,12 @@ export default function AddUser() {
 
         <BtnPrimary
           adicionalClass="success btn-svg"
-          onClick={() => {
-            cadastrarCidadao();
-          }}
+          disabled={handleDisabled()}
+          onClick={() => { cadastrarCidadao() }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#fff"
-          >
-            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
-          </svg>
+          <span class="material-symbols-outlined" style={{ color: "#fff", margin: "auto" }}>
+            save
+          </span>
         </BtnPrimary>
 
         {modalDeleteAberto && (
@@ -135,6 +141,7 @@ export default function AddUser() {
         <InputText
           label="Nome"
           name="nome"
+          required
           placeholder={"Nome do cidadão"}
           value={cidadao?.nome}
           onChange={(evento) => {
@@ -145,6 +152,7 @@ export default function AddUser() {
         <InputCPF
           label="CPF"
           name="cpf"
+          required
           placeholder={"000.000.000-00"}
           value={cidadao?.cpf}
           onChange={(evento) => {
@@ -155,6 +163,7 @@ export default function AddUser() {
         <InputEmail
           label="Email"
           name="email"
+          required
           placeholder={`email@email.com`}
           value={cidadao?.email}
           onChange={(evento) => {

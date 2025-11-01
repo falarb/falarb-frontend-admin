@@ -5,14 +5,19 @@ export default function BtnPrimary({
   type,
   onClick,
   adicionalClass,
-  title
+  title,
+  disabled,
 }) {
+
+  console.log(disabled);
+
   return (
     <button
-      className={`btn-primary ${adicionalClass}`}
+      className={`btn-primary ${adicionalClass} ${disabled ? "disabled" : ""}`}
       title={title}
       type={type}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>

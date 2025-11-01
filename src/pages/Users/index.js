@@ -60,23 +60,12 @@ export default function Usuarios() {
       setLoading(true);
 
       try {
-        const resposta = await api.get(
+        const { data } = await api.get(
           `/cidadaos?ativo=true&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&pagina=${page}&termo_geral=${debouncedSearch}`
         );
 
-        if (resposta.status !== 200) {
-          throw new Error(`Erro HTTP ${resposta.status}`);
-        }
-
-        const dados = resposta.data;
-
-        if (page > dados.ultima_pagina) {
-          setPage(dados.ultima_pagina || 1);
-          return;
-        }
-
-        setTotalPages(dados?.ultima_pagina || 1);
-        setCidadaos(dados?.dados || []);
+        setTotalPages(data?.ultima_pagina || 1);
+        setCidadaos(data?.dados || []);
       } catch (err) {
         setError(err.message || "Erro desconhecido na busca");
         setCidadaos([]);
@@ -152,9 +141,7 @@ export default function Usuarios() {
           label="Buscar por usuário"
           placeholder="Nome, cpf, email..."
           value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-          }}
+          onChange={(event) => { setSearch(event.target.value) }}
         />
       </Filtros>
 

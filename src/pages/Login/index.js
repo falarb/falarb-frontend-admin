@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Modal from "../../components/Modal";
 import Loading from "../../components/Loading";
-import BtnPrimary from "../../components/Btn/BtnPrimary";
 import "./styles.css";
 import api from "../../utils/api";
 
@@ -38,7 +37,14 @@ export default function Login() {
     }));
   };
 
-  const enviandoFormulario = async () => {
+  const enviandoFormulario = async (event) => {
+    event.preventDefault();
+
+    if (!credenciais.email || !credenciais.senha) {
+      setMostrarModal(true);
+      return;
+    }
+
     try {
       setCarregando(true);
       const { data } = await api.post("/login", credenciais);
@@ -46,9 +52,8 @@ export default function Login() {
       login(data?.token);
       navigate("/administracao", { replace: true });
     } catch (erro) {
-      console.error("Erro", erro);
+      console.error("Erro no login", erro);
       setMostrarModal(true);
-      throw new Error("Erro ao fazer login. Verifique suas credenciais.");
     } finally {
       setCarregando(false);
     }
@@ -100,12 +105,7 @@ export default function Login() {
             <h2>Painel Administrativo</h2>
             <p>Acesse com suas credenciais</p>
           </div>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              enviandoFormulario();
-            }}
-          >
+          <form onSubmit={enviandoFormulario}>
             <div className="container_input_email">
               <label>Seu email</label>
               <input
@@ -154,7 +154,22 @@ export default function Login() {
               </button>
             </div>
 
-            <BtnPrimary>Entrar</BtnPrimary>
+            <button 
+              type="submit" 
+              className="btn-primary"
+              style={{
+                backgroundColor: '#3051FF',
+                color: 'white',
+                padding: '12px 24px',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                width: '100%'
+              }}
+            >
+              Entrar
+            </button>
           </form>
         </div>
       </div>

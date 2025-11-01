@@ -4,6 +4,7 @@ import "./styles.css";
 export default function InputCPF({
   label,
   type,
+  required,
   name,
   value,
   onChange,
@@ -11,7 +12,11 @@ export default function InputCPF({
 }) {
   return (
     <div className="custom-input-mask">
-      <label>{label}</label>
+      <label>
+        {label}
+        <span className="required">{required ? "*" : ""}</span>
+      </label>
+
       <InputMask
         className="input-mask"
         mask="999.999.999-99"
@@ -25,7 +30,7 @@ export default function InputCPF({
             target: {
               ...e.target,
               value: numericValue,
-              name: name, 
+              name: name,
             },
           });
         }}

@@ -12,7 +12,11 @@ export default function InputText({
 }) {
   return (
     <div className="container-input">
-      <label>{label}</label>
+      <label>
+        {label}
+        <span className="required">{required ? "*" : ""}</span>
+      </label>
+      
       <input
         className={`${adicionalClass} input-text`}
         type={type}

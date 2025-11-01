@@ -18,6 +18,8 @@ import { useHelp } from "../../../hooks/useHelp";
 import { helpConfigs } from "../../../utils/helpConfigs";
 
 import "./styles.css";
+import moment from "moment";
+import { formataCpf, formataTelefone } from "../../../utils/functions";
 
 export default function EditarSolicitacao() {
   const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
@@ -86,15 +88,14 @@ export default function EditarSolicitacao() {
       setLoading(true);
       setError(null);
 
-      const resposta = await api.put(`/solicitacoes/${id}`, {
+      await api.put(`/solicitacoes/${id}`, {
         status: solicitacao.status,
         mot_indeferimento: solicitacao.mot_indeferimento,
         data_agendamento: solicitacao.data_agendamento,
         data_conclusao: solicitacao.data_conclusao,
       });
-      navigate(-1);
+      navigate('/administracao/solicitacoes');
       setAlterado(false);
-      return resposta.data;
     } catch (erro) {
       setError("Erro ao inativar a solicitação.");
       console.error(erro);
@@ -114,7 +115,7 @@ export default function EditarSolicitacao() {
 
   return (
     <div>
-      <TitleClipPages title={`Solicitação ID: ${solicitacao?.id}`} />
+      <TitleClipPages title={`Código: ${solicitacao?.token_solicitacao}`} />
 
       <div className="nav-tools">
         <BtnSecundary
@@ -212,9 +213,7 @@ export default function EditarSolicitacao() {
             label="Adicione a data do agendamento"
             name="data_agendamento"
             value={solicitacao?.data_agendamento}
-            onChange={(evento) => {
-              lidandoComAlteracoes(evento);
-            }}
+            onChange={(evento) => { lidandoComAlteracoes(evento) }}
             required={true}
           />
         )}
@@ -224,68 +223,47 @@ export default function EditarSolicitacao() {
             label="Adicione a data da conclusão"
             name="data_conclusao"
             value={solicitacao?.data_conclusao}
-            onChange={(evento) => {
-              lidandoComAlteracoes(evento);
-            }}
+            onChange={(evento) => { lidandoComAlteracoes(evento) }}
             required={true}
           />
         )}
 
-        {solicitacao?.data_conclusao ? (
+        {(solicitacao?.status === 'concluida' && solicitacao?.data_conclusao) &&
           <div className="box-info-editar-solicitacao-editar-solicitacao">
             <span className="font-size-p">Data de conclusão</span>
             <p className="font-size-m">
               {solicitacao?.data_conclusao &&
-                new Date(solicitacao?.data_conclusao).toLocaleDateString(
-                  "pt-BR",
-                  {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }
-                )}
+                moment(solicitacao?.data_conclusao).add(3, 'hours').format("DD/MM/YYYY")}
             </p>
           </div>
-        ) : (
-          ""
-        )}
+        }
 
         <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Data da solicitação</span>
           <p className="font-size-m">
             {solicitacao?.created_at &&
-              new Date(solicitacao.created_at).toLocaleDateString("pt-BR", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              }) +
-                " às " +
-                new Date(solicitacao.created_at).toLocaleTimeString("pt-BR", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}
+              moment(solicitacao?.created_at).format("DD/MM/YYYY") +
+              " às " +
+              moment(solicitacao?.created_at).format("HH:mm:ss")
+            }
           </p>
         </div>
 
-        {solicitacao?.data_agendamento ? (
+        {(solicitacao?.status === "agendada" && solicitacao?.data_agendamento) &&
           <div className="box-info-editar-solicitacao">
             <span className="font-size-p">Data de agendamento</span>
             <p className="font-size-m">
-              {solicitacao?.data_agendamento &&
-                new Date(solicitacao?.data_agendamento).toLocaleDateString(
-                  "pt-BR",
-                  {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }
-                )}
+              {moment(solicitacao?.data_agendamento).add(3, 'hours').format('DD/MM/YYYY')}
             </p>
           </div>
-        ) : (
-          ""
-        )}
+        }
+
+        {(solicitacao?.status === 'indeferida' && solicitacao?.mot_indeferimento) &&
+          <div className="box-info-editar-solicitacao">
+            <span className="font-size-p">Motivo do indeferimento</span>
+            <p className="font-size-m">{solicitacao?.mot_indeferimento}</p>
+          </div>
+        }
 
         <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Solicitação</span>
@@ -299,7 +277,7 @@ export default function EditarSolicitacao() {
 
         <div className="box-info-editar-solicitacao">
           <span className="font-size-p">CPF</span>
-          <p className="font-size-m">{solicitacao?.cidadao?.cpf}</p>
+          <p className="font-size-m">{formataCpf(solicitacao?.cidadao?.cpf)}</p>
         </div>
 
         <div className="box-info-editar-solicitacao">
@@ -309,41 +287,29 @@ export default function EditarSolicitacao() {
 
         <div className="box-info-editar-solicitacao">
           <span className="font-size-p">Celular</span>
-          <p className="font-size-m">{solicitacao?.cidadao?.telefone}</p>
+          <p className="font-size-m">{formataTelefone(solicitacao?.cidadao?.telefone)}</p>
         </div>
 
-        {solicitacao?.descricao ? (
+        <div className="box-info-visualizar-solicitacao">
+          <span className="font-size-p">Comunidade</span>
+          <p className="font-size-m">{solicitacao?.comunidade?.nome}</p>
+        </div>
+
+        {solicitacao?.additional_address &&
+          <div className="box-info-visualizar-solicitacao">
+            <span className="font-size-p">Endereço completo (para Centro)</span>
+            <p className="font-size-m">
+              {solicitacao?.additional_address}
+            </p>
+          </div>
+        }
+
+        {solicitacao?.descricao &&
           <div className="box-info-editar-solicitacao">
             <span className="font-size-p">Descrição da solicitação</span>
             <p className="font-size-m">{solicitacao?.descricao}</p>
           </div>
-        ) : (
-          ""
-        )}
-
-        {solicitacao?.mot_indeferimento ? (
-          <div className="box-info-editar-solicitacao">
-            <span className="font-size-p">Motivo do indeferimento</span>
-            <p className="font-size-m">{solicitacao?.mot_indeferimento}</p>
-          </div>
-        ) : (
-          ""
-        )}
-
-        <div className="box-info-editar-solicitacao">
-          <span className="font-size-p">Geolocalização</span>
-        </div>
-
-        <div className="box-geolocalizacao">
-          <div className="box-info-editar-solicitacao">
-            <span className="font-size-p">Latitude</span>
-            <p className="font-size-m">{solicitacao?.latitude}</p>
-          </div>
-          <div className="box-info-editar-solicitacao">
-            <span className="font-size-p">Longitude</span>
-            <p className="font-size-m">{solicitacao?.longitude}</p>
-          </div>
-        </div>
+        }
       </div>
 
       <ModalHelp

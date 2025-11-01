@@ -90,25 +90,23 @@ export default function ViewUser() {
     }
   };
 
-  const baixarComprovante = async () => {
-    const element = document.getElementById("container-info-user");
-    if (!element) return;
+  // const baixarComprovante = async () => {
+  //   const element = document.getElementById("container-info-user");
+  //   if (!element) return;
 
-    const canvas = await html2canvas(element);
-    const dataUrl = canvas.toDataURL("image/png");
+  //   const canvas = await html2canvas(element);
+  //   const dataUrl = canvas.toDataURL("image/png");
 
-    const link = document.createElement("a");
-    link.href = dataUrl;
-    link.download = "cidadao.png";
-    link.click();
-  };
-  // loading
+  //   const link = document.createElement("a");
+  //   link.href = dataUrl;
+  //   link.download = "cidadao.png";
+  //   link.click();
+  // };
+
   if (loading) return <Loading />;
 
-  // erro
   if (error) return <Erro mensagem={error + error?.mensagem} />;
 
-  // nenhum dado
   if (!cidadao) return <p>Nenhum dado encontrado.</p>;
 
   return (
@@ -118,9 +116,7 @@ export default function ViewUser() {
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"
-          onClick={() => {
-            navigate(-1);
-          }}
+          onClick={() => { navigate(-1) }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -132,23 +128,6 @@ export default function ViewUser() {
             <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
           </svg>
         </BtnSecundary>
-
-        <BtnPrimary
-          adicionalClass="btn-svg"
-          onClick={() => {
-            baixarComprovante();
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#fff"
-          >
-            <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
-          </svg>
-        </BtnPrimary>
 
         {/* Botão para visualizar solicitações */}
         <BtnPrimary

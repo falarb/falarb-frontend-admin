@@ -11,6 +11,7 @@ export default function SelectCustom({
   valueKey = "id",
   labelKey = "nome",
   placeholder = "Selecione uma opção...",
+  withEmpty = true,
 }) {
   return (
     <div className="container-select-custom">
@@ -22,7 +23,7 @@ export default function SelectCustom({
         className={`${adicionalClass} select-custom`}
       >
         {children}
-        <option value="">{placeholder}</option>
+        {withEmpty && <option value="">{placeholder}</option>}
         {options.map((option) => (
           <option key={option[valueKey]} value={option[valueKey]}>
             {option[labelKey]}

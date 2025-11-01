@@ -72,7 +72,7 @@
   left: 0;
 }
 
-.table-item-id a svg{
+.table-item-id a svg {
   width: 13px;
   height: 13px;
   fill: rgb(179, 179, 179);
@@ -80,12 +80,12 @@
   top: 1px;
 }
 
-.table-item-id a{
+.table-item-id a {
   text-decoration: none;
   color: rgb(179, 179, 179);
 }
 
-.table-item-id a:hover{
+.table-item-id a:hover {
   text-decoration: underline;
 }
 
@@ -166,4 +166,9 @@
 
 .delete-false {
   display: none;
+}
+
+.community-name span {
+  display: block;
+  width: 60%;
 }

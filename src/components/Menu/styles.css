@@ -1,17 +1,17 @@
-.asside-menu-bar{
+.asside-menu-bar {
     position: absolute;
     left: 0;
     top: 0;
     width: 186px;
     max-width: 186px;
-    height: 100%;
+    height: calc(100% - 80px);
     display: flex;
     flex-direction: column;
     gap: 32px;
     padding: 12px 12px 24px 12px;
 }
 
-.asside-menu-bar-menu-is-close{
+.asside-menu-bar-menu-is-close {
     width: 36px;
 }
 
@@ -24,9 +24,9 @@
     height: 100%;
     background: linear-gradient(to bottom, rgb(218, 218, 218), white);
     z-index: 9999;
-  }
+}
 
-  .asside-menu-bar-menu .logo{
+.asside-menu-bar-menu .logo {
     width: 70%;
     background-color: #fff;
     display: flex;
@@ -36,21 +36,21 @@
     margin: 0 0 0 15px;
 }
 
-.asside-menu-bar-menu-is-close .logo{
+.asside-menu-bar-menu-is-close .logo {
     display: none;
 }
 
-.asside-menu-bar .list-menu-itens{
+.asside-menu-bar .list-menu-itens {
     position: absolute;
     top: 90px;
     width: 180px;
 }
 
-.asside-menu-bar-menu-is-close .list-menu-itens{
+.asside-menu-bar-menu-is-close .list-menu-itens {
     width: 37px;
 }
 
-.menu-item{
+.menu-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -63,16 +63,16 @@
     margin: 0 0 8px 0;
 }
 
-.asside-menu-bar-menu-is-close .menu-item span{
+.asside-menu-bar-menu-is-close .menu-item span {
     display: none;
 }
 
 .menu-item.active,
-.menu-item:hover{
+.menu-item:hover {
     background-color: #ecf5ff;
 }
 
-.menu-item svg{
+.menu-item svg {
     width: 20px;
     height: 20px;
     fill: #898989;
