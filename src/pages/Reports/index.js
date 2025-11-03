@@ -16,7 +16,7 @@ import { useHelp } from "../../hooks/useHelp";
 import { helpConfigs } from "../../utils/helpConfigs";
 
 export default function Relatorios() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.relatorios);
 
   const [abrirModalDownload, setAbrirModalDownload] = useState(false);
   const [carregando, setCarregando] = useState(false);
@@ -26,7 +26,7 @@ export default function Relatorios() {
   const [personalizado, setPersonalizado] = useState({
     categoria: "",
     comunidade: "",
-    data: "",
+    data: "ultimo_ano",
   });
 
   useEffect(() => {
@@ -216,8 +216,8 @@ export default function Relatorios() {
       )}
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.relatorios.title}
+        content={helpConfigs.relatorios.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

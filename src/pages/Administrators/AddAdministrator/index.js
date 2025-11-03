@@ -19,7 +19,7 @@ import { useHelp } from "../../../hooks/useHelp";
 import { helpConfigs } from "../../../utils/helpConfigs";
 
 export default function CadastrarAdministrador() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.cadastrar_administrador);
 
   const [usuario, setUsuario] = useState({
     nome: "",
@@ -146,8 +146,8 @@ export default function CadastrarAdministrador() {
       </form>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.cadastrar_administrador.title}
+        content={helpConfigs.cadastrar_administrador.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

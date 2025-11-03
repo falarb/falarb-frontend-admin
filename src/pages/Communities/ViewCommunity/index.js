@@ -19,7 +19,7 @@ import { helpConfigs } from "../../../utils/helpConfigs";
 import "./styles.css";
 
 export default function VisualizarComunidade() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.detalhes_comunidade);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -179,8 +179,8 @@ export default function VisualizarComunidade() {
       </div>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.detalhes_comunidade.title}
+        content={helpConfigs.detalhes_comunidade.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

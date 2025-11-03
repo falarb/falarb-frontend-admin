@@ -22,7 +22,7 @@ import { useHelp } from "../../hooks/useHelp";
 import { helpConfigs } from "../../utils/helpConfigs";
 
 export default function Comunidades() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.comunidades);
 
   const [comunidades, setComunidades] = useState([]);
   const [mostrarModalDelete, setAbrirModalDelete] = useState(true);
@@ -236,8 +236,8 @@ export default function Comunidades() {
       </Table>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.comunidades.title}
+        content={helpConfigs.comunidades.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

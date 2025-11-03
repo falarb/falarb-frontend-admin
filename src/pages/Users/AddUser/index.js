@@ -22,7 +22,7 @@ import { helpConfigs } from "../../../utils/helpConfigs";
 import "./styles.css";
 
 export default function AddUser() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.cadastrar_cidadao);
 
   const [cidadao, setCidadao] = useState({
     nome: "",
@@ -183,8 +183,8 @@ export default function AddUser() {
       </div>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.cadastrar_cidadao.title}
+        content={helpConfigs.cadastrar_cidadao.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

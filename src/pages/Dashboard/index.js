@@ -15,7 +15,7 @@ import { helpConfigs } from "../../utils/helpConfigs";
 import "./styles.css";
 
 export default function Dashboard() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.dashboard);
 
   const [erros, setErros] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -77,8 +77,8 @@ export default function Dashboard() {
         dados={dados}
       />
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.dashboard.title}
+        content={helpConfigs.dashboard.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

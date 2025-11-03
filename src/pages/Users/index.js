@@ -25,7 +25,7 @@ import { helpConfigs } from "../../utils/helpConfigs";
 import "./styles.css";
 
 export default function Usuarios() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.cidadaos);
 
   const [cidadaos, setCidadaos] = useState([]);
 
@@ -214,8 +214,8 @@ export default function Usuarios() {
       </Table>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.cidadaos.title}
+        content={helpConfigs.cidadaos.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

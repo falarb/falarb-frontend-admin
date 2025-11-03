@@ -19,7 +19,7 @@ import "./styles.css";
 import moment from "moment";
 
 export default function VisualizarSolicitacao() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.detalhes_solicitacao);
 
   const [solicitacao, setSolicitacao] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -252,8 +252,8 @@ export default function VisualizarSolicitacao() {
       </div>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.detalhes_solicitacao.title}
+        content={helpConfigs.detalhes_solicitacao.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

@@ -22,7 +22,7 @@ import moment from "moment";
 import { formataCpf, formataTelefone } from "../../../utils/functions";
 
 export default function EditarSolicitacao() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.editar_solicitacao);
 
   const [solicitacao, setSolicitacao] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -307,8 +307,8 @@ export default function EditarSolicitacao() {
       </div>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.editar_solicitacao.title}
+        content={helpConfigs.editar_solicitacao.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

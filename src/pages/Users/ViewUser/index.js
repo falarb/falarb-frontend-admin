@@ -21,7 +21,7 @@ import { helpConfigs } from "../../../utils/helpConfigs";
 import "./styles.css";
 
 export default function ViewUser() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.detalhes_cidadao);
 
   const [cidadao, setCidadao] = useState(null);
   const [dashboard, setDashboard] = useState(null);
@@ -231,8 +231,8 @@ export default function ViewUser() {
       </div>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.detalhes_cidadao.title}
+        content={helpConfigs.detalhes_cidadao.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

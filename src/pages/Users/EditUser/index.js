@@ -22,7 +22,7 @@ import { helpConfigs } from "../../../utils/helpConfigs";
 import "./styles.css";
 
 export default function EditUser() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.editar_cidadao);
 
   const [cidadao, setCidadao] = useState(null);
   const [loading, setLoading] = useState(null);
@@ -246,8 +246,8 @@ export default function EditUser() {
       </div>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.editar_cidadao.title}
+        content={helpConfigs.editar_cidadao.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

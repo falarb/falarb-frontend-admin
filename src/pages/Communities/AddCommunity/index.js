@@ -15,7 +15,7 @@ import { useHelp } from "../../../hooks/useHelp";
 import { helpConfigs } from "../../../utils/helpConfigs";
 
 export default function CadastrarComunidade() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.cadastrar_comunidade);
 
   const [novaComunidade, setNovaComunidade] = useState({ nome: "" });
   const [loading, setLoading] = useState(false);
@@ -90,8 +90,8 @@ export default function CadastrarComunidade() {
       </form>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.cadastrar_comunidade.title}
+        content={helpConfigs.cadastrar_comunidade.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

@@ -15,7 +15,9 @@ import { useHelp } from "../../../hooks/useHelp";
 import { helpConfigs } from "../../../utils/helpConfigs";
 
 export default function VisualizarAdministrador() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(
+    helpConfigs.detalhes_administrador
+  );
 
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -135,8 +137,8 @@ export default function VisualizarAdministrador() {
       </div>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.detalhes_administrador.title}
+        content={helpConfigs.detalhes_administrador.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

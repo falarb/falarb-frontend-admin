@@ -24,7 +24,9 @@ import api from "../../utils/api";
 import "./styles.css";
 
 export default function Administradores() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(
+    helpConfigs.administradores
+  );
 
   const [administradores, setAdministradores] = useState([]);
   const [administradorSelecionado, setAdministradorSelecionado] =
@@ -107,7 +109,13 @@ export default function Administradores() {
 
   return (
     <div className="administradores-container">
-      {error && <Erro mensagem={"Tivemos um problema, tente novamente ou entre em contato com o suporte."} />}
+      {error && (
+        <Erro
+          mensagem={
+            "Tivemos um problema, tente novamente ou entre em contato com o suporte."
+          }
+        />
+      )}
       {loading && <Loading />}
 
       <div className="nav-tools">
@@ -232,8 +240,8 @@ export default function Administradores() {
       )}
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.administradores.title}
+        content={helpConfigs.administradores.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

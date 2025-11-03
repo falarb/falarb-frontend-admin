@@ -23,7 +23,7 @@ import { helpConfigs } from "../../utils/helpConfigs";
 import "./styles.css";
 
 export default function Solicitacoes() {
-  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.step001);
+  const { isHelpOpen, closeHelp, openHelp } = useHelp(helpConfigs.solicitacoes);
 
   const [solicitacoes, setSolicitacoes] = useState([]);
   const [categorias, setCategorias] = useState([]);
@@ -312,8 +312,8 @@ export default function Solicitacoes() {
       </TableFiveColuns>
 
       <ModalHelp
-        title={helpConfigs.step001.title}
-        content={helpConfigs.step001.content}
+        title={helpConfigs.solicitacoes.title}
+        content={helpConfigs.solicitacoes.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />
