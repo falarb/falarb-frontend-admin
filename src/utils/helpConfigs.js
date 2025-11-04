@@ -692,6 +692,153 @@ export const helpConfigs = {
     ),
   },
 
+  categorias: {
+    title: "Listagem de categorias",
+    content: (
+      <div>
+        <p>
+          <strong>Listagem de categorias</strong>
+        </p>
+        <p>
+          Esta tela exibe todos as categorias registradas no sistema,
+          permitindo que você visualize, pesquise, edite e inative.
+        </p>
+        <ul>
+          <li>
+            <strong>Filtros de busca:</strong> Permitem refinar a visualização
+            por <em>campo de pesquisa</em>.
+          </li>
+          <li>
+            <strong>Tabela de comunidades:</strong> Apresenta as informações
+            principais de cada comunidade, incluindo:
+            <ul>
+              <li>
+                <strong>Nº total de solicitações</strong>
+              </li>
+              <li>
+                <strong>Nº de solicitações por status</strong>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Ações disponíveis:</strong> Ícones à direita permitem{" "}
+            <em>visualizar detalhes</em> da comunidade ou{" "}
+            <em>editar informações</em> (quando permitido) ou{" "}
+            <em>inativar a comunidade</em> (quando permitido).
+          </li>
+          <li>
+            <strong>Paginação:</strong> Exibe o número da página atual e permite
+            navegar entre as páginas de resultados, quando houver muitos
+            registros.
+          </li>
+        </ul>
+        <h4>Como usar:</h4>
+        <ul>
+          <li>
+            Utilize a <strong>busca superior</strong> para localizar rapidamente
+            comunidades específicos.
+          </li>
+          <li>
+            Clique no ícone de <strong>olho</strong> para visualizar detalhes
+            completos.
+          </li>
+          <li>
+            Use o ícone de <strong>lápis</strong> para editar informações, se
+            tiver permissão.
+          </li>
+          <li>
+            Use o ícone de <strong>lixeira</strong> para inativar a comunidade.
+          </li>
+        </ul>
+      </div>
+    ),
+  },
+
+  detalhes_categoria: {
+    title: "Detalhes da categoria",
+    content: (
+      <div>
+        <p>
+          <strong>Detalhes da categoria</strong>
+        </p>
+        <p>
+          Esta tela exibe todas as informações completas de uma categoria
+          específica, permitindo acessar ações relacionadas.
+        </p>
+
+        <h4>Como usar:</h4>
+        <ul>
+          <li>
+            Utilize o botão com <strong>seta para esquerda</strong> para voltar
+            a página anterior.
+          </li>
+          <li>
+            Use o botão amarelo de <strong>Editar</strong> para editar as
+            informações.
+          </li>
+          <li>
+            Caso precise inativar o usuário para não ser permitido de fazer
+            novas solicitações, clique em <strong>Excluir</strong>.
+          </li>
+        </ul>
+      </div>
+    ),
+  },
+
+  editar_categoria: {
+    title: "Editar categoria",
+    content: (
+      <div>
+        <p>
+          <strong>Editar dados da categoria</strong>
+        </p>
+        <p>
+          Esta tela permite editar as informações da categoria cadastrada no
+          sistema.
+        </p>
+        <ul>
+          <li>
+            <strong>Nome</strong>
+          </li>
+        </ul>
+        <h4>Como usar:</h4>
+        <ul>
+          <li>
+            Verifique se o <strong>nome</strong> foi digitado corretamente.
+          </li>
+        </ul>
+      </div>
+    ),
+  },
+
+  cadastrar_categoria: {
+    title: "Cadastrar categoria",
+    content: (
+      <div>
+        <p>
+          <strong>Cadastrar nova categoria</strong>
+        </p>
+        <p>
+          Esta tela permite cadastrar uma nova categoria no sistema. Esses são
+          os dados obrigatórios necessários para a criação:
+        </p>
+        <ul>
+          <li>
+            <strong>Nome</strong>
+          </li>
+        </ul>
+        <h4>Como usar:</h4>
+        <ul>
+          <li>
+            Verifique se <strong>todos os campos</strong> foram digitados
+            corretamente, assim que estiver certificado disso pode cadastrar
+            clicando no botão "cadastrar" em azul.
+          </li>
+        </ul>
+      </div>
+    ),
+  },
+
   relatorios: {
     title: "Emissão de relatórios",
     content: (

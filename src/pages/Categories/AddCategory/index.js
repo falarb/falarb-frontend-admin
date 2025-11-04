@@ -14,12 +14,12 @@ import HelpIndicator from "../../../components/HelpIndicator";
 import { useHelp } from "../../../hooks/useHelp";
 import { helpConfigs } from "../../../utils/helpConfigs";
 
-export default function CadastrarComunidade() {
+export default function CadastrarCategoria() {
   const { isHelpOpen, closeHelp, openHelp } = useHelp(
-    helpConfigs.cadastrar_comunidade
+    helpConfigs.cadastrar_categoria
   );
 
-  const [novaComunidade, setNovaComunidade] = useState({ nome: "" });
+  const [novaCategoria, setNovaCategoria] = useState({ nome: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -27,7 +27,7 @@ export default function CadastrarComunidade() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNovaComunidade((prev) => ({
+    setNovaCategoria((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -40,23 +40,23 @@ export default function CadastrarComunidade() {
     setLoading(true);
 
     try {
-      const response = await api.post("comunidades", {
-        nome: novaComunidade.nome,
+      const response = await api.post("categorias", {
+        nome: novaCategoria.nome,
       });
 
-      setSuccess(`Comunidade "${response.data.nome}" cadastrada com sucesso!`);
-      setNovaComunidade({ nome: "" });
+      setSuccess(`Categoria "${response.data.nome}" cadastrada com sucesso!`);
+      setNovaCategoria({ nome: "" });
       return response;
     } catch (err) {
       console.error(err);
-      setError(err.message || "Erro desconhecido ao cadastrar comunidade.");
+      setError(err.message || "Erro desconhecido ao cadastrar categoria.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="cadastrar-comunidade-container">
+    <div className="cadastrar-categoria-container">
       {error && <Erro mensagem={error} />}
       {success && <p className="success-message">{success}</p>}
       <BtnSecundary
@@ -75,14 +75,14 @@ export default function CadastrarComunidade() {
         </svg>
       </BtnSecundary>
 
-      <h2>Cadastrar nova comunidade</h2>
+      <h2>Cadastrar nova categoria</h2>
 
       <form onSubmit={handleSubmit}>
         <InputText
-          label="Nome da nova comunidade"
+          label="Nome da nova categoria"
           placeholder="Insira o nome..."
           name="nome"
-          value={novaComunidade.nome}
+          value={novaCategoria.nome}
           onChange={handleChange}
           required
         />
@@ -92,8 +92,8 @@ export default function CadastrarComunidade() {
       </form>
 
       <ModalHelp
-        title={helpConfigs.cadastrar_comunidade.title}
-        content={helpConfigs.cadastrar_comunidade.content}
+        title={helpConfigs.cadastrar_categoria.title}
+        content={helpConfigs.cadastrar_categoria.content}
         isOpen={isHelpOpen}
         onClose={closeHelp}
       />

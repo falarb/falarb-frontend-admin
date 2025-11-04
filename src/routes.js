@@ -22,6 +22,11 @@ import ViewCommunity from "./pages/Communities/ViewCommunity";
 import EditarComunidade from "./pages/Communities/EditCommunity";
 import AddCommunity from "./pages/Communities/AddCommunity";
 
+import Categorias from "./pages/Categories";
+import VisualizarCategoria from "./pages/Categories/ViewCategory";
+import EditarCategoria from "./pages/Categories/EditCategory";
+import CadastrarCategoria from "./pages/Categories/AddCategory";
+
 import Administrators from "./pages/Administrators";
 import ViewAdministrator from "./pages/Administrators/ViewAdministrator";
 import EditAdministrator from "./pages/Administrators/EditAdministrator";
@@ -53,9 +58,22 @@ function App() {
 
                 <Route path="comunidades" element={<Communities />} />
                 <Route path="comunidade/:id" element={<ViewCommunity />} />
-                <Route path="comunidade/editar/:id" element={<EditarComunidade />}
+                <Route
+                  path="comunidade/editar/:id"
+                  element={<EditarComunidade />}
                 />
                 <Route path="comunidade/cadastrar" element={<AddCommunity />} />
+
+                <Route path="categorias" element={<Categorias />} />
+                <Route path="categoria/:id" element={<VisualizarCategoria />} />
+                <Route
+                  path="categoria/editar/:id"
+                  element={<EditarCategoria />}
+                />
+                <Route
+                  path="categoria/cadastrar"
+                  element={<CadastrarCategoria />}
+                />
 
                 <Route path="administradores" element={<Administrators />} />
                 <Route
