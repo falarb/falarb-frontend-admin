@@ -26,6 +26,7 @@ export default function Categorias() {
 
   const [categorias, setCategorias] = useState([]);
   const [mostrarModalDelete, setAbrirModalDelete] = useState(true);
+  const [mostrarModalErro, setMostrarModalErro] = useState(false);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -57,10 +58,10 @@ export default function Categorias() {
 
       try {
         const resposta = await api.get(
-          `/categorias?limite=10&pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&termo_geral=${debouncedSearch}`
+          `/categorias?limite=10&pagina=${page}&ordenar_por=${sortBy}&ordenar_direcao=${sortOrder}&ativo=1&termo_geral=${debouncedSearch}`
         );
 
-        const ultimaPagina = resposta?.data.ultima_pagina || 1;
+        const ultimaPagina = resposta?.data?.ultima_pagina || 1;
 
         if (page > ultimaPagina) {
           setPage(ultimaPagina);
@@ -86,9 +87,9 @@ export default function Categorias() {
       setAbrirModalDelete(false);
       setError(null);
       await api.delete(`/categorias/${categoriaSelecionada?.id}`);
+      window.location.reload();
     } catch (erro) {
-      setError("Erro ao inativar a categoria.");
-      throw new Error(`Erro: ${erro}`);
+      setMostrarModalErro(true);
     } finally {
       setLoading(false);
       setDebouncedSearch("");
@@ -110,14 +111,21 @@ export default function Categorias() {
           type="danger"
           title="Excluir categoria"
           description={`Você solicitou excluir a seguinte categoria: ${categoriaSelecionada?.nome}. Essa alteração não pode ser desfeita. Você tem certeza?`}
-          onConfirm={() => {
-            inativarCategoria();
-          }}
-          onCancel={() => {
-            setAbrirModalDelete(false);
-          }}
+          onConfirm={() => { inativarCategoria(); }}
+          onCancel={() => { setAbrirModalDelete(false); }}
         />
       )}
+
+      {mostrarModalErro && (
+        <Modal
+          type="danger"
+          title="Erro"
+          description={`Não é possível inativar esta categoria pois ela está vinculada a solicitações.`}
+          onConfirm={() => { setMostrarModalErro(false); }}
+          onCancel={() => { setMostrarModalErro(false); }}
+        />
+      )}
+
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"

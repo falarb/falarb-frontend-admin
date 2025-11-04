@@ -28,6 +28,7 @@ export default function VisualizarCategoria() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mostrarModalDelete, setAbrirModalDelete] = useState(false);
+  const [mostrarModalErro, setMostrarModalErro] = useState(false);
   const [dashboard, setDashboard] = useState(null);
 
   useEffect(() => {
@@ -74,14 +75,12 @@ export default function VisualizarCategoria() {
     try {
       setLoading(true);
       setError(null);
-      const resposta = await api.put(`/categorias/${id}`, {
-        status: "inativo",
-      });
-      return resposta;
+      await api.delete(`/categorias/${id}`);
+      navigate("/administracao/categorias");
     } catch (erro) {
-      setError("Erro ao inativar a categoria.");
-      throw new Error(`Erro: ${erro}`);
+      setMostrarModalErro(true);
     } finally {
+      setAbrirModalDelete(false);
       setLoading(false);
     }
   };
@@ -162,14 +161,18 @@ export default function VisualizarCategoria() {
             type="danger"
             title="Excluir solicitação"
             description={`Você solicitou excluir essa categoria. Essa alteração não pode ser desfeita. Você tem certeza?`}
-            onConfirm={() => {
-              inativarCategoria();
-              setAbrirModalDelete(false);
-              navigate(-1);
-            }}
-            onCancel={() => {
-              setAbrirModalDelete(false);
-            }}
+            onConfirm={() => { inativarCategoria(); }}
+            onCancel={() => { setAbrirModalDelete(false); }}
+          />
+        )}
+
+        {mostrarModalErro && (
+          <Modal
+            type="danger"
+            title="Erro"
+            description={`Não é possível inativar esta categoria pois ela está vinculada a solicitações.`}
+            onConfirm={() => { setMostrarModalErro(false); }}
+            onCancel={() => { setMostrarModalErro(false); }}
           />
         )}
       </div>
