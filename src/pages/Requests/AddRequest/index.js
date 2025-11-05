@@ -101,6 +101,7 @@ export default function CadastrarSolicitacao() {
         }));
       },
     });
+    console.log(solicitacao);
     return null;
   };
 
@@ -200,6 +201,7 @@ export default function CadastrarSolicitacao() {
       ...prevSolicitacao,
       [name]: value,
     }));
+    console.log(solicitacao);
   };
 
   const cadastrarSolicitacao = async () => {
@@ -295,10 +297,13 @@ export default function CadastrarSolicitacao() {
           <AutoCompleteCustom
             name="id_cidadao"
             options={cidadaos?.dados}
-            onChange={lidandoComAlteracoes}
+            onChange={(evento) => {
+              lidandoComAlteracoes(evento);
+            }}
             label="Selecione o cidadão que realiza a solicitação "
             required
             title="Seleção da o cidadão"
+            solicitacao={solicitacao}
           />
         </div>
 
@@ -306,10 +311,13 @@ export default function CadastrarSolicitacao() {
           <AutoCompleteCustom
             name="id_categoria"
             options={categorias?.dados}
-            onChange={lidandoComAlteracoes}
+            onChange={(evento) => {
+              lidandoComAlteracoes(evento);
+            }}
             label="Selecione a categoria da solicitação"
             required
             title="Seleção da categoria para a solicitação"
+            solicitacao={solicitacao}
           />
         </div>
 
@@ -317,10 +325,13 @@ export default function CadastrarSolicitacao() {
           <AutoCompleteCustom
             name="id_comunidade"
             options={comunidades?.dados}
-            onChange={lidandoComAlteracoes}
+            onChange={(evento) => {
+              lidandoComAlteracoes(evento);
+            }}
             label="Selecione a comunidade referente a solicitação"
             required
             title="Seleção da comunidade para a solicitação"
+            solicitacao={solicitacao}
           />
         </div>
 
@@ -349,14 +360,13 @@ export default function CadastrarSolicitacao() {
         </div>
       </div>
       <BtnPrimary
-          title="Clique para cadastrar solicitação"
-          onClick={() => {
-            setAbrirModalEdit(true);
-          }}
-        >
-          Cadastrar solicitação
-        </BtnPrimary>
-
+        title="Clique para cadastrar solicitação"
+        onClick={() => {
+          setAbrirModalEdit(true);
+        }}
+      >
+        Cadastrar solicitação
+      </BtnPrimary>
 
       <ModalHelp
         title={helpConfigs.editar_solicitacao.title}
