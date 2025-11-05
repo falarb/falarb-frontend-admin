@@ -26,6 +26,7 @@ export default function Comunidades() {
 
   const [comunidades, setComunidades] = useState([]);
   const [mostrarModalDelete, setAbrirModalDelete] = useState(true);
+  const [mostrarModalErro, setMostrarModalErro] = useState(false);
   const [comunidadeSelecionada, setComunidadeSelecionada] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -86,9 +87,9 @@ export default function Comunidades() {
       setAbrirModalDelete(false);
       setError(null);
       await api.delete(`/comunidade/${comunidadeSelecionada?.id}`);
+      window.location.reload();
     } catch (erro) {
-      setError("Erro ao inativar a solicitação.");
-      throw new Error(`Erro: ${erro}`);
+      setMostrarModalErro(true);
     } finally {
       setLoading(false);
       setDebouncedSearch("");
@@ -110,6 +111,17 @@ export default function Comunidades() {
           }}
         />
       )}
+
+      {mostrarModalErro && (
+        <Modal
+          type="danger"
+          title="Erro"
+          description={`Não é possível inativar esta comunidade pois ela está vinculada a solicitações.`}
+          onConfirm={() => { setMostrarModalErro(false); }}
+          onCancel={() => { setMostrarModalErro(false); }}
+        />
+      )}
+
       <div className="nav-tools">
         <BtnSecundary
           adicionalClass="btn-svg"

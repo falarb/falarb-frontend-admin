@@ -28,6 +28,7 @@ export default function VisualizarComunidade() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mostrarModalDelete, setAbrirModalDelete] = useState(false);
+  const [mostrarModalErro, setMostrarModalErro] = useState(false);
   const [dashboard, setDashboard] = useState(null);
 
   useEffect(() => {
@@ -74,15 +75,13 @@ export default function VisualizarComunidade() {
     try {
       setLoading(true);
       setError(null);
-      const resposta = await api.put(`/comunidade/${id}`, {
-        status: "inativo",
-      });
-      return resposta;
+      await api.delete(`/comunidades/${comunidade?.id}`);
+      navigate("/administracao/comunidades");
     } catch (erro) {
-      setError("Erro ao inativar a comunidade.");
-      throw new Error(`Erro: ${erro}`);
+      setMostrarModalErro(true);
     } finally {
       setLoading(false);
+      setAbrirModalDelete(false);
     }
   };
 
@@ -162,14 +161,18 @@ export default function VisualizarComunidade() {
             type="danger"
             title="Excluir solicitação"
             description={`Você solicitou excluir essa comunidade. Essa alteração não pode ser desfeita. Você tem certeza?`}
-            onConfirm={() => {
-              inativarComunidade();
-              setAbrirModalDelete(false);
-              navigate(-1);
-            }}
-            onCancel={() => {
-              setAbrirModalDelete(false);
-            }}
+            onConfirm={() => { inativarComunidade(); }}
+            onCancel={() => { setAbrirModalDelete(false); }}
+          />
+        )}
+
+        {mostrarModalErro && (
+          <Modal
+            type="danger"
+            title="Erro"
+            description={`Não é possível inativar esta comunidade pois ela está vinculada a solicitações.`}
+            onConfirm={() => { setMostrarModalErro(false); }}
+            onCancel={() => { setMostrarModalErro(false); }}
           />
         )}
       </div>
