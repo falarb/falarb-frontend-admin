@@ -50,6 +50,7 @@
   background-color: #3051ff;
   */
   margin: 0;
+  opacity: 0;
 }
 
 .header .menu-item-nav-header:hover {
