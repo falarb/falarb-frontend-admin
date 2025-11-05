@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import Modal from "../Modal";
 
 import "./styles.css";
 
 export default function Header({ children, menuIsOpen, setMenuIsOpen }) {
-
   const navegacao = useNavigate();
-  
+
   const [modalSairAberto, setModalSairAberto] = useState(false);
 
   return (
@@ -21,6 +20,7 @@ export default function Header({ children, menuIsOpen, setMenuIsOpen }) {
         className={`header-svg ${
           menuIsOpen === true ? "header-svg-true" : "header-svg-false"
         }`}
+        title="Fechar menu lateral"
         onClick={() => {
           setMenuIsOpen(menuIsOpen === true ? false : true);
         }}
@@ -49,33 +49,54 @@ export default function Header({ children, menuIsOpen, setMenuIsOpen }) {
         <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
       </svg>
 
-      <svg
-        className={`header-svg`}
-        xmlns="http://www.w3.org/2000/svg"
-        height="24px"
-        viewBox="0 -960 960 960"
-        width="24px"
-        fill="#344054"
-        onClick={() => {
-          setModalSairAberto(true)
-        }}
-      >
-        <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
-      </svg>
+      <p className="bem-vindo">
+        Bem vindo ao sistema SolicitaAi da Prefeitura de Rebouças.
+      </p>
 
-      {modalSairAberto && 
-        <Modal 
-          type="normal" 
-          title="Deseja sair?" 
-          description="Ao entrar novamente você precisará realizar login novamente" 
-          onCancel={() => {setModalSairAberto(false)}} 
+      <div className="nav-options">
+        <Link
+          className="menu-item-nav-header"
+          to="/administracao/solicitacao/cadastrar"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 -960 960 960"
+          >
+            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+          </svg>
+        </Link>
+
+        <svg
+          className={`header-svg`}
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#344054"
+          onClick={() => {
+            setModalSairAberto(true);
+          }}
+        >
+          <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+        </svg>
+      </div>
+
+      
+
+      {modalSairAberto && (
+        <Modal
+          type="normal"
+          title="Deseja sair?"
+          description="Ao entrar novamente você precisará realizar login novamente"
+          onCancel={() => {
+            setModalSairAberto(false);
+          }}
           onConfirm={() => {
             localStorage.removeItem("tokenAdminSolicitaAi");
             navegacao("/");
           }}
-        >
-        </Modal>
-        }
+        ></Modal>
+      )}
     </header>
   );
 }

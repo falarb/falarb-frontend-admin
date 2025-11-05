@@ -114,7 +114,7 @@ export default function AddUser() {
           disabled={handleDisabled()}
           onClick={() => { cadastrarCidadao() }}
         >
-          <span class="material-symbols-outlined" style={{ color: "#fff", margin: "auto" }}>
+          <span className="material-symbols-outlined" style={{ color: "#fff", margin: "auto" }}>
             save
           </span>
         </BtnPrimary>

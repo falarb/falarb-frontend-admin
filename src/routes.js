@@ -11,6 +11,7 @@ import Page404 from "./pages/Page404";
 import Requests from "./pages/Requests";
 import ViewRequest from "./pages/Requests/ViewRequest";
 import EditRequest from "./pages/Requests/EditRequest";
+import AddRequest from "./pages/Requests/AddRequest";
 
 import Users from "./pages/Users";
 import ViewUser from "./pages/Users/ViewUser";
@@ -45,10 +46,8 @@ function App() {
                 <Route index element={<Dashboard />} />
                 <Route path="solicitacoes" element={<Requests />} />
                 <Route path="solicitacao/:id" element={<ViewRequest />} />
-                <Route
-                  path="solicitacao/editar/:id"
-                  element={<EditRequest />}
-                />
+                <Route path="solicitacao/editar/:id" element={<EditRequest />}/>
+                <Route path="solicitacao/cadastrar/" element={<AddRequest />}/>
 
                 <Route path="usuarios" element={<Users />} />
                 <Route path="usuario/:id" element={<ViewUser />} />

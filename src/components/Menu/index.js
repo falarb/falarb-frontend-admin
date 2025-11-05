@@ -132,6 +132,7 @@ export default function Menu({ menuIsOpen }) {
           </svg>
           <span>Administradores</span>
         </Link>
+
       </div>
     </aside>
   );

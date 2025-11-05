@@ -1,0 +1,28 @@
+.grid-inputs-cadastro-solicitacao{
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-inputs-cadastro-solicitacao input{
+    max-width: 450px !important;
+}
+
+.auto-complete-cadastro-solicitacoes{
+    padding: 0;
+    margin: 15px 0 ;
+}
+
+.container-map-cadastro-solicitacao{
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+}
+
+.label-map-cadastro-solicitacao{
+    padding-bottom: 10px;
+}
+
+.label-map-cadastro-solicitacao span{
+    color: red;
+}
